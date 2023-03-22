@@ -1,0 +1,57 @@
+.tabla-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .tabla-header {
+    display: flex;
+    flex-direction: row;
+    background-color: #0087c3;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .tabla-header-cell {
+    flex: 1;
+    padding: 10px;
+  }
+  
+  .tabla-fila {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .tabla-celda {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .card{
+    margin-bottom: 1rem;
+    display: block;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: none;
+    text-align: center;
+    width: 90%;
+    margin-left: 152px;
+    margin-top: -30px;
+  }
+  .banner{
+    display: block;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    background: linear-gradient(195deg, rgb(73, 163, 241), rgb(26, 115, 232));
+    color: white;
+    width: 95%;
+    margin-top: 50px;
+    margin-left: 130px;
+    font-weight: bold;
+  }
