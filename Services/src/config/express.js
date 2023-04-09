@@ -28,6 +28,7 @@ app.use('/api/status',statusRouter);
 app.use('/api/sale',saleRouter);
 app.use('/api/category',categoryRouter);
 
+
 module.exports = {
     app
 };
