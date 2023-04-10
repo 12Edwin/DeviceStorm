@@ -81,7 +81,7 @@ const deletes = async (req, res = Response) =>{
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/opt/uploads/');
+        cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
@@ -93,7 +93,7 @@ const uploadImage = async (req, res = Response) =>{
     try {
         const {id} = req.params;
         const { filename } = req.file;
-        const image = { img : `http://44.214.206.7:${process.env.PORT}/api/book/image/${filename}` };
+        const image = { img : `${filename}` };
         await Book.findByIdAndUpdate(id,image);
         res.json({msg: 'Successful request' , image });
     } catch (error) {
@@ -104,7 +104,7 @@ const uploadImage = async (req, res = Response) =>{
 
 const getImage = async (req, res ) =>{
     const {filename} = req.params;
-    const path = `/opt/uploads/${filename}`;
+    const path = `uploads/${filename}`;
 
     if (!fs.existsSync(path)) {
         res.status(404).send({msg:'Archivo no encontrado'});
