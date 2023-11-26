@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import PageNotFound from "../auth/pages/PageNotFound"
 import { AdminRoute } from "../admin/routes/AdminRoutes"
 import { UserRouter } from "../user/routes/UserRoutes"
@@ -27,6 +27,8 @@ export const AppRouter = () =>{
                         <AdminRoute/>
                     </PrivateRouteAdmin>
                  }/>
+
+                <Route path="/" element={<Navigate to={'/login'}/>} > </Route>
 
                  <Route path="/*" element={<PageNotFound/>} />
             </Routes>

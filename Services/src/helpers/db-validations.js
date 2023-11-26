@@ -1,8 +1,7 @@
 const User = require("../module/user/User");
-const Book = require('../module/book/Book');
+const Book = require('../module/device/Book');
 const Role = require('../module/role/Role');
 const Request = require('../module/request/Request');
-const Status = require('../module/status/Status');
 const Category = require('../module/category/Category');
 const jwt = require('jsonwebtoken');
 
@@ -29,13 +28,6 @@ const validateIdBook = async (id = '') =>{
 
 const validateIdRole = async (id = '') =>{
     const idExist = await Role.findById(id);
-    if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
-    }
-}
-
-const validateIdStatus = async (id = '') =>{
-    const idExist = await Status.findById(id);
     if (!idExist){
         throw new Error('Id no encontrado en la base de datos');
     }
@@ -148,7 +140,6 @@ module.exports ={
     validateIdCategory,
     validateBook,
     existBook,
-    validateIdStatus,
     roles,
     status,
     validateBookBought

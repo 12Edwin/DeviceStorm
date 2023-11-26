@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const {userRouter, authRouter, bookRouter, roleRouter, requestRouter, statusRouter, saleRouter, categoryRouter} = require("../module/routes");
+const {userRouter, authRouter, bookRouter, roleRouter, requestRouter, categoryRouter} = require("../module/routes");
 const {validateBookBought} = require("../helpers/db-validations");
 
 require('dotenv').config()
@@ -21,11 +21,9 @@ app.get('/',(request,response) =>{
 
 app.use('/api/user',userRouter);
 app.use('/api/auth',authRouter);
-app.use('/api/book',bookRouter);
+app.use('/api/device',bookRouter);
 app.use('/api/role',roleRouter);
 app.use('/api/request',requestRouter);
-app.use('/api/status',statusRouter);
-app.use('/api/sale',saleRouter);
 app.use('/api/category',categoryRouter);
 
 
