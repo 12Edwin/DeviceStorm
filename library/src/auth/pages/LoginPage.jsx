@@ -32,6 +32,7 @@ export default function LoginPage (){
     }
 
     const onSignUp = async (data) =>{
+        console.log("Data? =>", data);
         const response = await register(data)
         .then(async(res) =>{
             data.setErrRegister(null);

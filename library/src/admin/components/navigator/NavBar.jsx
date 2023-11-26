@@ -21,8 +21,8 @@ export const NavBarAdmin = () => {
     <div className="sidenav">
       <div className="sidenav-logo">
         {/* <img src={logo} alt="Logo" /> */}
-        <div className='row' style={{display:'flex', alignItems:'center'}}>
-          <div className='col-7'><h4 style={{color:"white"}}>{user.name}</h4></div>
+        <div className='row text-center' style={{display:'flex', alignItems:'center'}}>
+          <div className='col-7'><h4 style={{color:"white",}}>{user.name}</h4></div>
           <div className='col-5' style={{borderLeft: '0.5px solid white'}}><h6 style={{color:"white"}}>Admin</h6></div>
         </div>
       </div>
@@ -31,7 +31,7 @@ export const NavBarAdmin = () => {
         <li className="sidenav-item">
           <a href="/admin/stock">
             <FontAwesomeIcon icon={faHome} className="sidenav-icon" />
-            Home
+            Principal
           </a>
         </li>
         <li className="sidenav-item">
@@ -55,19 +55,19 @@ export const NavBarAdmin = () => {
         <li className="sidenav-item">
           <a href="/admin/users">
             <FontAwesomeIcon icon={faUserEdit} className="sidenav-icon" />
-            users
+            Usuarios
           </a>
         </li>
         <li className="sidenav-item">
           <a href="/admin/profile">
             <FontAwesomeIcon icon={faUser} className="sidenav-icon" />
-            Profile
+            Perfil
           </a>
         </li>
         <li className="sidenav-item">
           <a href="" onClick={onLogout}>
             <FontAwesomeIcon icon={faSignOutAlt} className="sidenav-icon" />
-            Logout
+            Cerrar sesión
           </a>
         </li>
       </ul>

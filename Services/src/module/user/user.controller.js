@@ -35,11 +35,9 @@ const insert = async (req, res = Response) =>{
     try {
 
         const {name,surname,email,career,role,password} = req.body;
-        console.log(req.body);
         const user = new User ({name,surname,email,career,role, password, status:true});
         user.password = await hashPassword(password);
         await user.save();
-
         res.status(200).json({message:'Successful request',user});
     }catch (error){
         const message = validateError(error);
@@ -103,7 +101,7 @@ userRouter.post('/',[
     check('email','Correo inválido').isEmail(),
     check('email').custom(validateEmail),
     check('name', 'El nombre es obligatorio').not().isEmpty(),
-    check('career', 'La carrera es obligatoria').not().isEmpty(),
+    check('lastname', 'El apellido paterno es obligatorio').not().isEmpty(),
     check('password', 'La contraseña debe contener más de 6 caracteres').isLength({min:6}),
     check('role').custom(roles),
     validateMiddlewares
