@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import './Login.css'
+import { Row, Col } from 'react-bootstrap';
 
 import PropTypes from 'prop-types';
 import { Input } from 'reactstrap';
@@ -106,19 +107,20 @@ export const LoginComponent = ({ onData, onRegister }) => {
         <MDBTabsPane show={justifyActive === 'tab2'}>
 
           <Formik
-            initialValues={{ name: '', surname: '', career: '', email: '', password: '', repeatPass: '' }}
+            initialValues={{ name: '', lastname: '',surname: '', email: '', password: '', repeatPass: '' }}
             validationSchema={
               Yup.object().shape({
                 name: Yup.string().required("Nombre requerido"),
+                lastname: Yup.string().required("Apellido paterno es requerido"),
+                surname: Yup.string(),
                 email: Yup.string().email("Correo inválido").required("Correo requerido"),
                 password: Yup.string().min(6, "El mínimo es de 6 caracteres").required("Contraseña requerdia"),
-                career: Yup.string().required("Carrera requerida"),
                 repeatPass: Yup.string().oneOf([Yup.ref('password')], "Contraseñas desiguales").required("Contraseñas desiguales")
               })}
             onSubmit={(values, { setSubmitting }) => {
               setTimeout(() => {
-                console.log(values);
-                onRegister({ ...values, setErrRegister, setSubmitting })
+                console.log("carrer: ", values)
+                 onRegister({ ...values, setErrRegister, setSubmitting })
               }, 400);
             }}
           >
@@ -127,42 +129,54 @@ export const LoginComponent = ({ onData, onRegister }) => {
             (<Form style={{boxShadow:'none' }}>
               {errRegister && (<div className='alert alert-danger' style={{ textAlign: "center" }}>{errRegister}</div>)}
 
-              <div className="field-container">
-                <Field className='mt-4 form-control field' id='name' name='name' type='text' />
-                <label htmlFor='name' className="animated-label">Nombre:</label>
-                {touched.name && errors.name && <div className="alert alert-danger error">{errors.name}</div>}
-              </div>
-
-              <div className="field-container">
-                <Field className='mt-4 form-control field' id='surname' name='surname' type='text' />
-                <label htmlFor='surname' className="animated-label">Apellido:</label>
-                {touched.surname && errors.surname && <div className="alert alert-danger error">{errors.surname}</div>}
-              </div>
-
-              <div className="field-container">
-                <Field className='mt-4 form-control field' id='email' name='email' type='email' />
-                <label htmlFor='email' className="animated-label">Email:</label>
-                {touched.email && errors.email && <div className="alert alert-danger error">{errors.email}</div>}
-              </div>
-
-              <div className="field-container">
-                <Field className='mt-4 form-control field' id='career' name='career' type='text' />
-                <label htmlFor='career' className="animated-label">Carrera:</label>
-                {touched.career && errors.career && <div className="alert alert-danger error">{errors.career}</div>}
-              </div>
-
-              <div className="field-container">
-                <Field className='mt-4 form-control field' id='password' name='password' type='password' />
-                <label htmlFor='password' className="animated-label">Password:</label>
-                {touched.password && errors.password && <div className="alert alert-danger error">{errors.password}</div>}
-              </div>
-
-              <div className="field-container">
-                <Field className='mt-4 form-control field' id='repeatPass' name='repeatPass' type='password' />
-                <label htmlFor='repeatPass' className="animated-label">Repetir password:</label>
-                {touched.repeatPass && errors.repeatPass && <div className="alert alert-danger error">{errors.repeatPass}</div>}
-              </div>
-
+              <Row>
+                <Col lg={6} md={6} sm={12}>
+                  <div className="field-container">
+                    <Field className='mt-4 form-control field' id='name' name='name' type='text' />
+                    <label htmlFor='name' className="animated-label reqired-label">Nombre:</label>
+                    {touched.name && errors.name && <div className="alert alert-danger error">{errors.name}</div>}
+                  </div>
+                </Col>
+                <Col lg={6} md={6} sm={12}>
+                  <div className="field-container">
+                    <Field className='mt-4 form-control field' id='lastname' name='lastname' type='text' />
+                    <label htmlFor='lastname' className="animated-label reqired-label">Apellido paterno:</label>
+                    {touched.lastname && errors.lastname && <div className="alert alert-danger error">{errors.lastname}</div>}
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+              <Col lg={6} md={6} sm={12}>
+                  <div className="field-container">
+                    <Field className='mt-4 form-control field' id='surname' name='surname' type='text' />
+                    <label htmlFor='surname' className="animated-label">Apellido Materno:</label>
+                    {touched.surname && errors.surname && <div className="alert alert-danger error">{errors.surname}</div>}
+                  </div>
+                </Col>
+                <Col lg={6} md={6} sm={12}>
+                  <div className="field-container">
+                    <Field className='mt-4 form-control field' id='email' name='email' type='email' />
+                    <label htmlFor='email' className="animated-label reqired-label">Correo electronico: </label>
+                    {touched.email && errors.email && <div className="alert alert-danger error">{errors.email}</div>}
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col lg={6} md={6} sm={12}>
+                  <div className="field-container">
+                    <Field className='mt-4 form-control field' id='password' name='password' type='password' />
+                    <label htmlFor='password' className="animated-label reqired-label">Contraseña: </label>
+                    {touched.password && errors.password && <div className="alert alert-danger error">{errors.password}</div>}
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="field-container">
+                    <Field className='mt-4 form-control field' id='repeatPass' name='repeatPass' type='password' />
+                    <label htmlFor='repeatPass' className="animated-label reqired-label">Repetir password:</label>
+                    {touched.repeatPass && errors.repeatPass && <div className="alert alert-danger error">{errors.repeatPass}</div>}
+                  </div>
+                </Col>
+              </Row>
               <MDBBtn className="mt-4 w-100" type='submit' disabled={isSubmitting}>{isSubmitting ? <FontAwesomeIcon icon={faSpinner} spin /> : "Sign up"}</MDBBtn>
 
             </Form>)}
@@ -176,6 +190,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
     </div>
   );
 }
+
 
 LoginComponent.propTypes = {
   title: PropTypes.string.isRequired

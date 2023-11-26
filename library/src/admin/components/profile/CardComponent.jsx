@@ -93,8 +93,7 @@ export const CardComponent = () => {
                                 src="https://th.bing.com/th/id/R.423055c39be588a1643ea7aeb1ac83be?rik=pT92QfdWkxqHnw&riu=http%3a%2f%2f2.bp.blogspot.com%2f_JXi92wDCOGk%2fTGF1W98DwWI%2fAAAAAAAABqI%2fjmXaiB8h0nE%2fs1600%2fAlice%2bbook%2bcover2.jpg&ehk=VXhL6QjA0lhMfVeSufHlKhmV4xEvzHwDt1S0b4WZ%2bAE%3d&risl=&pid=ImgRaw&r=0"
                                 alt="author-img"
                             />
-                            <h5 className="mb-0">{data.name}</h5>
-                            <span className="text-muted d-block mb-2">{data.surname}</span>
+                            <h5 className="mb-3">{data.name} {data.surname}</h5>
                             <div className="social-icons social-icons-sm mb-3">
                                 <a
                                     className="social-icon"
@@ -121,42 +120,15 @@ export const CardComponent = () => {
                                     <i className="fab fa-linkedin-in"></i>
                                 </a>
                             </div>
-                            <a className="btn btn-light btn-sm" href="#about">
-                                Leer más
-                            </a>
                         </div>
 
                         <div className="card-custom " >
                             <Row>
-                                <Col md={5}>
-                                    <Card className="shadow mb-4">
-                                        <Card.Img
-                                            variant="top"
-                                            src="https://cdn.pixabay.com/photo/2019/02/14/14/38/book-3996723_1280.jpg"
-                                        />
-                                        <Card.Body>
-                                            <Card.Title className="text-center mb-3">
-                                                {data.name}
-                                            </Card.Title>
-                                            <div style={{ textAlign: 'justify', fontSize: '14px' }}>
-                                                <strong> Sabías que: </strong>
-                                                <br />
-                                                <ul>
-                                                    <li style={{ marginBottom: '10px', fontFamily: 'cursive', color: 'Highlight' }}>95% de la gente lee muy lentamente - 180-220 palabras por minuto (1 página 1, 5-2 minutos)</li>
-                                                    <li style={{ marginBottom: '10px', fontFamily: 'cursive', color: 'Highlight' }}>El nivel de comprensión de la lectura tradicional es del 60%, con rápido -. 80%</li>
-                                                    <li style={{ marginBottom: '10px', fontFamily: 'cursive', color: 'Highlight' }}>Durante la lectura de los ojos miran en direcciones diferentes.</li>
-                                                </ul>
-
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                                <Col md={7}>
+                                <Col>
                                     <Card className="shadow mb-4">
                                         <Card.Body>
 
                                             <Row>
-
                                                 <Formik
                                                     initialValues={{ name: data.name, surname: data.surname, career: data.career }}
                                                     validationSchema={
@@ -175,8 +147,8 @@ export const CardComponent = () => {
                                                     (<Form>
 
                                                         <Card.Text>
-                                                            <strong>{data.surname}</strong>
                                                         </Card.Text >
+                                                            <strong>Modificar datos</strong>
 
                                                         <Card.Text style={{ textAlign: 'left' }}>
                                                             <strong>Estatus:</strong> {data.status ? "Activo" : "Inactivo"}  {data.status ? (<FontAwesomeIcon icon={faCheckCircle} color="#28a745" />) :
@@ -207,7 +179,7 @@ export const CardComponent = () => {
 
                                         </Card.Body>
                                     </Card>
-                                    <Card className="shadow mt-3">
+                                    <Card className="shadow mt-2">
                                         <Card.Body>
                                             <Card.Title className="text-center mb-1">
                                                 Correo electrónico
