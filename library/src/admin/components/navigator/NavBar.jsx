@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCog, faUser, faSignOutAlt, faBook, faFileArchive, faCartShopping, faUserEdit, faC } from '@fortawesome/free-solid-svg-icons';
+//import { faHome, faCog, faUser, faSignOutAlt, fadevice, faFileArchive, faCartShopping, faUserEdit, faC } from '@fortawesome/free-solid-svg-icons';
 // import logo from './logo.png';
 import './SideNav.css';
-import { BookStack } from '../inventory/BookStack';
+import { DeviceStack } from '../device/inventory/DeviceStack';
 import { AuthContext } from '../../../auth/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,9 +47,9 @@ export const NavBarAdmin = () => {
           </a>
         </li>
         <li className="sidenav-item">
-          <a href="/admin/book">
-            <FontAwesomeIcon icon={faBook} className="sidenav-icon" />
-            New book
+          <a href="/admin/device">
+            <FontAwesomeIcon icon={fadevice} className="sidenav-icon" />
+            New device
           </a>
         </li>
         <li className="sidenav-item">

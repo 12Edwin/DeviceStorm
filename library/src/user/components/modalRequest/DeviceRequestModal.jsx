@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useSpring, animated } from 'react-spring';
-import image from '../../../assets/img/book.jpg'
+import image from '../../../assets/img/device.jpg'
 import "./ModalRequest.css"
 import { createRequest } from '../../helpers/createRequest';
 
-export const BookRequestModal = ({ data, open }) => {
+export const DeviceRequestModal = ({ data, open }) => {
   const [inputValue, setInputValue] = useState('');
   const currentDate = new Date().toISOString().split("T")[0];
 
@@ -23,7 +23,7 @@ export const BookRequestModal = ({ data, open }) => {
     console.log(inputValue);
   };
 
-  const handleModalOpen = (book) => {
+  const handleModalOpen = (device) => {
     // Configurar el modal con SweetAlert2
     Swal.fire({
       title: 'Realizar transacción',
@@ -36,7 +36,7 @@ export const BookRequestModal = ({ data, open }) => {
         <div class="col-6">
           <div style="" class="carta">
             <div  style="max-width: 100%; height:320px">
-              <img  src="${book.img || image}" class="carta-image" style="width:200px"/>
+              <img  src="${device.img || image}" class="carta-image" style="width:200px"/>
             </div>
             <div>
                 <h5 class="card-title">Special title treatment</h5>
@@ -46,15 +46,15 @@ export const BookRequestModal = ({ data, open }) => {
         <div class="col-6">
           <div class="carta">
             <div style="padding:20px">
-              <h5 class="card-title">${book.name}</h5>
+              <h5 class="card-title">${device.name}</h5>
             </div>
           </div>
           <div class="carta">
             <div style="padding:20px; text-align:left">
-              <h6>Author:       ${book.author}</h6>
-              <h6>Publication:  ${book.publication}</h6>
-              <h6>Category:     ${book.category.name}</h6>
-              <h6>Price:        ${book.price}</h6>
+              <h6>Author:       ${device.author}</h6>
+              <h6>Publication:  ${device.publication}</h6>
+              <h6>Category:     ${device.category.name}</h6>
+              <h6>Price:        ${device.price}</h6>
             </div>
           </div>
           <div class="carta">
@@ -76,7 +76,7 @@ export const BookRequestModal = ({ data, open }) => {
           }
           
           const body = {
-            book: data.name,
+            device: data.name,
             returns : value,
             created: currentDate,
             status: 'Pending'

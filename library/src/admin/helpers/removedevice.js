@@ -1,11 +1,11 @@
 import axios from "axios";
 
 
-export const removeBook = async(id) =>{
+export const removedevice = async(id) =>{
     try{
         const user = await JSON.parse(localStorage.getItem('user'));
         const token = user.token;
-        const url = `http://localhost:3000/api/book/${id}`;
+        const url = `http://localhost:3000/api/device/${id}`;
         const response = await axios.delete(url,{
             headers:{
                 'x-token' : token

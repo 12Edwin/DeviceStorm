@@ -1,8 +1,8 @@
-import { DetailsBookComponent } from "../components/detailsBook/DetailsBookComponent"
+import { DetailsDeviceComponent } from "../components/detailsDevice/DetailsDeviceComponent" 
 
 
 export const DetailsPage = () =>{
     return(
-        <DetailsBookComponent/>
+        <DetailsDeviceComponent/>
     )
 } 

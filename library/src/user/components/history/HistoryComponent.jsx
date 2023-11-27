@@ -121,24 +121,24 @@ export const HistoryComponent = () => {
               </div>
               {(history.length != 0) ? history.map((fila) => (
                 <div key={fila._id} className="tabla-fila">
-                  <div className="tabla-celda">{fila.book}</div>
+                  <div className="tabla-celda">{fila.device}</div>
                   <div className="tabla-celda">{fila.created}</div>
                   <div className="tabla-celda">Devolver: <br /> {fila.returns}</div>
                   <div className="tabla-celda">{fila.status}</div>
                   <div className="tabla-celda"><Button color='secundary' disabled={fila.status === 'Finished'} onClick={async() => { handleConfirm('request', fila._id)}}>Cancelar</Button></div>
                 </div>
-              )) : <nothingBook/> }
+              )) : <nothingdevice/> }
               {(sales.length != 0) ?
                 sales.map(fila => (
                   <div key={fila.uid} className="tabla-fila">
-                    <div className="tabla-celda">{fila.book}</div>
+                    <div className="tabla-celda">{fila.device}</div>
                     <div className="tabla-celda">{fila.created}</div>
                     <div className="tabla-celda">Precio: ${fila.price}</div>
                     <div className="tabla-celda">{fila.status ? `Pago: $${fila.pay}`: `Rembolso $${fila.pay}`}</div>
                     <div className="tabla-celda"><Button variant='danger' disabled={!fila.status} onClick={async() => { handleConfirm('sale',fila.uid)}}>Rembolzar</Button></div>
                   </div>
                 ))
-                : <nothingBook/> }
+                : <nothingdevice/> }
             </div>
           </div></>)
       }
@@ -147,7 +147,7 @@ export const HistoryComponent = () => {
   );
 };
 
-const nothingBook = () =>{
+const nothingdevice = () =>{
   return(
     <div className="tabla-fila" style={{ display: 'flex', alignItems: 'end', alignContent: 'end' }}>
       <div

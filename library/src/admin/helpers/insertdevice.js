@@ -1,18 +1,18 @@
 import axios from "axios";
 
 
-export const insertBook = async(book) =>{
+export const insertdevice = async(device) =>{
     try{
-        console.log(book);
+        console.log(device);
         const user = await JSON.parse(localStorage.getItem('user'));
         const token = user.token;
-        const url = 'http://localhost:3000/api/book/'
-        const response = await axios.post(url,book,{
+        const url = 'http://localhost:3000/api/device/'
+        const response = await axios.post(url,device,{
             headers:{
                 'x-token' : token
             }
         })
-        return response.data.book.uid;
+        return response.data.device.uid;
     }catch(err){
         return 'ERROR';
     }

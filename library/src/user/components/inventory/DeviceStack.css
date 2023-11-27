@@ -1,23 +1,23 @@
-.bookshelf-section {
+.deviceshelf-section {
     margin: 50px 0;
   }
   
-  .bookshelf-header {
+  .deviceshelf-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
   }
   
-  .bookshelf-header h3 {
+  .deviceshelf-header h3 {
     font-weight: 600;
   }
   
-  .bookshelf-controls {
+  .deviceshelf-controls {
     display: flex;
   }
   
-  .bookshelf-control {
+  .deviceshelf-control {
     background-color: transparent;
     border: none;
     color: #555;
@@ -29,30 +29,30 @@
     transition: 0.3s;
   }
   
-  .bookshelf-control:hover {
+  .deviceshelf-control:hover {
     color: #007bff;
   }
   
-  .bookshelf-control.prev:hover {
+  .deviceshelf-control.prev:hover {
     transform: translateX(-5px);
   }
   
-  .bookshelf-control.next:hover {
+  .deviceshelf-control.next:hover {
     transform: translateX(5px);
   }
   
-  .bookshelf-books {
+  .deviceshelf-devices {
     display: flex;
     overflow-x: auto;
-    /* scrollbar-width: none; */
+    scrollbar-width: none;
     -ms-overflow-style: none;
   }
   
-  .bookshelf-books::-webkit-scrollbar {
+  .deviceshelf-devices::-webkit-scrollbar {
     display: none;
   }
   
-  .book {
+  .device {
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -61,7 +61,7 @@
     width: 220px;
   }
   
-  .book img {
+  .device img {
     display: block;
     margin: 0 auto;
     height: 200px;

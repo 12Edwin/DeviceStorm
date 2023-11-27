@@ -6,14 +6,14 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import { CSSTransition } from 'react-transition-group';
 import * as Yup from 'yup';
-import { getCategories } from '../../helpers/getCategories';
-import { updateBook } from '../../helpers/updateBook';
-import {insertImage} from '../../helpers/insertImage'
+import { getCategories } from '../../../helpers/getCategories';
+import { updatedevice } from '../../../helpers/updatedevice';
+import {insertImage} from '../../../helpers/insertImage'
 import Swal from 'sweetalert2';
 
 import './ModalEdit.css';
 
-export const BookEditModal = ({ open, onOpen, data }) => {
+export const DeviceEditModal = ({ open, onOpen, data }) => {
 
   const [formStep, setFormStep] = useState(1);
   const [categories, setCategories] = useState([]);
@@ -46,10 +46,10 @@ export const BookEditModal = ({ open, onOpen, data }) => {
     console.log(response);
   }
 
-  const addBook = async (book) => {
-    const { img, category, ...dato } = book;
+  const adddevice = async (device) => {
+    const { img, category, ...dato } = device;
     const categor = categories.find(c => c.uid === category);
-    const response = await updateBook(data.uid,{...dato, category: categor});
+    const response = await updatedevice(data.uid,{...dato, category: categor});
     if (response === 'ERROR') {
       setApiError(true);
       resultFail();
@@ -142,7 +142,7 @@ export const BookEditModal = ({ open, onOpen, data }) => {
 
                 onSubmit={async (values, { setSubmitting }) => {
                   setSubmitting(true);
-                  addBook(values);
+                  adddevice(values);
                   setSubmitting(false);
                 }}
               >

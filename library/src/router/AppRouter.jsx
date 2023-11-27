@@ -21,16 +21,16 @@ export const AppRouter = () =>{
                     <PrivateRouteUser>
                         <UserRouter/>
                     </PrivateRouteUser>
-             }/>
+            }/>
                 <Route path="/admin/*" element={
                     <PrivateRouteAdmin>
                         <AdminRoute/>
                     </PrivateRouteAdmin>
-                 }/>
+                }/>
 
                 <Route path="/" element={<Navigate to={'/login'}/>} > </Route>
 
-                 <Route path="/*" element={<PageNotFound/>} />
+                <Route path="/*" element={<PageNotFound/>} />
             </Routes>
         </>
     )

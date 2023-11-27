@@ -1,8 +1,7 @@
-import { BookStack } from "../components/inventory/BookStack"
-
+import { DeviceStack } from "../components/device/inventory/DeviceStack"
 
 export const InventoryPage = () =>{
     return(
-        <BookStack/>
+        <DeviceStack/>
     )
 }

@@ -66,7 +66,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
 
             <div className='d-flex justify-content-between mx-auto' style={{ width: '40%' }}>
               <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
-                <MDBIcon fab icon='facebook-f' size="sm" />
+                <MDBIcon fab icon='facedevice-f' size="sm" />
               </MDBBtn>
 
               <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>

@@ -2,32 +2,31 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import images from '../../../assets/img/500.png' 
 import { Button, Card, CardContent, CardHeader, CardMedia } from '@material-ui/core';
-import { ShoppingCart,BookTwoTone, VisibilityRounded } from '@material-ui/icons';
+//import { ShoppingCart,deviceTwoTone, VisibilityRounded } from '@material-ui/icons';
 import { Navigate, useParams } from 'react-router-dom';
-import { getBook } from '../../helpers/getBook';
-import image from '../../../assets/img/book.jpg'
+import { getdevice } from '../../helpers/getdevice';
+import image from '../../../assets/img/device.jpg'
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
 import { validateToken } from '../../../auth/helpers/validateToken';
 import { AuthContext } from '../../../auth/context/AuthContext';
-import { BookStack } from '../inventory/BookStack';
+import { DeviceStack } from '../inventory/DeviceStack'; 
 import { CardText, CardTitle } from 'reactstrap';
-import { BuyBookComponent } from '../buyBook/BuyBookComponent';
-import { BookRequestModal } from '../modalRequest/BookRequestModal';
+import { DeviceRequestModal } from '../modalRequest/DeviceRequestModal';
 
 
-export const DetailsBookComponent = () => {
+export const DetailsDeviceComponent = () => {
 
     const {id} = useParams();
     const [loading, setLoading] = useState(false)
     const [apiError, setApiError] = useState(false);
-    const [book, setBook] = useState({});
+    const [device, setdevice] = useState({});
     const [openRequest, setOpenRequest] = useState(false);
     const [openBuy, setOpenBuy] = useState(false);
     const {logout} = useContext(AuthContext);
     const [reload, setReload] = useState(false);
     
-    const fillBook = async () =>{
+    const filldevice = async () =>{
         setLoading(true);
 
         const resultToken = await validateToken();
@@ -35,18 +34,18 @@ export const DetailsBookComponent = () => {
             logout();
         }
 
-        const response = await getBook(id);
+        const response = await getdevice(id);
         if(response === 'ERROR'){
             setApiError(true);
         }else{
             setApiError(false);
-            setBook(response.book);
+            setdevice(response.device);
         }
         setLoading(false);
     }
 
     useEffect(() =>{
-        fillBook();
+        filldevice();
     },[]);
 
     const charge = () =>{
@@ -65,32 +64,32 @@ export const DetailsBookComponent = () => {
   return (
     <>
     <div className='mt-4' style={{marginLeft:'300px'}}>
-        { loading ? <LoadingComponent/> : apiError ? <SomeProblems/> : book.status == false ? <Navigate to={'/user/stock'} /> :
+        { loading ? <LoadingComponent/> : apiError ? <SomeProblems/> : device.status == false ? <Navigate to={'/user/stock'} /> :
             (<><div className='row'>
             <Col md = {5}>
                 <div className='card' style={{ width: '100%', margin: '1rem' }}>
                     <div style={{height:'480px'}}>
-                        <CardMedia component="img"  image={book.img ? book.img : image} />
+                        <CardMedia component="img"  image={device.img ? device.img : image} />
                     </div>
                     <CardContent>
-                        <CardTitle>{book.name}</CardTitle>
+                        <CardTitle>{device.name}</CardTitle>
                     </CardContent>
                 </div>
             </Col>
             <Col md = {5}>
                 <div className='card' style={{ width: '18rem', margin: '1rem' }}>
                 <CardContent>
-                    <CardTitle>{book.publication}</CardTitle>
+                    <CardTitle>{device.publication}</CardTitle>
                     <CardText>
-                    <strong>Author:</strong> {book.author}
+                    <strong>Author:</strong> {device.author}
                     </CardText>
                 </CardContent>
                 </div>
                 <div className='card' style={{ width: '18rem', margin: '1rem' }}>
                 <CardContent>
-                    <CardTitle>Publicación: {book.publication}</CardTitle>
+                    <CardTitle>Publicación: {device.publication}</CardTitle>
                     <CardText>
-                    <strong>Reseña:</strong> {book.resume}
+                    <strong>Reseña:</strong> {device.resume}
                     </CardText>
                 </CardContent>
                 </div>
@@ -102,7 +101,7 @@ export const DetailsBookComponent = () => {
                             <Button onClick={onBuy} style={{fontSize:'10px', marginRight:'10px'}} variant="contained" color="primary"startIcon={<ShoppingCart />}>Comprar</Button>
                         </Col>
                         <Col md ={5}>
-                            <Button onClick={onRequest} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<BookTwoTone />}>Prestamo</Button>
+                            <Button onClick={onRequest} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<deviceTwoTone />}>Prestamo</Button>
                         </Col>
                     </Row>
                     
@@ -117,12 +116,12 @@ export const DetailsBookComponent = () => {
         }
     </div>
     { openBuy &&
-    <BuyBookComponent open={setOpenBuy} data={book}/>
+    <BuydeviceComponent open={setOpenBuy} data={device}/>
     }
     { openRequest &&
-    <BookRequestModal open={setOpenRequest} data={book} />
+    <deviceRequestModal open={setOpenRequest} data={device} />
     }
-    <BookStack reload = {setReload}/>
+    <deviceStack reload = {setReload}/>
     { reload &&
         charge()
     }

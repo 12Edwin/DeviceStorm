@@ -1,17 +1,17 @@
 import axios from "axios";
 
 
-export const updateBook = async(id,book) =>{
+export const updatedevice = async(id,device) =>{
     try{
         const user = await JSON.parse(localStorage.getItem('user'));
         const token = user.token;
-        const url = `http://localhost:3000/api/book/${id}`;
-        const response = await axios.put(url,book,{
+        const url = `http://localhost:3000/api/device/${id}`;
+        const response = await axios.put(url,device,{
             headers:{
                 'x-token' : token
             }
         })
-        return response.data.book;
+        return response.data.device;
     }catch(err){
         return 'ERROR';
     }

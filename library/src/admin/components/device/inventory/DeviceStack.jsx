@@ -2,29 +2,29 @@ import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-// import book1 from './book1.jpg';
-// import book2 from './book2.jpg';
-// import book3 from './book3.jpg';
-import './BookStack.css';
-import { SomeProblems } from '../../../auth/pages/SomeProblems';
-import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
-import { getBooks } from '../../helpers/getBooks';
-import { validateToken } from '../../../auth/helpers/validateToken';
-import {AuthContext} from '../../../auth/context/AuthContext'
+// import device1 from './device1.jpg';
+// import device2 from './device2.jpg';
+// import device3 from './device3.jpg';
+import './DeviceStack.css';
+import { SomeProblems } from '../../../../auth/pages/SomeProblems';
+import { LoadingComponent } from '../../../../auth/components/loading/LoadingComponent';
+import { getdevices } from '../../../helpers/getdevices';
+import { validateToken } from '../../../../auth/helpers/validateToken';
+import {AuthContext} from '../../../../auth/context/AuthContext'
 import { Button } from '@material-ui/core';
 import Card from 'react-bootstrap/Card';
-import { BookTwoTone, EditRounded, VisibilityRounded, Cancel, Restore } from '@material-ui/icons';
+//import { deviceTwoTone, EditRounded, Cancel, Restore } from '@material-ui/icons';
 import { Col, Row } from 'react-bootstrap';
-import image from '../../../assets/img/book.jpg';
-import { getRequestGral } from '../../helpers/getRequestGral';
+import image from '../../../../assets/img/device.jpg';
+import { getRequestGral } from '../../../helpers/getRequestGral';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { removeBook } from '../../helpers/removeBook';
-import { getAllSales } from '../../helpers/getAllSales';
-import { BookEditModal } from '../modalEdit/BookEditModal';
+import { removedevice } from '../../../helpers/removedevice';
+import { getAllSales } from '../../../helpers/getAllSales';
+import { DeviceEditModal } from '../modalEdit/DeviceEditModal';
 
-export const BookStack = () => {
-  const [books, setBooks] = useState([]);
+export const DeviceStack = () => {
+  const [devices, setdevices] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false)
   const [apiError, setApiError] = useState(false);
@@ -37,18 +37,18 @@ export const BookStack = () => {
   const navigate = useNavigate();
   
 
-  const fillBooks = async () => {
+  const filldevices = async () => {
     setLoading(true);
     const resultToken = await validateToken();
     if(!(resultToken == true) ){
       logout();
     }
-    const response = await getBooks();
+    const response = await getdevices();
     if(response == 'ERROR'){
       setApiError(true);
       
     }else{
-      setBooks(response.books);
+      setdevices(response.devices);
       setApiError(false);
     }
     setLoading(false);
@@ -60,7 +60,7 @@ export const BookStack = () => {
   }
   
   useEffect(() => {
-    fillBooks();
+    filldevices();
     getRequests();
     getSalesGral();
   }, []);
@@ -75,7 +75,7 @@ export const BookStack = () => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, cambiar',
       cancelButtonText: 'Cancelar',
-      preConfirm:  async() => {const result = await removeBook(id);
+      preConfirm:  async() => {const result = await removedevice(id);
         if(result !== 'ERROR'){
           Swal.fire(
             '¡Felicidades!',
@@ -107,7 +107,7 @@ export const BookStack = () => {
       let data = [];
       response.requests.forEach(element => {
         if(element.status !== 'Finished')
-        data.push(element.book);
+        data.push(element.device);
       });
       setRequests(data);
     }
@@ -122,59 +122,59 @@ export const BookStack = () => {
       let data = [];
       response.forEach(element => {
         if(element.status === true)
-        data.push(element.book);
+        data.push(element.device);
       });
       setSales(data);
     }
   }
 
   return (
-    <div className="bookshelf-section" style={{ paddingLeft: "300px" }}>
+    <div className="deviceshelf-section" style={{ paddingLeft: "300px" }}>
       
       { apiError ? <SomeProblems/> : loading ? <LoadingComponent/> :
-      (<><div className="bookshelf-header">
+      (<><div className="deviceshelf-header">
         <h3>Best Sellers</h3>
-        <div className="bookshelf-controls">
+        <div className="deviceshelf-controls">
           {/* Controles de la sección */}
         </div>
       </div>
-      <div className="bookshelf-books">
-        {books.map(book => (
-          <div key={book.uid}>{ (<>
+      <div className="deviceshelf-devices">
+        {devices.map(device => (
+          <div key={device.uid}>{ (<>
           
           <Card style={{ width: '18rem', margin: '15px', display:'flex', alignItems:'center' }}>
             <Card.Header style={{height: '330px'}}>
-            <Card.Img variant="top" style={{width:'200px'}} src={book.img ? book.img : image}/>
+            <Card.Img variant="top" style={{width:'200px'}} src={device.img ? device.img : image}/>
             </Card.Header>
             <Card.Body>
-                <Card.Title>{book.name}</Card.Title>
+                <Card.Title>{device.name}</Card.Title>
                 <Card.Text>
-                <strong>Author:</strong> {book.author}
+                <strong>Author:</strong> {device.author}
                 </Card.Text>
             </Card.Body>
           </Card>
           <Card style={{ width: '18rem', margin: '1rem', padding:'0px' }}>
           <Card.Body>
               <Row>
-                  <Col md ={5}>{ sales.includes(book.name) || requests.includes(book.name) ? 
+                  <Col md ={5}>{ sales.includes(device.name) || requests.includes(device.name) ? 
                       <></>
                       :
-                      <Button onClick={()=>openModalEdit(book)} style={{fontSize:'10px', marginRight:'10px'}} variant="contained" color="primary"startIcon={<EditRounded />}>Editar</Button>
+                      <Button onClick={()=>openModalEdit(device)} style={{fontSize:'10px', marginRight:'10px'}} variant="contained" color="primary"startIcon={<EditRounded />}>Editar</Button>
                   }
                   </Col>
-                  <Col md ={5}>{ sales.includes(book.name) || requests.includes(book.name) ? 
-                      <Button onClick={()=>openModalRemove(book.uid)} disabled={true} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<Cancel />}>Agotado</Button>
-                      : !book.status ?
-                      <Button onClick={()=>openModalRemove(book.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'green', color:'white'}} variant="contained" startIcon={<Restore />}>Rehabilitar</Button>
+                  <Col md ={5}>{ sales.includes(device.name) || requests.includes(device.name) ? 
+                      <Button onClick={()=>openModalRemove(device.uid)} disabled={true} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<Cancel />}>Agotado</Button>
+                      : !device.status ?
+                      <Button onClick={()=>openModalRemove(device.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'green', color:'white'}} variant="contained" startIcon={<Restore />}>Rehabilitar</Button>
                       :
-                      <Button onClick={()=>openModalRemove(book.uid)} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<BookTwoTone />}>Deshabilitar</Button>
+                      <Button onClick={()=>openModalRemove(device.uid)} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<deviceTwoTone />}>Deshabilitar</Button>
                        
                   }
                   </Col>
               </Row>    
           </Card.Body>
           </Card>
-           <BookEditModal open={openModal} onOpen={setOpenModal} data={data}/>
+           <DeviceEditModal open={openModal} onOpen={setOpenModal} data={data}/>
           </>)}
           </div>
         )

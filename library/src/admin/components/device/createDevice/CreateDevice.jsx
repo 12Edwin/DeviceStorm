@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { Button, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload, faBookOpen, faBookReader } from "@fortawesome/free-solid-svg-icons";
+//import { faUpload, fadeviceReader } from "@fortawesome/free-solid-svg-icons";
 import './CreateProduct.css'
-import { Card } from "reactstrap";
-import { getCategories } from "../../helpers/getCategories";
+import { getCategories } from "../../../helpers/getCategories";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from 'yup';
-import { insertBook } from '../../helpers/insertBook'
+import { insertdevice } from '../../../helpers/insertdevice'
 import Swal from 'sweetalert2';
-import { insertImage } from "../../helpers/insertImage";
+import { insertImage } from "../../../helpers/insertImage";
 
-export const CreateBook = () => {
+export const CreateDevice = () => {
   const [formStep, setFormStep] = useState(1);
   const [apiError, setApiError] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -38,10 +37,10 @@ export const CreateBook = () => {
     }
   }
 
-  const addBook = async (book) => {
-    const { img, category, ...data } = book;
+  const adddevice = async (device) => {
+    const { img, category, ...data } = device;
     const categor = categories.find(c => c.uid === category);
-    const response = await insertBook({...data, category: categor});
+    const response = await insertdevice({...data, category: categor});
     if (response === 'ERROR') {
       setApiError(true);
       resultFail();
@@ -87,10 +86,10 @@ export const CreateBook = () => {
 
       <div className="col-6" style={{ paddingLeft: "300px" }}>
         <div className="content" style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-          <div className="book" style={{ borderRadius: "0.75rem", height: '15rem', width: '15rem' }}>
+          <div className="device" style={{ borderRadius: "0.75rem", height: '15rem', width: '15rem' }}>
             <img src="https://cdn-icons-png.flaticon.com/512/223/223127.png" style={{ width: '100%', height: '100%' }} alt="" />
             <span className="icon">
-              <i className="fas"><FontAwesomeIcon icon={faBookReader} /></i>
+              <i className="fas"><FontAwesomeIcon icon={fadeviceReader} /></i>
             </span>
           </div>
         </div>
@@ -123,7 +122,7 @@ export const CreateBook = () => {
 
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
-            await addBook(values);
+            await adddevice(values);
             setSubmitting(false);
           }}
         >

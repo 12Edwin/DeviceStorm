@@ -91,18 +91,18 @@ export const CardComponent = () => {
                         <div className="card author-bf-card custom-size">
                             <img
                                 className="img-fluid rounded-circle mb-3"
-                                src="https://th.bing.com/th/id/R.423055c39be588a1643ea7aeb1ac83be?rik=pT92QfdWkxqHnw&riu=http%3a%2f%2f2.bp.blogspot.com%2f_JXi92wDCOGk%2fTGF1W98DwWI%2fAAAAAAAABqI%2fjmXaiB8h0nE%2fs1600%2fAlice%2bbook%2bcover2.jpg&ehk=VXhL6QjA0lhMfVeSufHlKhmV4xEvzHwDt1S0b4WZ%2bAE%3d&risl=&pid=ImgRaw&r=0"
+                                src="https://th.bing.com/th/id/R.423055c39be588a1643ea7aeb1ac83be?rik=pT92QfdWkxqHnw&riu=http%3a%2f%2f2.bp.blogspot.com%2f_JXi92wDCOGk%2fTGF1W98DwWI%2fAAAAAAAABqI%2fjmXaiB8h0nE%2fs1600%2fAlice%2bdevice%2bcover2.jpg&ehk=VXhL6QjA0lhMfVeSufHlKhmV4xEvzHwDt1S0b4WZ%2bAE%3d&risl=&pid=ImgRaw&r=0"
                                 alt="author-img"
                             />
                             <h5 className="mb-3">{data.name} {data.surname}</h5>
                             <div className="social-icons social-icons-sm mb-3">
                                 <a
                                     className="social-icon"
-                                    href="#facebook"
+                                    href="#facedevice"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <i className="fab fa-facebook-f"></i>
+                                    <i className="fab fa-facedevice-f"></i>
                                 </a>
                                 <a
                                     className="social-icon"

@@ -5,7 +5,7 @@ export const insertImage = async(id,img) =>{
     try{
         const user = await JSON.parse(localStorage.getItem('user'));
         const token = user.token;
-        const url = `http://localhost:3000/api/book/image/${id}`;
+        const url = `http://localhost:3000/api/device/image/${id}`;
 
         const formData = new FormData();
         formData.append('image', img);

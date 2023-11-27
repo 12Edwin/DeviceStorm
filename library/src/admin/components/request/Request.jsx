@@ -17,7 +17,7 @@ export const Request = ({ requests = [] }) => {
     // Filtrar usuarios según el término de búsqueda
     const filtered = requests.filter(
       (req) =>
-        req.book.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.device.toLowerCase().includes(searchTerm.toLowerCase()) ||
         req.email.toLowerCase().includes(searchTerm.toLowerCase())
 
     );
@@ -92,7 +92,7 @@ export const Request = ({ requests = [] }) => {
                 <thead className="text-primary" style={{ color: 'black' }}>
                   
                   <tr >
-                    <th>Book</th>
+                    <th>device</th>
                     <th>Email</th>
                     <th>Created</th>
                     <th>Returns</th>
@@ -103,7 +103,7 @@ export const Request = ({ requests = [] }) => {
                 <tbody>
                   { filteredUsers.map((req) => (
                     <tr key={req.uid}>
-                      <td>{req.book}</td>
+                      <td>{req.device}</td>
                       <td>{req.email}</td>
                       <td>{req.created}</td>
                       <td>{req.returns}</td>
