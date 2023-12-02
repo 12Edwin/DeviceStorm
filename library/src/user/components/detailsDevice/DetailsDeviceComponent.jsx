@@ -126,6 +126,5 @@ export const DetailsDeviceComponent = () => {
         charge()
     }
     </>
-  );
-  
+);
 };
