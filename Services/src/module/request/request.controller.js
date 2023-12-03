@@ -1,7 +1,7 @@
 const {Router} = require("express");
 const {validateError, validateMiddlewares} = require("../../util/functions");
 const Request = require('./Request');
-const {validateJWT, validateIdRequest, validateBook, status, validateEmail, validateBookBought} = require("../../helpers/db-validations");
+const {validateJWT, validateIdRequest, validateDevice, status} = require("../../helpers/db-validations");
 const {check} = require("express-validator");
 
 const getAll = async (req, res = Response) =>{
@@ -55,9 +55,9 @@ const getByEmail = async (req, res = Response) =>{
 
 const insert = async (req, res = Response) =>{
     try {
-        const {book,email,returns} = req.body;
+        const {device,email,returns} = req.body;
         const created = new Date().toISOString().split('T')[0];
-        const request = await new Request({book,email,returns,status:'Pending',created})
+        const request = await new Request({device,email,returns,status:'Pending',created})
 
         await request.save();
         res.status(200).json({msg:'Successful request', request});
@@ -105,9 +105,8 @@ requestRouter.get('/email/:email',[
 
 requestRouter.post('/',[
     validateJWT,
-    check('book','Título del libro necesario').not().isEmpty(),
-    check('book').custom(validateBook),
-    check('book').custom(validateBookBought),
+    check('device','Título del libro necesario').not().isEmpty(),
+    check('device').custom(validateDevice),
     check('email','El correo es necesario').not().isEmpty(),
     check('email','Correo inválido').isEmail(),
     check('returns','Fecha de retorno necesaria').not().isEmpty(),

@@ -1,5 +1,5 @@
 const User = require("../module/user/User");
-const Book = require('../module/device/Book');
+const Device = require('../module/device/Device');
 const Role = require('../module/role/Role');
 const Request = require('../module/request/Request');
 const Category = require('../module/category/Category');
@@ -19,8 +19,8 @@ const validateId = async (id = '') =>{
     }
 }
 
-const validateIdBook = async (id = '') =>{
-    const idExist = await Book.findById(id);
+const validateIdDevice = async (id = '') =>{
+    const idExist = await Device.findById(id);
     if (!idExist){
         throw new Error('Id no encontrado en la base de datos');
     }
@@ -60,13 +60,16 @@ const validateUser = async (req, res = Response, next) =>{
 }
 
 const validateJWT = async (req, res = Response, next) =>{
-    const token = req.header('x-token');
+    let token = req.header('x-token');
     if (!token){
         return res.status(401).json(
             {msg: 'Acceso denegado'}
         );
     }
     try {
+        if (token.includes('Bearer ')){
+            token = token.replace('Bearer ', '')
+        }
         const {uid} = jwt.verify(token,process.env.SECRET);
         req.user = await User.findById(uid);
 
@@ -77,13 +80,13 @@ const validateJWT = async (req, res = Response, next) =>{
     }
 }
 
-const validateBook = async (book = '') =>{
-    const [bookExist, isUnavailable, isEmpty] = await Promise.all([
-        Book.findOne({name:book}),
-        Request.findOne({name:book}),
-        Book.findOne({name:book, status:false})
+const validateDevice = async (device = '') =>{
+    const [deviceExist, isUnavailable, isEmpty] = await Promise.all([
+        Device.findOne({name:device}),
+        Request.findOne({name:device}),
+        Device.findOne({name:device, status:false})
     ]);
-    if (!bookExist){
+    if (!deviceExist){
         throw new Error('Libro no encontrado en la base de datos');
     }
     if(isUnavailable){
@@ -94,23 +97,10 @@ const validateBook = async (book = '') =>{
     }
 }
 
-const validateBookBought = async (book = '') =>{
-    const [bookExist, isUnavailable] = await Promise.all([
-        Book.findOne({name:book}),
-        Book.findOne({name:book, status:false})
-    ]);
-    if (!bookExist){
-        throw new Error('Libro no encontrado en la base de datos');
-    }
-    if(isUnavailable){
-        throw new Error('Libro no disponible');
-    }
-}
-
-const existBook = async (book) =>{
-    const exist = await Book.findOne({name:book});
+const existDevice = async (device) =>{
+    const exist = await Device.findOne({name:device});
     if (exist){
-        throw  new Error(`El libro ${book} ya está registrado`);
+        throw  new Error(`El libro ${device} ya está registrado`);
     }
 }
 
@@ -134,13 +124,12 @@ module.exports ={
     validateJWT,
     validateAdmin,
     validateUser,
-    validateIdBook,
+    validateIdDevice,
     validateIdRole,
     validateIdRequest,
     validateIdCategory,
-    validateBook,
-    existBook,
+    validateDevice,
+    existDevice,
     roles,
     status,
-    validateBookBought
 }
