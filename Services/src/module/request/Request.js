@@ -1,26 +1,37 @@
 const {Schema, model} = require('mongoose');
 
 const requestSchema = Schema({
-    book:{
+    device:{
         type: String,
-        required: (true, 'Título del libro necesario'),
+        required: true,
     },
-    email:{
-        type: String,
-        required: (true,'Correo requerido')
+    sanction:{
+        type: String
     },
-    created: {
+    quantity:{
+        type: Number,
+        required: true
+    },
+    user:{
         type: String,
         required: true
     },
+    created_at: {
+        type: Date,
+        required: true
+    },
+    starts:{
+        type: Date,
+        required: true
+    },
     returns:{
-        type: String,
-        required: (true, 'Fecha de retorno necesaria')
+        type: Date,
+        required: true
     },
     status:{
         type: String,
         required: true,
-        enum: ['Active','Canceled','Finished','Pending']
+        enum: ['Active','Canceled','Finished','Pending','Sanction']
     }
 
 });
