@@ -1,4 +1,4 @@
-import { DeviceStack } from "./DeviceStack"
+import { DeviceStack } from "../component/DeviceStack.jsx"
 
 export const InventoryPage = () =>{
     return(
