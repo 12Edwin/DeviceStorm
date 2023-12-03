@@ -4,11 +4,10 @@ import images from '../../../assets/img/500.png'
 import { Button, Card, CardContent, CardHeader, CardMedia } from '@material-ui/core';
 //import { ShoppingCart,deviceTwoTone, VisibilityRounded } from '@material-ui/icons';
 import { Navigate, useParams } from 'react-router-dom';
-import { getdevice } from '../../../user/helpers/getdevice';
+import { getdeviceDetails } from '../helpers';
 import image from '../../../assets/img/device.jpg'
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
-import { validateToken } from '../../../auth/helpers/validateToken';
 import { AuthContext } from '../../../auth/context/AuthContext';
 import { DeviceStack } from './DeviceStack'; 
 import { CardText, CardTitle } from 'reactstrap';
@@ -29,12 +28,7 @@ export const DetailsDeviceComponent = () => {
     const filldevice = async () =>{
         setLoading(true);
 
-        const resultToken = await validateToken();
-        if(!(resultToken == true) ){
-            logout();
-        }
-
-        const response = await getdevice(id);
+        const response = await getdeviceDetails(id);
         if(response === 'ERROR'){
             setApiError(true);
         }else{

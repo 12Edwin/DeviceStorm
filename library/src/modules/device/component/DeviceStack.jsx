@@ -5,11 +5,10 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 // import device1 from './device1.jpg';
 // import device2 from './device2.jpg';
 // import device3 from './device3.jpg';
-import './DeviceStack.css';
+import '../style/DeviceStack.css';
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
-import { getdevice } from '../../../user/helpers/getdevice';
-import { validateToken } from '../../../auth/helpers/validateToken';
+import { getdeviceDetails } from '../helpers';
 import {AuthContext} from '../../../auth/context/AuthContext'
 import { Button } from '@material-ui/core';
 import Card from 'react-bootstrap/Card';
@@ -17,9 +16,8 @@ import Card from 'react-bootstrap/Card';
 import { Col, Row } from 'react-bootstrap';
 import { DeviceRequestModal } from '../../request/component/DeviceRequestModal'; 
 import image from '../../../assets/img/device.jpg';
-import { getRequestGral } from '../../../user/helpers/getHistory';
+import { getRequestGral } from '../helpers';
 import { useNavigate } from 'react-router-dom';
-import { getAllSales } from '../../../admin/helpers/getAllSales';
 export const DeviceStack = ({reload}) => {
   const [devices, setdevices] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -36,11 +34,7 @@ export const DeviceStack = ({reload}) => {
 
   const filldevices = async () => {
     setLoading(true);
-    const resultToken = await validateToken();
-    if(!(resultToken == true) ){
-      logout();
-    }
-    const response = await getdevice();
+    const response = await getdeviceDetails();
     if(response == 'ERROR'){
       setApiError(true);
       

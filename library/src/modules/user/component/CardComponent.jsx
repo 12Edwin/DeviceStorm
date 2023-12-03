@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import "./Card.css";
+import "../style/Card.css";
 import { Card, Row, Col, Button } from "react-bootstrap";
-import { getUser } from "../../../user/helpers/getUser";
+import { getUser } from "../helpers";
 import { AuthContext } from "../../../auth/context/AuthContext";
 import { LoadingComponent } from "../../../auth/components/loading/LoadingComponent";
 import { Formik, Form, Field } from 'formik';
@@ -10,10 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { UpdateUser } from "./UpdateUser";
 import { MDBBtn } from "mdb-react-ui-kit";
-import { updateUser } from "../../../user/helpers/updateUser";
+import { updateUser } from "../helpers";
 import { useNavigate } from "react-router-dom";
 import { SomeProblems } from "../../../auth/pages/SomeProblems";
-import { validateToken } from '../../../auth/helpers/validateToken';
 import Swal from 'sweetalert2';
 
 
@@ -27,10 +26,7 @@ export const CardComponent = () => {
 
     const fillUser = async () => {
         setLoading(true)
-        const resultToken = await validateToken();
-        if (!(resultToken == true)) {
-            logout();
-        }
+        
         const response = await getUser(user.id);
         if (response == "ERROR") {
             setErrorApi(true);

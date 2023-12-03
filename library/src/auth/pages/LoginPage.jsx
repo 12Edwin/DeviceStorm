@@ -1,9 +1,9 @@
 import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { LoginComponent } from "../components/login/LoginComponent"
-import { AuthContext } from "../../../auth/context/AuthContext"
-import { auth } from "../../../auth/helpers/auth"
-import { register } from "../../../auth/helpers/register"
+import { AuthContext } from "../context/AuthContext"
+import { auth } from "../helpers/auth"
+import { register } from "../helpers/register"
 
 
 export default function LoginPage (){
@@ -16,14 +16,14 @@ export default function LoginPage (){
         .then(res => {
             data.setErrors(null);
             data.setLoading(false);
-            if(res.user.role == "ADMIN_ROLE")
+            login(res.data)
+            if(res.data.user.role == "ADMIN_ROLE")
             navigate('/admin/stock',{replace:true});
-            if(res.user.role == "USER_ROLE")
+            if(res.data.user.role == "USER_ROLE")
             navigate('/user/stock',{replace:true});
-            setErrorApi(false);
         })
         .catch( error =>{
-            
+            console.log(error);
             data.setErrors('Username / Password invalid')
             data.setLoading(false);
         })

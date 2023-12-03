@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useSpring, animated } from 'react-spring';
 import image from '../../../assets/img/device.jpg'
-import "./ModalRequest.css"
-import { createRequest } from '../../../user/helpers/createRequest';
+import "../style/ModalRequest.css"
+import { createRequest } from '../helpers';
 
 export const DeviceRequestModal = ({ data, open }) => {
   const [inputValue, setInputValue] = useState('');

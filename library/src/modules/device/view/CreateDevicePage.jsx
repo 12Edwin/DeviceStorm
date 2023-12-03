@@ -1,4 +1,4 @@
-import { CreateDevice } from "../components/device/createDevice/CreateDevice"
+import { CreateDevice } from "../component/CreateDevice"
 
 export const CretaedevicePage = () =>{
     return (

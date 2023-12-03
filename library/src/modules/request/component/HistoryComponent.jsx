@@ -1,17 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
 import { AuthContext } from '../../../auth/context/AuthContext';
-import { getHistory } from '../../../user/helpers/getHistory';
-import './History.css';
+import { getHistory } from '../helpers/getHistory';
+import '../style/History.css';
 import { Box, Icon } from '@material-ui/core';
 import { Person } from '@material-ui/icons';
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
-import { validateToken } from '../../../auth/helpers/validateToken';
-import { getSales } from '../../../user/helpers/getSales';
 import { Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { cancelSale } from '../../../user/helpers/cancelSale';
-import { cancelRequest } from '../../../user/helpers/cancelRequest';
+import { cancelRequest } from '../helpers/cancelRequest';
 
 export const HistoryComponent = () => {
 
@@ -26,11 +23,6 @@ export const HistoryComponent = () => {
   const fillHistory = async () => {
     setLoading(true);
 
-  const resultToken = await validateToken();
-      if (!(resultToken == true)) {
-      logout();
-  }
-
       const response = await getHistory(user.id)
       if (response == 'ERROR') {
         setApiError(true)
@@ -38,13 +30,7 @@ export const HistoryComponent = () => {
         setHistory(response || []);
         setApiError(false);
       }
-      const resSales = await getSales(user.id)
-      if (resSales == 'ERROR') {
-        setApiError(true)
-      } else {
-        setSales(resSales || []);
-        setApiError(false);
-      }
+      
       setLoading(false);
   }
 
@@ -62,18 +48,6 @@ export const HistoryComponent = () => {
       else
         return(true);
     }
-    if(type === 'sale'){
-    return new Promise ((resolve) =>{
-      setTimeout(() =>{
-        cancelSale(id).then( (response) =>{
-          if(response === 'ERROR')
-            resolve(false);
-          else
-            resolve(true);
-        }).catch ((err) => resolve(false));
-      },1000);
-    }
-    );}
   }
   
 

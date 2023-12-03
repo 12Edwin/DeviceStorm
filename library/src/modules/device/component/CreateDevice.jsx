@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//import { faUpload, fadeviceReader } from "@fortawesome/free-solid-svg-icons";
-import './CreateProduct.css'
-import { getCategories } from "../../../admin/helpers/getCategories";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import '../style/CreateProduct.css'
+import { getCategories } from "../helpers";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from 'yup';
-import { insertdevice } from '../../../admin/helpers/insertdevice'
+import { insertdevice } from '../helpers'
 import Swal from 'sweetalert2';
-import { insertImage } from "../../../admin/helpers/insertImage";
+import { insertImage } from "../helpers";
 
 export const CreateDevice = () => {
   const [formStep, setFormStep] = useState(1);
@@ -89,7 +89,7 @@ export const CreateDevice = () => {
           <div className="device" style={{ borderRadius: "0.75rem", height: '15rem', width: '15rem' }}>
             <img src="https://cdn-icons-png.flaticon.com/512/223/223127.png" style={{ width: '100%', height: '100%' }} alt="" />
             <span className="icon">
-              <i className="fas"><FontAwesomeIcon icon={fadeviceReader} /></i>
+              <i className="fas"><FontAwesomeIcon icon={faUpload} /></i>
             </span>
           </div>
         </div>

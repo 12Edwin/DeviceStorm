@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faHome, faCog, faUser, faSignOutAlt, fadevice, faFileArchive, faCartShopping, faUserEdit, faC } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCog, faUser, faSignOutAlt, faFileArchive, faCartShopping, faUserEdit, faC } from '@fortawesome/free-solid-svg-icons';
 // import logo from './logo.png';
-import './SideNav.css';
-import { DeviceStack } from '../../admin/components/device/inventory/DeviceStack';
+import '../style/SideNav.css';
 import { AuthContext } from '../../auth/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-export const NavBarAdmin = () => {
+export const NavBar = () => {
 
   const {user, logout} = useContext(AuthContext)
 
@@ -48,7 +47,7 @@ export const NavBarAdmin = () => {
         </li>
         <li className="sidenav-item">
           <a href="/admin/device">
-            <FontAwesomeIcon icon={fadevice} className="sidenav-icon" />
+            <FontAwesomeIcon icon={faFileArchive} className="sidenav-icon" />
             New device
           </a>
         </li>

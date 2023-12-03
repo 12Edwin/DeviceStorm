@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
-import {Request} from '../components/request/Request'
-import { getRequestGral } from '../../../admin/helpers/getRequestGral';
+import {Request} from '../component/Request'
+import { getRequestGral } from '../helpers/getRequestGral';
 
 
 export const RequestPage = ()=>{

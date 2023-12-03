@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
-import {UsersComponent} from '../components/users/UsersComponent'
-import {getAllUsers} from '../../../admin/helpers/getAllUsers';
+import {UsersComponent} from '../component/UsersComponent'
+import {getAllUsers} from '../helpers/getAllUsers';
 
 export const UsersPage = () =>{
     const [users, setUsers] = useState([]);

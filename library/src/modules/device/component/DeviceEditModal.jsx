@@ -6,12 +6,12 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-modal';
 import { CSSTransition } from 'react-transition-group';
 import * as Yup from 'yup';
-import { getCategories } from '../../../admin/helpers/getCategories';
-import { updatedevice } from '../../../admin/helpers/updatedevice';
-import {insertImage} from '../../../admin/helpers/insertImage'
+import { getCategories } from '../helpers';
+import { updatedevice } from '../helpers';
+import {insertImage} from '../helpers'
 import Swal from 'sweetalert2';
 
-import './ModalEdit.css';
+import '../style/ModalEdit.css';
 
 export const DeviceEditModal = ({ open, onOpen, data }) => {
 

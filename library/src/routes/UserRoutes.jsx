@@ -1,7 +1,9 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { HistoryPage, DetailsPage, ProfilePage, StockPage } from "../user/pages";
-import { NavBar } from "../user/components/navigator/NavBar";
+import { ProfilePage } from "../modules/user/view";
+import { DetailsPage, DeviceStack } from "../modules/device/view";
+import { HistoryPage } from "../modules/request/view";
+import { NavBar } from "../public/component/NavBar";
 import PageNotFound from "../auth/pages/PageNotFound";
 
 export const UserRouter = () => {
@@ -9,7 +11,7 @@ export const UserRouter = () => {
         <>
             
             <Routes>
-                <Route path="stock" element={<><NavBar/><StockPage/></>}/>
+                <Route path="stock" element={<><NavBar/><DeviceStack/></>}/>
                 <Route path="profile" element={<><NavBar/><ProfilePage/></>}/>
                 <Route path="history" element={<><NavBar/><HistoryPage/></>}/>
                 <Route path="details/:id" element={<><NavBar/><DetailsPage/></>}/>

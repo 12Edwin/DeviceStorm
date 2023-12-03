@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './UserTable.css';
-import {userDisabled} from '../../../admin/helpers/userDisabled';
+import '../style/UserTable.css';
+import {userDisabled} from '../helpers';
 import Swal from 'sweetalert2';
 
 export const UsersComponent = ({ users }) => {

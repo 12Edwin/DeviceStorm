@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './Request.css'
+import '../style/Request.css'
 import { Card, CardHeader, CardBody, Table, Row, Col } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { Button } from 'react-bootstrap';
 const MySwal = withReactContent(Swal);
-import {updateRequest}  from '../../../admin/helpers/updateRequest'
+import {updateRequest}  from '../helpers/updateRequest'
 
 
 export const Request = ({ requests = [] }) => {

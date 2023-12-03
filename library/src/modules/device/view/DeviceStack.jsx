@@ -5,23 +5,21 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 // import device1 from './device1.jpg';
 // import device2 from './device2.jpg';
 // import device3 from './device3.jpg';
-import './DeviceStack.css';
-import { SomeProblems } from '../../../../auth/pages/SomeProblems';
-import { LoadingComponent } from '../../../../auth/components/loading/LoadingComponent';
-import { getdevices } from '../../../helpers/getdevices';
-import { validateToken } from '../../../../auth/helpers/validateToken';
-import {AuthContext} from '../../../../auth/context/AuthContext'
+import '../style/DeviceStack.css';
+import { SomeProblems } from '../../../auth/pages/SomeProblems';
+import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
+import { getdevices } from '../helpers';
+import {AuthContext} from '../../../auth/context/AuthContext'
 import { Button } from '@material-ui/core';
 import Card from 'react-bootstrap/Card';
 //import { deviceTwoTone, EditRounded, Cancel, Restore } from '@material-ui/icons';
 import { Col, Row } from 'react-bootstrap';
-import image from '../../../../assets/img/device.jpg';
-import { getRequestGral } from '../../../helpers/getRequestGral';
+import image from '../../../assets/img/device.jpg';
+import { getRequestGral } from '../helpers';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { removedevice } from '../../../helpers/removedevice';
-import { getAllSales } from '../../../helpers/getAllSales';
-import { DeviceEditModal } from '../modalEdit/DeviceEditModal';
+import { removedevice } from '../helpers';
+import { DeviceEditModal } from '../component/DeviceEditModal';
 
 export const DeviceStack = () => {
   const [devices, setdevices] = useState([]);
@@ -32,17 +30,13 @@ export const DeviceStack = () => {
   const [openBuy, setOpenBuy] = useState(false);
   const [data, setData] = useState({});
   const [requests, setRequests] = useState([]);
-  const [sales, setSales] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   
 
   const filldevices = async () => {
     setLoading(true);
-    const resultToken = await validateToken();
-    if(!(resultToken == true) ){
-      logout();
-    }
+    
     const response = await getdevices();
     if(response == 'ERROR'){
       setApiError(true);
@@ -62,7 +56,6 @@ export const DeviceStack = () => {
   useEffect(() => {
     filldevices();
     getRequests();
-    getSalesGral();
   }, []);
 
   const openModalRemove = (id) =>{
@@ -113,20 +106,6 @@ export const DeviceStack = () => {
     }
   }
 
-  const getSalesGral = async () =>{
-    const response = await getAllSales();
-    if(response === 'ERROR'){
-      setApiError(true)
-    }else{
-      setApiError(false)
-      let data = [];
-      response.forEach(element => {
-        if(element.status === true)
-        data.push(element.device);
-      });
-      setSales(data);
-    }
-  }
 
   return (
     <div className="deviceshelf-section" style={{ paddingLeft: "300px" }}>
@@ -156,13 +135,13 @@ export const DeviceStack = () => {
           <Card style={{ width: '18rem', margin: '1rem', padding:'0px' }}>
           <Card.Body>
               <Row>
-                  <Col md ={5}>{ sales.includes(device.name) || requests.includes(device.name) ? 
+                  <Col md ={5}>{ requests.includes(device.name) ? 
                       <></>
                       :
                       <Button onClick={()=>openModalEdit(device)} style={{fontSize:'10px', marginRight:'10px'}} variant="contained" color="primary"startIcon={<EditRounded />}>Editar</Button>
                   }
                   </Col>
-                  <Col md ={5}>{ sales.includes(device.name) || requests.includes(device.name) ? 
+                  <Col md ={5}>{ requests.includes(device.name) ? 
                       <Button onClick={()=>openModalRemove(device.uid)} disabled={true} style={{fontSize:'10px', marginLeft:'10px'}} variant="contained" color="secondary"startIcon={<Cancel />}>Agotado</Button>
                       : !device.status ?
                       <Button onClick={()=>openModalRemove(device.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'green', color:'white'}} variant="contained" startIcon={<Restore />}>Rehabilitar</Button>
