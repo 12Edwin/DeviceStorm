@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ProfilePage } from "../modules/user/view";
-import { DetailsPage, DeviceStack } from "../modules/device/view";
+import {DetailsPage, InventoryPage} from "../modules/device/view";
 import { HistoryPage } from "../modules/request/view";
 import { NavBar } from "../public/component/NavBar";
 import PageNotFound from "../auth/pages/PageNotFound";
@@ -11,7 +11,7 @@ export const UserRouter = () => {
         <>
             
             <Routes>
-                <Route path="stock" element={<><NavBar/><DeviceStack/></>}/>
+                <Route path="stock" element={<><NavBar/><InventoryPage/></>}/>
                 <Route path="profile" element={<><NavBar/><ProfilePage/></>}/>
                 <Route path="history" element={<><NavBar/><HistoryPage/></>}/>
                 <Route path="details/:id" element={<><NavBar/><DetailsPage/></>}/>
