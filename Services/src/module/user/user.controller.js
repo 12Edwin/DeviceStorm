@@ -34,8 +34,8 @@ const getById = async (req, res = Response) =>{
 const insert = async (req, res = Response) =>{
     try {
 
-        const {name,surname,email,career,role,password} = req.body;
-        const user = new User ({name,surname,email,career,role, password, status:true});
+        const {name,surname, lastname, email,career,role,password} = req.body;
+        const user = new User ({name,surname, lastname, email,career,role, password, status:true});
         user.password = await hashPassword(password);
         await user.save();
         res.status(200).json({message:'Successful request',user});

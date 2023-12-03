@@ -1,5 +1,5 @@
 const {Router} = require("express");
-const Role = require('../role/Role');
+const Role = require('./Role');
 const {validateError, validateMiddlewares} = require("../../util/functions");
 const {validateJWT, validateIdRole} = require("../../helpers/db-validations");
 const {check} = require("express-validator");

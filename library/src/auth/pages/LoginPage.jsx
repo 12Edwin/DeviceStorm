@@ -16,27 +16,23 @@ export default function LoginPage (){
         .then(res => {
             data.setErrors(null);
             data.setLoading(false);
-            console.log(res.data);
-            login(res.data);
-            if(res.user.role == "ADMIN_ROLE")
+            login(res.data)
+            if(res.data.user.role == "ADMIN_ROLE")
             navigate('/admin/stock',{replace:true});
-            if(res.user.role == "USER_ROLE")
+            if(res.data.user.role == "USER_ROLE")
             navigate('/user/stock',{replace:true});
-            setErrorApi(false);
         })
         .catch( error =>{
-            
+            console.log(error);
             data.setErrors('Username / Password invalid')
             data.setLoading(false);
         })
     }
 
     const onSignUp = async (data) =>{
-        console.log("Data? =>", data);
         const response = await register(data)
         .then(async(res) =>{
             data.setErrRegister(null);
-            console.log(res);
             const {email, password} = data;
             await auth({email, password}).then(res =>{
                 login(res.data);
@@ -45,7 +41,6 @@ export default function LoginPage (){
             });
         })
         .catch( error =>{
-            console.log(error);
             data.setErrRegister(error.response.data.errors[0].msg || "Ocurrió un error");
             data.setSubmitting(false)
 

@@ -1,5 +1,5 @@
 import {
-  MDBContainer, MDBTabs, MDBTabsItem, MDBTabsLink, MDBTabsContent, MDBTabsPane, MDBBtn, MDBIcon, MDBInput, MDBCheckbox
+  MDBTabs, MDBTabsItem, MDBTabsLink, MDBTabsContent, MDBTabsPane, MDBBtn, MDBIcon, MDBInput, MDBCheckbox
 } from 'mdb-react-ui-kit';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,9 +10,7 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import './Login.css'
 import { Row, Col } from 'react-bootstrap';
-
 import PropTypes from 'prop-types';
-import { Input } from 'reactstrap';
 
 export const LoginComponent = ({ onData, onRegister }) => {
   const [justifyActive, setJustifyActive] = useState('tab1');;
@@ -66,7 +64,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
 
             <div className='d-flex justify-content-between mx-auto' style={{ width: '40%' }}>
               <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
-                <MDBIcon fab icon='facebook-f' size="sm" />
+                <MDBIcon fab icon='facedevice-f' size="sm" />
               </MDBBtn>
 
               <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
@@ -119,8 +117,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
               })}
             onSubmit={(values, { setSubmitting }) => {
               setTimeout(() => {
-                console.log("carrer: ", values)
-                 onRegister({ ...values, setErrRegister, setSubmitting })
+                onRegister({ ...values, setErrRegister, setSubmitting })
               }, 400);
             }}
           >

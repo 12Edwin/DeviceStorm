@@ -1,7 +1,7 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import PageNotFound from "../auth/pages/PageNotFound"
-import { AdminRoute } from "../admin/routes/AdminRoutes"
-import { UserRouter } from "../user/routes/UserRoutes"
+import { AdminRoute } from "../routes/AdminRoutes"
+import { UserRouter } from "../routes/UserRoutes"
 import { PrivateRouteAdmin } from "./PrivateRouteAdmin"
 import { PrivateRouteUser } from "./PrivateRouteUser"
 import { PublicRoute } from "./PublicRoute"
@@ -21,14 +21,16 @@ export const AppRouter = () =>{
                     <PrivateRouteUser>
                         <UserRouter/>
                     </PrivateRouteUser>
-             }/>
+            }/>
                 <Route path="/admin/*" element={
                     <PrivateRouteAdmin>
                         <AdminRoute/>
                     </PrivateRouteAdmin>
-                 }/>
+                }/>
 
-                 <Route path="/*" element={<PageNotFound/>} />
+                <Route path="/" element={<Navigate to={'/login'}/>} > </Route>
+
+                <Route path="/*" element={<PageNotFound/>} />
             </Routes>
         </>
     )

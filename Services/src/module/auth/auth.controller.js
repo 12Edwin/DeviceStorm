@@ -42,6 +42,7 @@ const refresh = async (req, res = Response) =>{
         console.log((error));
     }
 }
+
 const authRouter = Router();
 authRouter.post('/login',[
     check('email', 'El email es obligatorio').not().isEmpty(),
