@@ -2,50 +2,37 @@ const mongoose = require("mongoose");
 const { model} = require('mongoose');
 
 
-const categorySchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
-    },
-    description:{
-        type:String,
-    },
-    gender:{
-        type:String,
-        required:true
-    }
-});
-
 const deviceSchema = new mongoose.Schema({
     name:{
         type: String,
         required: true
     },
-    author:{
+    code:{
         type: String,
         required: true
     },
-    publication:{
+    created_at:{
+        type: Date,
+        required: true
+    },
+    place:{
         type: String,
         required: true
     },
-    editorial:{
+    supplier:{
         type: String,
-    },
-    price:{
-        type: Number,
         required: true
     },
-    status:{
+    available:{
         type: Boolean,
         required: true
     },
     category:{
-        type: categorySchema,
+        type: String,
         required: true
     },
-    resume:{
-        type: String,
+    stock:{
+        type: Number,
         required: true
     },
     img:{
