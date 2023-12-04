@@ -76,11 +76,12 @@ const insert = async (req, res = Response) =>{
     }
 }
 const update = async (req, res = Response) =>{
+    console.log("Llegó")
     try {
         const {status} = req.body;
         const {id} = req.params;
         const [updated, request] = await Promise.all([
-            Request.findByIdAndUpdate(id,{status}),
+            Request.findByIdAndUpdate(id,{status:status}),
             Request.findById(id)
         ]);
 
@@ -126,7 +127,6 @@ requestRouter.put('/:id',[
     validateJWT,
     check('id','El id no es de mongo').isMongoId(),
     check('id').custom(validateIdRequest),
-    check('status').custom(status),
     validateMiddlewares
 ],update);
 
