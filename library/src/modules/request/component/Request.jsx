@@ -105,7 +105,7 @@ export const Request = ({ requests = [] }) => {
                     <tr key={req.uid}>
                       <td>{req.device}</td>
                       <td>{req.user}</td>
-                      <td>{req.created}</td>
+                      <td>{req.created_at}</td>
                       <td>{req.returns}</td>
                       <td>{req.status}</td>
                       <td><Button variant='primary' onClick={() => onRequest(req.uid)}>Resolver</Button></td>
