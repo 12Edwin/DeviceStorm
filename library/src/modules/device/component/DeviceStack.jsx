@@ -92,7 +92,7 @@ export const DeviceStack = ({reload}) => {
       </div>
       <div className="deviceshelf-devices">
         {devices.map(device => (
-          <div key={device.uid}>{!device.status || requests.includes(device.name) || sales.includes(device.name) ? <></>  :(<>
+          <div key={device.uid}>{!device.available || requests.includes(device.name) || sales.includes(device.name) ? <></>  :(<>
           
           <Card style={{ width: '18rem', margin: '15px', display:'flex', alignItems:'center' }}>
             <Card.Header style={{height: '330px'}}>
@@ -101,7 +101,7 @@ export const DeviceStack = ({reload}) => {
             <Card.Body>
                 <Card.Title>{device.name}</Card.Title>
                 <Card.Text>
-                <strong>Author:</strong> {device.author}
+                <strong>Code:</strong> {device.code}
                 </Card.Text>
                 <Button style={{fontSize:'10px', display: 'flex'}} variant="contained" color="default" onClick={()=>{navigate(`/user/details/${device.uid}`); reload(true)}} endIcon={<VisibilityRounded />}>Ver más</Button>
             </Card.Body>

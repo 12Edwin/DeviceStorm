@@ -12,7 +12,7 @@ import { getdevices } from '../helpers';
 import {AuthContext} from '../../../auth/context/AuthContext'
 import { Button } from '@material-ui/core';
 import Card from 'react-bootstrap/Card';
-//import { deviceTwoTone, EditRounded, Cancel, Restore } from '@material-ui/icons';
+import { EditRounded, Cancel, Restore } from '@material-ui/icons';
 import { Col, Row } from 'react-bootstrap';
 import image from '../../../assets/img/device.jpg';
 import { getRequestGral } from '../helpers';
@@ -98,10 +98,12 @@ export const DeviceStack = () => {
     }else{
       setApiError(false)
       let data = [];
-      response.requests.forEach(element => {
-        if(element.status !== 'Finished')
-        data.push(element.device);
-      });
+      if (response.requests) {
+        response.requests.forEach(element => {
+          if(element.status !== 'Finished')
+          data.push(element.device);
+        });
+      }
       setRequests(data);
     }
   }

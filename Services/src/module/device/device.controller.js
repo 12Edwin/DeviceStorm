@@ -38,10 +38,11 @@ const getById = async (req, res = Response) =>{
 
 const insert = async (req, res = Response) =>{
     try {
-        const {name, author, publication, resume, category, price} = req.body;
-        const device = await new Device({name, author, publication, resume, category, price, status:true});
+        // const {name, author, publication, resume, category, price} = req.body;
+        // const device = await new Device({name, author, fecha, resume, category, price, status:true});
+        const {name,code,created_at,place, supplier,available,category,stock,img} = req.body;
+        const device =  await new Device({name,code,created_at,place, supplier,available,category,stock,img})
         await device.save();
-
         res.status(200).json({message:'Successful request', device});
     }catch (error){
         const  message = validateError(error);
@@ -135,17 +136,24 @@ deviceRouter.get('/:id',[
     validateMiddlewares
 ],getById);
 
-deviceRouter.post('/',[
+// deviceRouter.post('/',[
+//     validateJWT,
+//     check('name', 'El titulo del libro es obligatorio').not().isEmpty(),
+//     check('name').custom(existDevice),
+//     check('author', 'El autor del libro es obligatorio').not().isEmpty(),
+//     check('publication', 'La fecha de publicación es obligatoria').not().isEmpty(),
+//     check('publication').trim().isDate().withMessage('Must be a valid date'),
+//     check('price').not().isEmpty().withMessage('El precio es obligatorio'),
+//     validateMiddlewares
+// ],insert);
+ deviceRouter.post('/',[
     validateJWT,
-    check('name', 'El titulo del libro es obligatorio').not().isEmpty(),
+    check('name','El nombre del dispositivo es obligatorio').not().isEmpty(),
     check('name').custom(existDevice),
-    check('author', 'El autor del libro es obligatorio').not().isEmpty(),
-    check('publication', 'La fecha de publicación es obligatoria').not().isEmpty(),
-    check('publication').trim().isDate().withMessage('Must be a valid date'),
-    check('price').not().isEmpty().withMessage('El precio es obligatorio'),
+    check('created_at').not().isEmpty().withMessage("La fecha es necesario"),
+    check('code').not().isEmpty().withMessage('El codigo es necesario'),
     validateMiddlewares
-],insert);
-
+ ], insert)
 deviceRouter.put('/:id',[
     validateJWT,
     check('publication').optional().isDate().withMessage('Must be a valid date'),

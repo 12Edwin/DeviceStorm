@@ -16,3 +16,8 @@ th{
 td{
     text-align: center !important;
 }
+
+.newRequest {
+    margin-left: auto;
+    background-color: red;
+}

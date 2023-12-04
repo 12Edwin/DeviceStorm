@@ -6,13 +6,15 @@ import withReactContent from 'sweetalert2-react-content';
 import { Button } from 'react-bootstrap';
 const MySwal = withReactContent(Swal);
 import {updateRequest}  from '../helpers/updateRequest'
+import Modal from 'react-modal';
+import { RequestModal } from './RequestModal';
+import { getUser } from '../../user/helpers';
 
-
-export const Request = ({ requests = [] }) => {
+export const UserRequest = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     // Filtrar usuarios según el término de búsqueda
     const filtered = requests.filter(
@@ -25,49 +27,10 @@ export const Request = ({ requests = [] }) => {
   }, [searchTerm]);
 
 
-  const onRequest = (id) => {
-    MySwal.fire({
-      title: '¿Qué decea realizar?, \nAutorizar solicitud o denegar solicitud',
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: `Autorizar`,
-      denyButtonText: `Denegar`,
-      cancelButtonText: `Cancelar`,
-    }).then(async (result) => {
-      /* Manejar la respuesta del usuario */
-      if (result.isConfirmed) {
-        const response = await updateRequest(id,{status:'Active'});
-        if(response === 'ERROR'){
-          onFail()
-        }else{
-          onSuccess();
-        }
-      } else if (result.isDenied) {
-        const response = await updateRequest(id,{status:'Finished'});
-        if(response === 'ERROR'){
-          onFail();
-        }else{
-          onSuccess();
-        }
-      }
-    });
+  const openModal = () =>{
+    setOpen(true);
   }
 
-  const onSuccess = () =>{
-    Swal.fire({
-      title: '¡Éxito!',
-      text: 'Los datos se han guardado correctamente.',
-      icon: 'success'
-    }).then(() => window.location.reload());
-  }
-
-  const onFail = () =>{
-    Swal.fire({
-      title: '¡Error!',
-      text: 'Ocurrión un error al realizar la transacción.',
-      icon: 'danger'
-    });
-  }
 
   return (
     <div className="content">
@@ -80,13 +43,6 @@ export const Request = ({ requests = [] }) => {
               </div>
             </CardHeader>
             <CardBody>
-            <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    className='form-control'
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
               <Table className="tablesorter" responsive>
                 
                 <thead className="text-primary" style={{ color: 'black' }}>
@@ -105,17 +61,19 @@ export const Request = ({ requests = [] }) => {
                     <tr key={req.uid}>
                       <td>{req.device}</td>
                       <td>{req.user}</td>
-                      <td>{req.created}</td>
+                      <td>{req.created_at}</td>
                       <td>{req.returns}</td>
                       <td>{req.status}</td>
-                      <td><Button variant='primary' onClick={() => onRequest(req.uid)}>Resolver</Button></td>
                     </tr>))
                   }
                 </tbody>
               </Table>
-
+              <Button className="btn-siguiente" onClick={openModal} >
+                          Nueva Solicitud
+                        </Button>
             </CardBody>
           </Card>
+          <RequestModal open = {open} onOpen={setOpen}/>
         </Col>
       </Row>
     </div>
