@@ -20,7 +20,8 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { removedevice } from '../helpers/index.js';
 import { DeviceEditModal } from './DeviceEditModal.jsx';
-
+import { EditRounded } from '@material-ui/icons';
+import { Restore } from '@material-ui/icons';
 export const DeviceStack = () => {
   const [devices, setdevices] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -114,7 +115,7 @@ export const DeviceStack = () => {
       </div>
       <div className="deviceshelf-devices">
         {devices.map(device => (
-          <div key={device.uid}>{!device.available || requests.includes(device.name) || sales.includes(device.name) ? <></>  :(<>
+          <div key={device.uid}>{!device.available || requests.includes(device.name)  ? <></>  :(<>
           
           <Card style={{ width: '18rem', margin: '15px', display:'flex', alignItems:'center' }}>
             <Card.Header style={{height: '330px'}}>

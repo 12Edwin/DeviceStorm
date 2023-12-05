@@ -5,14 +5,14 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { Button } from 'react-bootstrap';
 const MySwal = withReactContent(Swal);
-import {updateRequest}  from '../helpers/updateRequest'
-
-
+import { updateRequest, sanction } from '../helpers/updateRequest'
+import { SanctionModal } from './SanctionModal';
 export const Request = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [open, setOpen] = useState(false);
+  const [idRequest, setIdRequest] = useState("");
   useEffect(() => {
     // Filtrar usuarios según el término de búsqueda
     const filtered = requests.filter(
@@ -36,24 +36,27 @@ export const Request = ({ requests = [] }) => {
     }).then(async (result) => {
       /* Manejar la respuesta del usuario */
       if (result.isConfirmed) {
-        const response = await updateRequest(id,{status:'Active'});
-        if(response === 'ERROR'){
+        const response = await updateRequest(id, { status: 'Active' });
+        if (response === 'ERROR') {
           onFail()
-        }else{
+        } else {
           onSuccess();
         }
       } else if (result.isDenied) {
-        const response = await updateRequest(id,{status:'Finished'});
-        if(response === 'ERROR'){
+        const response = await updateRequest(id, { status: 'Finished' });
+        if (response === 'ERROR') {
           onFail();
-        }else{
+        } else {
           onSuccess();
         }
       }
     });
   }
-
-  const onSuccess = () =>{
+  const onSanction = (id) => {
+    setIdRequest(id);
+    setOpen(true);
+  }
+  const onSuccess = () => {
     Swal.fire({
       title: '¡Éxito!',
       text: 'Los datos se han guardado correctamente.',
@@ -61,7 +64,7 @@ export const Request = ({ requests = [] }) => {
     }).then(() => window.location.reload());
   }
 
-  const onFail = () =>{
+  const onFail = () => {
     Swal.fire({
       title: '¡Error!',
       text: 'Ocurrión un error al realizar la transacción.',
@@ -80,42 +83,47 @@ export const Request = ({ requests = [] }) => {
               </div>
             </CardHeader>
             <CardBody>
-            <input
-                    type="text"
-                    placeholder="Search..."
-                    value={searchTerm}
-                    className='form-control'
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                className='form-control'
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               <Table className="tablesorter" responsive>
-                
+
                 <thead className="text-primary" style={{ color: 'black' }}>
-                  
+
                   <tr >
                     <th>device</th>
                     <th>Email user</th>
                     <th>Created</th>
                     <th>Returns</th>
                     <th>Status</th>
+                    <th>Sanction</th>
                     <th>-</th>
                   </tr>
                 </thead>
                 <tbody>
-                  { filteredUsers.map((req) => (
+                  {filteredUsers.map((req) => (
                     <tr key={req.uid}>
                       <td>{req.device}</td>
                       <td>{req.user}</td>
                       <td>{req.created_at}</td>
                       <td>{req.returns}</td>
                       <td>{req.status}</td>
-                      <td><Button variant='primary' onClick={() => onRequest(req.uid)}>Resolver</Button></td>
+                      <td>{req.sanction}</td>
+                      <td>
+                        <Button variant='primary' className='actionButton' onClick={() => onRequest(req.uid)}>Resolver</Button>
+                        <Button variant='danger' className='actionButton' onClick={() => onSanction(req.uid)}>Sanción</Button>
+                      </td>
                     </tr>))
                   }
                 </tbody>
               </Table>
-
             </CardBody>
           </Card>
+          <SanctionModal open={open} onOpen={setOpen} idR={idRequest}></SanctionModal>
         </Col>
       </Row>
     </div>

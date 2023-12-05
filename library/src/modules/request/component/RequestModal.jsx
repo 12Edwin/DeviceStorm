@@ -35,7 +35,7 @@ export const RequestModal = ({open,onOpen, email}) => {
         try{
             const response = await createRequest(request);
         } catch(err) {
-            console.log("Error al enviar datos :C")
+            console.log("Error al enviar datos :C");
         }
     }
     const handleCloseModal = () => {
