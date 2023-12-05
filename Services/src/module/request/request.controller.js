@@ -3,7 +3,7 @@ const { validateError, validateMiddlewares } = require("../../util/functions");
 const Request = require('./Request');
 const { validateJWT, validateIdRequest, validateDevice, status } = require("../../helpers/db-validations");
 const { check } = require("express-validator");
-const { mailer, creatT, sendMail } = require("../email/mailer")
+//const { mailer, creatT, sendMail } = require("../email/mailer")
 const getAll = async (req, res = Response) => {
     try {
         const query = req.query;
@@ -67,8 +67,8 @@ const insert = async (req, res = Response) => {
             created_at,
             starts: created_at,
         })
-        //await request.save();
-        sendMail(email,"Nueva solicitud", "Mensaje del cuerpo del correo");
+        await request.save();
+        //sendMail(email,"Nueva solicitud", "Mensaje del cuerpo del correo");
         res.status(200).json({ msg: 'Successful request', request });
     } catch (error) {
         const message = validateError(error);
@@ -78,7 +78,6 @@ const insert = async (req, res = Response) => {
 
 }
 const update = async (req, res = Response) => {
-    console.log("Llegó")
     try {
         const { status } = req.body;
         const { id } = req.params;
@@ -91,6 +90,22 @@ const update = async (req, res = Response) => {
         const message = validateError(error);
         res.status(400).json(message);
         console.log(error);
+    }
+}
+
+const sancionar = async (req, res = Response) => {
+    try {
+        const { sanction } = req.body;
+        const { id } = req.params;
+        const [updated, request] = await Promise.all([
+            Request.findByIdAndUpdate(id, {sanction, sanction}),
+            Request.findById(id)
+        ]);
+        res.status(200).json({ msg: 'Successful request', request, status});
+    } catch (err) {
+        const message = validateError(err);
+        res.status(400).json(message);
+        console.log(err);
     }
 }
 
@@ -123,14 +138,20 @@ requestRouter.post('/', [
     validateMiddlewares
 ], insert);
 
-requestRouter.put('/:id', [
+requestRouter.put('/status/:id', [
     validateJWT,
     check('id', 'El id no es de mongo').isMongoId(),
     check('id').custom(validateIdRequest),
-    check('status').custom(status),
     validateMiddlewares
 ], update);
 
+requestRouter.put('/sanction/:id',[
+    validateJWT,
+    check('id', 'El id no es de mongo').isMongoId(),
+    check('id').custom(validateIdRequest),
+    check('sanction', 'La sancion es requirida').not().isEmpty(),
+    validateMiddlewares
+], sancionar)
 //requestRouter.delete('/:id',[],deletes);
 
 module.exports = { requestRouter }
