@@ -4,6 +4,8 @@ const {bookRouter} = require('./device/device.controller');
 const {roleRouter} = require('./role/role.controller');
 const {requestRouter} = require('./request/request.controller');
 const {categoryRouter} = require('./category/category.controller')
+const {supplierRouter} = require('./supplier/supplier.controller')
+const {placeRouter} = require('./place/place.controller')
 
 module.exports = {
     userRouter,
@@ -11,5 +13,7 @@ module.exports = {
     bookRouter,
     roleRouter,
     requestRouter,
-    categoryRouter
+    categoryRouter,
+    supplierRouter,
+    placeRouter
 }

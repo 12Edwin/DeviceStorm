@@ -21,5 +21,5 @@ export const UserRouter = () => {
                 <Route path="/*" element={<PageNotFound/>} />
             </Routes>
         </>
-     );    
+    );    
 }
