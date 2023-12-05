@@ -290,7 +290,6 @@ export const DeviceEditModal = ({ open, onOpen, data }) => {
                           </Button>
                         </div>
                       </div>
-
                     )}
                   </Form>)}
               </Formik>

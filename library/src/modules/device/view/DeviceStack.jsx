@@ -6,31 +6,35 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 // import device2 from './device2.jpg';
 // import device3 from './device3.jpg';
 import '../style/DeviceStack.css';
-import { SomeProblems } from '../../../auth/pages/SomeProblems.jsx';
-import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent.jsx';
-import {getCategories, getdevices} from '../helpers/index.js';
-import {AuthContext} from '../../../auth/context/AuthContext.jsx'
+import { SomeProblems } from '../../../auth/pages/SomeProblems';
+import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';
+import { getdevices } from '../helpers';
+import {AuthContext} from '../../../auth/context/AuthContext'
 import { Button } from '@material-ui/core';
 import Card from 'react-bootstrap/Card';
-//import { deviceTwoTone, EditRounded, Cancel, Restore } from '@material-ui/icons';
+import { EditRounded, Cancel, Restore } from '@material-ui/icons';
 import { Col, Row } from 'react-bootstrap';
 import image from '../../../assets/img/device.jpg';
-import { getRequestGral } from '../helpers/index.js';
+import { getRequestGral } from '../helpers';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { removedevice } from '../helpers/index.js';
-import { DeviceEditModal } from './DeviceEditModal.jsx';
+import { removedevice } from '../helpers';
+import { DeviceEditModal } from '../component/DeviceEditModal';
 
 export const DeviceStack = () => {
   const [devices, setdevices] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false)
   const [apiError, setApiError] = useState(false);
+  const {logout} = useContext(AuthContext)
+  const [openBuy, setOpenBuy] = useState(false);
   const [data, setData] = useState({});
   const [requests, setRequests] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+  
 
-
-  const fillDevices = async () => {
+  const filldevices = async () => {
     setLoading(true);
     
     const response = await getdevices();
@@ -46,10 +50,11 @@ export const DeviceStack = () => {
 
   const fillCategories = async () =>{
     const response = await getCategories();
+    setCategories(response);
   }
   
   useEffect(() => {
-    fillDevices();
+    filldevices();
     getRequests();
   }, []);
 
@@ -93,10 +98,12 @@ export const DeviceStack = () => {
     }else{
       setApiError(false)
       let data = [];
-      response.requests.forEach(element => {
-        if(element.status !== 'Finished')
-        data.push(element.device);
-      });
+      if (response.requests) {
+        response.requests.forEach(element => {
+          if(element.status !== 'Finished')
+          data.push(element.device);
+        });
+      }
       setRequests(data);
     }
   }
@@ -114,7 +121,7 @@ export const DeviceStack = () => {
       </div>
       <div className="deviceshelf-devices">
         {devices.map(device => (
-          <div key={device.uid}>{!device.available || requests.includes(device.name) || sales.includes(device.name) ? <></>  :(<>
+          <div key={device.uid}>{ (<>
           
           <Card style={{ width: '18rem', margin: '15px', display:'flex', alignItems:'center' }}>
             <Card.Header style={{height: '330px'}}>
@@ -123,7 +130,7 @@ export const DeviceStack = () => {
             <Card.Body>
                 <Card.Title>{device.name}</Card.Title>
                 <Card.Text>
-                <strong>Code:</strong> {device.code}
+                <strong>Author:</strong> {device.author}
                 </Card.Text>
             </Card.Body>
           </Card>
