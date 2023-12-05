@@ -42,7 +42,6 @@ const insert = async (req, res = Response) =>{
         const created_at = new Date();
         const device = await new Device({name, code, place, supplier, category, stock, created_at, available:true});
         await device.save();
-
         res.status(200).json({message:'Successful request', device});
     }catch (error){
         const  message = validateError(error);
@@ -136,7 +135,17 @@ deviceRouter.get('/:id',[
     validateMiddlewares
 ],getById);
 
-deviceRouter.post('/',[
+// deviceRouter.post('/',[
+//     validateJWT,
+//     check('name', 'El titulo del libro es obligatorio').not().isEmpty(),
+//     check('name').custom(existDevice),
+//     check('author', 'El autor del libro es obligatorio').not().isEmpty(),
+//     check('publication', 'La fecha de publicación es obligatoria').not().isEmpty(),
+//     check('publication').trim().isDate().withMessage('Must be a valid date'),
+//     check('price').not().isEmpty().withMessage('El precio es obligatorio'),
+//     validateMiddlewares
+// ],insert);
+ deviceRouter.post('/',[
     validateJWT,
     check('name', 'Name is required').not().isEmpty(),
     check('name').custom(existDevice),
@@ -153,8 +162,7 @@ deviceRouter.post('/',[
     check('stock').not().isEmpty().withMessage('Stock is required'),
     check('stock').isNumeric().withMessage('Stock must be numeric'),
     validateMiddlewares
-],insert);
-
+ ], insert)
 deviceRouter.put('/:id',[
     validateJWT,
     check('publication').optional().isDate().withMessage('Must be a valid date'),

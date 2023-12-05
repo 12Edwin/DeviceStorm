@@ -16,3 +16,13 @@ th{
 td{
     text-align: center !important;
 }
+
+.newRequest {
+    margin-left: auto;
+    background-color: red;
+}
+
+.actionButton {
+    width: 90%;
+    height: 40%;
+}
