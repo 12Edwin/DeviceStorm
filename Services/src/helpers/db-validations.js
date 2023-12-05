@@ -3,6 +3,8 @@ const Device = require('../module/device/Device');
 const Role = require('../module/role/Role');
 const Request = require('../module/request/Request');
 const Category = require('../module/category/Category');
+const Place = require('../module/place/Place')
+const Supplier = require('../module/supplier/Supplier')
 const jwt = require('jsonwebtoken');
 
 const validateEmail = async (email = '') =>{
@@ -38,7 +40,18 @@ const validateIdCategory = async (id = '') =>{
         throw new Error('Id no encontrado en la base de datos');
     }
 }
-
+const validateIdPlace = async (id = '') =>{
+    const idExist = await Place.findById(id);
+    if (!idExist){
+        throw new Error('Id no encontrado en la base de datos');
+    }
+}
+const validateIdSupplier = async (id = '') =>{
+    const idExist = await Supplier.findById(id);
+    if (!idExist){
+        throw new Error('Id no encontrado en la base de datos');
+    }
+}
 const validateIdRequest = async (id = '') =>{
     const idExist = await Request.findById(id);
     if (!idExist){
@@ -128,6 +141,8 @@ module.exports ={
     validateIdRole,
     validateIdRequest,
     validateIdCategory,
+    validateIdPlace,
+    validateIdSupplier,
     validateDevice,
     existDevice,
     roles,

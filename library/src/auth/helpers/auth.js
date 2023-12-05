@@ -1,9 +1,9 @@
 import axios from 'axios'
+const url = import.meta.env.VITE_SECRET
 
 export const auth = async (form) =>{
     try{
-        const url = 'http://localhost:3000/api/auth/login/';
-        const response = await axios.post(url,form);
+        const response = await axios.post(url + '/auth/login/',form);
         return response;
     }catch{
         return 'CREDENCIALES INVÁLIDAS';
