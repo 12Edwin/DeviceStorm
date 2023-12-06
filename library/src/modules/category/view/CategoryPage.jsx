@@ -1,30 +1,64 @@
-import React from 'react';
-import {Table} from "reactstrap";
-
+import React, {useEffect, useState} from 'react';
+import {Table, Button} from "reactstrap";
+import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import "../style/Category.css"
+import {getCategories} from "../helpers/getCategories.js";
+import Switch from "react-switch";
 export const CategoryPage = () => {
 
+    const [categories, setCategories] = useState([]);
+    const [toggleSwitch, setToggleSwitch] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [apiError, setApiError] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+
+    const onToggleSwitch = () =>{
+        setToggleSwitch(prevState => !prevState)
+    }
+    useEffect(() => {
+        fillCategories()
+    }, []);
+
+    const fillCategories = async () =>{
+        setLoading(true)
+        const result = await getCategories();
+        if(result === "ERROR"){
+            setApiError(true)
+        }else{
+            setCategories(result)
+        }
+
+        setLoading(false);
+    }
+
     const data = [
-        {name: 'Juan', age: 25},
-        {name: 'Maria', age: 30},
-        {name: 'Pedro', age: 28}
+        {name: 'Juan', description: 25},
     ];
 
         return (
             <div style={{marginLeft: '22vw', marginRight: '5vw'}}>
-            <Table striped bordered hover variant="dark" className="shadow-lg rounded-2 overflow-hidden m-4">
+                <div className="rounded-5 header-table bg-info">
+                    <span> Categorías </span>
+                </div>
+            <Table align="center" striped bordered hover variant="dark" className=" table-category shadow-lg rounded-5 overflow-hidden">
                 <thead>
                 <tr>
-                    <th> - </th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
+                    <th className="text-center"> - </th>
+                    <th className="text-center">Nombre</th>
+                    <th className="text-center">Descripción</th>
+                    <th className="text-center">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                {data.map(item => (
-                    <tr key={item.name}>
+                {categories.map((item,ind) => (
+                    <tr key={ind}>
+                        <td>{ind + 1}</td>
                         <td>{item.name}</td>
-                        <td>{item.age}</td>
+                        <td>{item.description}</td>
+                        <td className="d-flex justify-content-around">
+                            <Switch checked={toggleSwitch} onChange={onToggleSwitch}/>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

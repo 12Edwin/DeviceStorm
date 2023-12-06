@@ -11,7 +11,6 @@ const getAll = async (req, res= Response) =>{
             Category.find(query),
             Category.countDocuments(query)
         ]);
-
         res.status(200).json({msg:'Successful request', total, category});
     }catch (error){
         const message = validateError(error);

@@ -1,0 +1,59 @@
+.header-table{
+    align-content: center;
+    color: white;
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+    margin-right: 5vh;
+    margin-left: 5vh;
+    padding: 2vh;
+    z-index: 1;
+}
+
+.table-category{
+    margin-top: -2vh;
+    z-index: 2;
+}
+
+
+/* Estilos para el switch */
+
+.custom-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    margin: 0 8px;
+    background-color: #e4e4e4;
+    border-radius: 30px;
+    transition: .5s;
+}
+
+.custom-switch.enabled {
+    background-color: #28a745;
+}
+
+.custom-switch.disabled {
+    background-color: #dc3545;
+}
+
+/* Puntito que indica estado */
+.custom-switch-handle {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 26px;
+    top: 2px;
+    left: 2px;
+    background-color: white;
+    transition: .5s;
+}
+
+/* Cuando está habilitado se desplaza */
+.custom-switch.enabled .custom-switch-handle {
+    transform: translateX(30px);
+}
+
+/* Input oculto que controla */
+.custom-switch-input {
+    display: none;
+}

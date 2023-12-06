@@ -80,6 +80,7 @@ const validateJWT = async (req, res = Response, next) =>{
         );
     }
     try {
+        console.log(token)
         if (token.includes('Bearer ')){
             token = token.replace('Bearer ', '')
         }

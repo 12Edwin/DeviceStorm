@@ -1,17 +1,8 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 
 export const getUser = async(id) =>{
     try{
-        const user = await JSON.parse (localStorage.getItem('user'));
-        const token = user.token;
-        const url = `http://localhost:3000/api/user/${id}`;
-        const response = await axios.get(url,{
-            headers:{
-                'x-token': token
-            }
-        });
-        
+        const response = await api.doGet(`/user/${id}`,);
         return response.data.user;
     }catch(error){
         return 'ERROR'

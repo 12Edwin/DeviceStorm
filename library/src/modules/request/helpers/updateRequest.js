@@ -1,16 +1,8 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 
 export const updateRequest = async(id,status) =>{
     try{
-        const user = await JSON.parse(localStorage.getItem('user'));
-        const token = user.token;
-        const url = `http://localhost:3000/api/request/status/${id}`;
-        const response = await axios.put(url,status,{
-            headers:{
-                'x-token' : token
-            }
-        })
+        const response = await api.doPut(`/request/status/${id}`,status)
         return response.data;
     }catch(err){
         return 'ERROR';
@@ -18,16 +10,8 @@ export const updateRequest = async(id,status) =>{
 }
 
 export const sanction = async(id,sansion) => {
-    console.log(id);
     try {
-        const user = await JSON.parse(localStorage.getItem('user'));
-        const token = user.token;
-        const url = `http://localhost:3000/api/request/sanction/${id}`;
-        const response = await axios.put(url,sansion, {
-            headers: {
-                'x-token': token
-            }
-        });
+        const response = await api.doPut(`/request/sanction/${id}`,sansion);
         return response.data;
     }catch(err) {
         console.log("ERRRROR");
