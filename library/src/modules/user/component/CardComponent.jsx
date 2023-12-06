@@ -7,7 +7,7 @@ import { LoadingComponent } from "../../../auth/components/loading/LoadingCompon
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faTimesCircle, faUser } from '@fortawesome/free-solid-svg-icons';
 import { UpdateUser } from "./UpdateUser";
 import { MDBBtn } from "mdb-react-ui-kit";
 import { updateUser } from "../helpers";
@@ -85,21 +85,14 @@ export const CardComponent = () => {
                             </div>
                         </div>
                         <div className="card author-bf-card custom-size">
-                            <img
-                                className="img-fluid rounded-circle mb-3"
-                                src="https://th.bing.com/th/id/R.423055c39be588a1643ea7aeb1ac83be?rik=pT92QfdWkxqHnw&riu=http%3a%2f%2f2.bp.blogspot.com%2f_JXi92wDCOGk%2fTGF1W98DwWI%2fAAAAAAAABqI%2fjmXaiB8h0nE%2fs1600%2fAlice%2bdevice%2bcover2.jpg&ehk=VXhL6QjA0lhMfVeSufHlKhmV4xEvzHwDt1S0b4WZ%2bAE%3d&risl=&pid=ImgRaw&r=0"
+                            <FontAwesomeIcon
+                                icon={faUser}
+                                className="rounded-circle mb-3"
+                                style={{fontSize: '30px'}}
                                 alt="author-img"
                             />
                             <h5 className="mb-3">{data.name} {data.surname}</h5>
                             <div className="social-icons social-icons-sm mb-3">
-                                <a
-                                    className="social-icon"
-                                    href="#facedevice"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <i className="fab fa-facedevice-f"></i>
-                                </a>
                                 <a
                                     className="social-icon"
                                     href="#twitter"
@@ -126,11 +119,11 @@ export const CardComponent = () => {
                                         <Card.Body>
                                             <Row>
                                                 <Formik
-                                                    initialValues={{ name: data.name, surname: data.surname, career: data.career }}
+                                                    initialValues={{ name: data.name, surname: data.surname, career: data.email }}
                                                     validationSchema={
                                                         Yup.object().shape({
                                                             name: Yup.string().required("Nombre requerido"),
-                                                            career: Yup.string().required("Carrera requerida")
+                                                            email: Yup.string().required("correo requerido")
                                                         })}
                                                     onSubmit={(values, { setSubmitting }) => {
                                                         setTimeout(() => {
@@ -151,16 +144,16 @@ export const CardComponent = () => {
                                                                 (<FontAwesomeIcon icon={faTimesCircle} color="#dc3545" />)}
                                                         </Card.Text>
                                                         <Card.Text style={{ textAlign: 'left' }}>
-                                                            <Field className='form-control' placeholder={data.name} name='name' />
+                                                            <Field className='form-control' placeholder={data.name} name='nombre' />
                                                             {touched.name && errors.name && <div className="alert alert-danger error">{errors.name}</div>}
                                                         </Card.Text>
                                                         <Card.Text style={{ textAlign: 'left' }}>
-                                                            <Field className='form-control' placeholder={data.surname} name='surname' />
+                                                            <Field className='form-control' placeholder={data.surname} name='Apellido' />
                                                             {touched.surname && errors.surname && <div className="alert alert-danger error">{errors.surname}</div>}
                                                         </Card.Text>
                                                         <Card.Text style={{ textAlign: 'left' }}>
-                                                            <Field className='form-control' placeholder={data.career} name='career' />
-                                                            {touched.career && errors.career && <div className="alert alert-danger error">{errors.career}</div>}
+                                                            <Field className='form-control' placeholder={data.email} name='correo' />
+                                                            {touched.email && errors.email && <div className="alert alert-danger error">{errors.career}</div>}
                                                         </Card.Text>
 
                                                         <hr />
@@ -169,22 +162,6 @@ export const CardComponent = () => {
                                                     </Form>)}
 
                                                 </Formik>
-                                            </Row>
-                                        </Card.Body>
-                                    </Card>
-                                    <Card className="shadow mt-3">
-                                        <Card.Body>
-                                            <Card.Title className="text-center mb-1">
-                                                Correo electrónico
-                                            </Card.Title>
-                                            <Row>
-
-                                                <Card.Text className="text-center">
-                                                    <i className="bi bi-code-slash h4 mb-3"></i>
-                                                    <br />
-                                                    {data.email}
-                                                </Card.Text>
-
                                             </Row>
                                         </Card.Body>
                                     </Card>

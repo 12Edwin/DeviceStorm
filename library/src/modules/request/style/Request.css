@@ -26,3 +26,11 @@ td{
     width: 90%;
     height: 40%;
 }
+
+.align{
+    display: flex;
+    justify-content: space-between;
+    align-items: end !important;
+    padding: 20px;
+    
+}

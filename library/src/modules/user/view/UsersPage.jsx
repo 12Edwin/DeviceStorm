@@ -14,11 +14,9 @@ export const UsersPage = () =>{
         const response = await getAllUsers();
         if(response === 'ERROR'){
           setApiError(true);
-          console.log('Error')
         }else{
           setApiError(false);
           setUsers(response);
-          console.log(response);
         }
         setLoading(false);
       }
@@ -28,7 +26,7 @@ export const UsersPage = () =>{
       },[]);
 
     return(
-        <div className='col-11 mt-5' style={{ paddingLeft: "300px" }}>
+        <div className='col-11 mt-5' style={{ paddingLeft: "100px" }}>
             { loading ? <LoadingComponent/> : apiError ? <SomeProblems/> :
             <UsersComponent users={users}/>
             }

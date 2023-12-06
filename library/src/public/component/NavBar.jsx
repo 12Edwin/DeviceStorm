@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCog, faUser, faSignOutAlt, faFileArchive, faCartShopping, faUserEdit, faC } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCog, faUser, faSignOutAlt, faUsers, faLaptop, faUserEdit, faHandHoldingHand } from '@fortawesome/free-solid-svg-icons';
 // import logo from './logo.png';
 import '../style/SideNav.css';
 import { AuthContext } from '../../auth/context/AuthContext';
@@ -34,26 +34,20 @@ export const NavBar = () => {
           </a>
         </li>
         <li className="sidenav-item">
-          <a href="/admin/sales">
-            <FontAwesomeIcon icon={faCartShopping} className="sidenav-icon" />
-            Sales
-          </a>
-        </li>
-        <li className="sidenav-item">
           <a href="/admin/requests">
-            <FontAwesomeIcon icon={faFileArchive} className="sidenav-icon" />
-            Requests
+            <FontAwesomeIcon icon={faHandHoldingHand} className="sidenav-icon" />
+            Solicitudes
           </a>
         </li>
         <li className="sidenav-item">
           <a href="/admin/device">
-            <FontAwesomeIcon icon={faFileArchive} className="sidenav-icon" />
-            New device
+            <FontAwesomeIcon icon={faLaptop} className="sidenav-icon" />
+            Dispositivos
           </a>
         </li>
         <li className="sidenav-item">
           <a href="/admin/users">
-            <FontAwesomeIcon icon={faUserEdit} className="sidenav-icon" />
+            <FontAwesomeIcon icon={faUsers} className="sidenav-icon" />
             Usuarios
           </a>
         </li>

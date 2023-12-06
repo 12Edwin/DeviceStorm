@@ -6,7 +6,6 @@ export const register = async (form) =>{
             name: form.name,
             surname: form.surname,
             lastname: form.lastname,
-            career: form.career,
             role: 'USER_ROLE',
             status: true,
             email: form.email,
