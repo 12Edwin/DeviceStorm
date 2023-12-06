@@ -1,0 +1,176 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.073);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    border-radius: 10px;
+    max-width: 500px !important;
+    overflow: auto;
+    max-height: 95%;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-100%);
+    animation: modal-show 0.5s ease forwards;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-header h2 {
+    margin: 0;
+  }
+  
+  .close-button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .modal-body {
+    margin-top: 0px;
+  }
+  
+  .modal-enter {
+    transform: translateY(-100%);
+  }
+  
+  .modal-enter-active {
+    transform: translateY(0%);
+    transition: transform 0.5s ease;
+  }
+  
+  .modal-exit {
+    transform: translateY(0%);
+  }
+  
+  .modal-exit-active {
+    transform: translateY(-100%);
+    transition: transform 0.5s ease;
+  }
+  
+  @keyframes modal-show {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0%);
+    }
+  }
+  
+  
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffffff;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+  
+  
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  label {
+    font-size: 1.2rem;
+  }
+  
+  
+  
+  .form-control:focus {
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .form-control-file {
+    font-size: 1.2rem;
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+  }
+  
+  .btn-primary {
+    background-color: #eb4d4b;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 2rem;
+    font-size: 1.2rem;
+    color: #ffffff;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .btn-primary:hover {
+    background-color: #c0392b;
+  }
+  
+  .form-small {
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  
+  .form-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .form-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms
+  }  
+  
+  .divlogo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    height: 200px;
+  }
+  
+  .content {
+    text-align: center;
+  }
+  
+  .device {
+    position: relative;
+  }
+  
+  .icon {
+    position: absolute;
+    top: -25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 5em;
+    color: rgb(82, 84, 234);
+  }
+  
+  .form-buttons{
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  .btn-atras, .btn-enviar{
+    margin: 10px;
+  }

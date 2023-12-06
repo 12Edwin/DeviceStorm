@@ -2,7 +2,7 @@ const {Router} = require("express");
 const {validateError, validateMiddlewares} = require("../../util/functions");
 const Device = require ('./Device');
 const {check} = require("express-validator");
-const {validateJWT, validateIdDevice, existDevice} = require("../../helpers/db-validations");
+const {validateJWT, validateIdDevice, existDevice, validateIdPlace, validateIdSupplier, validateIdCategory} = require("../../helpers/db-validations");
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs");
@@ -38,10 +38,10 @@ const getById = async (req, res = Response) =>{
 
 const insert = async (req, res = Response) =>{
     try {
-        const {name, author, publication, resume, category, price} = req.body;
-        const device = await new Device({name, author, publication, resume, category, price, status:true});
+        const {name, code, place, supplier, category, stock} = req.body;
+        const created_at = new Date();
+        const device = await new Device({name, code, place, supplier, category, stock, created_at, available:true});
         await device.save();
-
         res.status(200).json({message:'Successful request', device});
     }catch (error){
         const  message = validateError(error);
@@ -135,17 +135,34 @@ deviceRouter.get('/:id',[
     validateMiddlewares
 ],getById);
 
-deviceRouter.post('/',[
+// deviceRouter.post('/',[
+//     validateJWT,
+//     check('name', 'El titulo del libro es obligatorio').not().isEmpty(),
+//     check('name').custom(existDevice),
+//     check('author', 'El autor del libro es obligatorio').not().isEmpty(),
+//     check('publication', 'La fecha de publicación es obligatoria').not().isEmpty(),
+//     check('publication').trim().isDate().withMessage('Must be a valid date'),
+//     check('price').not().isEmpty().withMessage('El precio es obligatorio'),
+//     validateMiddlewares
+// ],insert);
+ deviceRouter.post('/',[
     validateJWT,
-    check('name', 'El titulo del libro es obligatorio').not().isEmpty(),
+    check('name', 'Name is required').not().isEmpty(),
     check('name').custom(existDevice),
-    check('author', 'El autor del libro es obligatorio').not().isEmpty(),
-    check('publication', 'La fecha de publicación es obligatoria').not().isEmpty(),
-    check('publication').trim().isDate().withMessage('Must be a valid date'),
-    check('price').not().isEmpty().withMessage('El precio es obligatorio'),
+    check('code').isString().not().isEmpty().withMessage('Code is required'),
+    check('place').not().isEmpty().withMessage('Place is required'),
+    check('place').isMongoId().withMessage('Invalid place'),
+    check('place').custom(validateIdPlace).withMessage('Invalid place'),
+    check('supplier', 'Supplier is required').not().isEmpty(),
+    check('supplier').isMongoId().withMessage('Invalid supplier'),
+    check('supplier').custom(validateIdSupplier).withMessage('Invalid supplier'),
+    check('category').not().isEmpty().withMessage('Category is required'),
+    check('category').isMongoId().withMessage('Invalid category'),
+    check('category').custom(validateIdCategory).withMessage('Invalid category'),
+    check('stock').not().isEmpty().withMessage('Stock is required'),
+    check('stock').isNumeric().withMessage('Stock must be numeric'),
     validateMiddlewares
-],insert);
-
+ ], insert)
 deviceRouter.put('/:id',[
     validateJWT,
     check('publication').optional().isDate().withMessage('Must be a valid date'),
