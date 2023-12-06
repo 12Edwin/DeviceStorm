@@ -25,7 +25,10 @@ const sendMail = (destination,asunto, message) =>{
         from: `"Devices system" <${process.env.EMAIL}>`,
         to: destination,
         subject: asunto,
-        text: message
+        html: message,
+        headers: {
+          'Content-Type': 'text/html'
+        }
     })
 } catch (err) {
     console.log("Error")
