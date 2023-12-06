@@ -14,6 +14,7 @@ export const UsersPage = () =>{
         const response = await getAllUsers();
         if(response === 'ERROR'){
           setApiError(true);
+          console.log('Error')
         }else{
           setApiError(false);
           setUsers(response);

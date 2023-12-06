@@ -10,8 +10,14 @@
   .user-table-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
+    align-items: end;
+    margin-bottom: 0.5rem;
+  }
+
+  .user-add {
+    font-size: 25px;
+    
+    padding-bottom: 0.5rem;
   }
   
   .user-table-header h2 {
@@ -27,6 +33,7 @@
     background-color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   }
+
   
   table {
     width: 100%;
@@ -66,12 +73,22 @@
   }
   
   .status.active {
-    background-color: #0f0;
+    color: #006749;
+    background-color: white;
+    font-size: 25px;
   }
   
   .status.inactive {
-    background-color: #f00;
+    color: #DA2D2D;
+    background-color: white;
+    font-size: 25px;
   }
+
+  .header {
+    background-color: #757575;
+    color: white;
+  }
+
   
   .disable-button,
   .enable-button {

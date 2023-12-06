@@ -11,5 +11,5 @@ export const PublicRoute = ({children}) =>{
     children :
     (logged && (user.role === 'USER_ROLE')) ?
     <Navigate to={'/user/stock'} /> :
-    <Navigate to={'/admin/stock'} />
+    <Navigate to={'/admin/users'} />
 }

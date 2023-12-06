@@ -77,7 +77,7 @@ const deletes = async (req, res = Response) =>{
     }
 }
 
-const userRouter = Router()
+const   userRouter = Router()
 
 userRouter.get('/',[
     validateJWT,

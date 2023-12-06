@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import '../style/UserTable.css';
 import {userDisabled} from '../helpers';
 import Swal from 'sweetalert2';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faToggleOff, faToggleOn, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { Row, Col } from 'react-bootstrap';
+import {CreateUser} from "../component/CreateUserComponent"
 export const UsersComponent = ({ users }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState(users);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [isOpenNew, setIsOpenNew] = useState(false);
   useEffect(() => {
     // Filtrar usuarios según el término de búsqueda
     const filtered = users.filter(
@@ -57,27 +60,42 @@ export const UsersComponent = ({ users }) => {
   }
 
   return (
-    
       <div className="user-table">
         <div className="user-table-header">
           <h2>Usuarios</h2>
-          <div className="user-table-search">
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <Row>
+            <Col>
+              <div className="user-table-search">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </Col>
+          </Row>
         </div>
+        <div>
+          <Row>
+            <Col>
+              <div lg={12} className='user-add '>
+                <FontAwesomeIcon icon={faPlusCircle} style={{ color: '#006749' }} onClick={() => setIsOpenNew(true)}/>
+              </div>
+              <CreateUser
+                isOpen={isOpenNew}
+                onClose={() => setIsOpenNew(false)}
+              />
+            </Col>
+          </Row>
+          </div>
         <table>
           <thead>
             <tr style={{textAlign:'center'}}>
-              <th>Name</th>
-              <th>Surname</th>
-              <th>Email</th>
-              <th>Career</th>
-              <th>Status</th>
+              <th className='header'>Nombre</th>
+              <th className='header'>Apellido</th>
+              <th className='header'>Correo</th>
+              <th className='header'>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -87,16 +105,19 @@ export const UsersComponent = ({ users }) => {
                 onClick={() => handleSelectUser(user)}
                 className={selectedUser === user ? 'selected' : ''}
               >
-                <td>{user.name}</td>
+                <td >{user.name}</td>
                 <td>{user.surname || '-'}</td>
                 <td>{user.email}</td>
-                <td>{user.career}</td>
                 <td>
-                  <div className={`status ${!user.status ? 'active' : 'inactive'}`} style={{ cursor: 'pointer' }}
-                    onClick={()=>handleStatus(user.uid)}
-                  >
-                    {!user.status ? 'Habilitar' : 'Deshabilitar'}
-                  </div>
+                  <Row>
+                    <Col>
+                      <div className={`status ${user.status ? 'active' : 'inactive'}`} style={{ cursor: 'pointer' }}
+                        onClick={() => handleStatus(user.uid)}
+                      >
+                        {user.status ? <FontAwesomeIcon icon={faToggleOn} /> : <FontAwesomeIcon icon={faToggleOff} />}
+                      </div>
+                    </Col>
+                  </Row> 
                 </td>
               </tr>
             ))}
