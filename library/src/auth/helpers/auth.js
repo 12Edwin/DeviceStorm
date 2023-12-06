@@ -1,10 +1,8 @@
-import axios from 'axios'
-const url = import.meta.env.VITE_SECRET
+import api from "../../config/http.js";
 
 export const auth = async (form) =>{
     try{
-        const response = await axios.post(url + '/auth/login/',form);
-        return response;
+        return await api.doPost('/auth/login/', {...form});
     }catch{
         return 'CREDENCIALES INVÁLIDAS';
     }

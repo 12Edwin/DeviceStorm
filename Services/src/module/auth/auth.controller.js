@@ -11,15 +11,15 @@ const login = async (req, res = Response) =>{
         const user = await User.findOne({email})
 
         if(!user){
-            return res.status(401).json({msg:'Usuario / Contraseña invalidos'});
+            return res.status(401).json({msg:'Bad credentials'});
         }
         if(!user.status){
-            return res.status(401).json({msg:'Usuario / Contraseña invalidos'});
+            return res.status(401).json({msg:'Bad credentials'});
         }
 
         const validPassword = await validatePassword(password, user.password);
         if(!validPassword)
-            return res.status(401).json({msg:'Usuario / Contraseña invalidos'});
+            return res.status(401).json({msg:'Bad credentials'});
 
         const token = await generateJWT(user.id);
 

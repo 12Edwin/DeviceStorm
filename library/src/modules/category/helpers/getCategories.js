@@ -1,16 +1,8 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 
 export const getCategories = async () =>{
     try{
-        const user = await JSON.parse(localStorage.getItem('user'));
-        const token = user.token;
-        const url = 'http://localhost:3000/api/category/';
-        const response = await axios.get(url,{
-            headers:{
-                'x-token' : token
-            }
-        });
+        const response = await api.doGet('/category/');
         return response.data.category;
     }catch(err){
         return 'ERROR';

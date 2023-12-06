@@ -1,15 +1,7 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 export const getdevices = async () =>{
   try{
-    const user = await JSON.parse(localStorage.getItem('user'));
-    const token = user.token;
-    const url = 'http://localhost:3000/api/device/';
-    const response = await axios.get(url,{
-      headers:{
-        'x-token' : token
-      }
-    })
+    const response = await api.doGet('/device/')
     return response.data;
   }catch(error){
     return 'ERROR';
