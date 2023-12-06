@@ -10,6 +10,6 @@ export const PrivateRouteAdmin = ({children}) =>{
     return(logged && (user.role === 'ADMIN_ROLE')) ?
     children :
     (logged && (user.role === 'USER_ROLE')) ?
-    <Navigate to={'/user/users'} /> :
+    <Navigate to={'/user/stock'} /> :
     <Navigate to={'/login'} />
 }

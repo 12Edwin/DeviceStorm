@@ -105,7 +105,7 @@ export const CategoryPage = () => {
                 <div className="rounded-5 header-table bg-info">
                     <span> Categorías </span>
                 </div>
-            <Table align="center" striped bordered hover variant="dark" className=" table-category shadow-lg rounded-5 overflow-hidden">
+            <Table align="center"   hover variant="dark" className=" table-category shadow-lg rounded-5 overflow-hidden">
                 <thead>
                 <tr>
                     <th className="text-center"> - </th>

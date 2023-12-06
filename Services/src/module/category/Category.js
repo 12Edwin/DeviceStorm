@@ -13,6 +13,10 @@ const categorySchema = new mongoose.Schema({
     created_at:{
         type:Date,
         required:true
+    },
+    status:{
+        type: Boolean,
+        required: true
     }
 });
 
