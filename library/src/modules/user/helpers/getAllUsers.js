@@ -1,4 +1,4 @@
-import {api} from "../../../config/http.js";
+import api from "../../../config/http.js";
 
 export const getAllUsers = async() =>{
     try{
