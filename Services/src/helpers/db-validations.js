@@ -88,7 +88,7 @@ const validateJWT = async (req, res = Response, next) =>{
 
         next()
     }catch (err){
-        res.status(400).json({message:'Acceso denegado'});
+        res.status(401).json({msg:'Acceso denegado'});
         console.log(err);
     }
 }

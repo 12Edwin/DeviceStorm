@@ -6,6 +6,7 @@ import { RequestPage} from '../modules/request/view'
 import PageNotFound from "../auth/pages/PageNotFound"
 import { NavBar } from "../public/component/NavBar"
 import {CategoryPage} from "../modules/category/view/CategoryPage.jsx";
+import {PlacePage} from "../modules/place/view/PlacePage.jsx";
 
 export const AdminRoute = () =>{
     return(
@@ -16,6 +17,7 @@ export const AdminRoute = () =>{
                 <Route path="requests" element={<><NavBar /><RequestPage/></>}/>
                 <Route path="device" element={<><NavBar /><CretaedevicePage/></>}/>
                 <Route path="category" element={<><NavBar/><CategoryPage/></>}/>
+                <Route path="place" element={<><NavBar/><PlacePage/></>}/>
                 <Route path="profile" element={<><NavBar /><ProfilePage/></>}/>
                 <Route path="users" element={<><NavBar /><UsersPage/></>}/>
                 <Route path="/" element={<Navigate to={'/admin/stock'}/> }/>

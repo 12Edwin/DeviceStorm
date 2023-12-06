@@ -3,6 +3,7 @@ const Category = require('../category/Category');
 const {validateError, validateMiddlewares} = require("../../util/functions");
 const {validateJWT, validateIdCategory, status} = require("../../helpers/db-validations");
 const {check} = require("express-validator");
+const User = require("../user/User");
 
 const getAll = async (req, res= Response) =>{
     try {
@@ -62,10 +63,11 @@ const update = async (req, res = Response) =>{
 
 const deletes = async (req, res= Response) =>{
     try {
-        const {id, status} = req.params;
-        await Category.findOneAndUpdate({_id: id}, { status: false}, {overwrite: true})
-
-        res.status(200).json({msg:'Status deleted'});
+        const {id} = req.params;
+        const category = await Category.findById(id);
+        const status = !category.status;
+        const result = await Category.findByIdAndUpdate(id, {status})
+        res.status(200).json(result ?{result_delete: 'Successful'}:{restored: 'Successful'});
     }catch (error){
         const message = validateError(error);
         res.status(400).json(message);
