@@ -6,6 +6,7 @@ const {requestRouter} = require('./request/request.controller');
 const {categoryRouter} = require('./category/category.controller')
 const {supplierRouter} = require('./supplier/supplier.controller')
 const {placeRouter} = require('./place/place.controller')
+const {sanctionRouter} = require('./sanction/sanction.controller')
 
 module.exports = {
     userRouter,
@@ -15,5 +16,6 @@ module.exports = {
     requestRouter,
     categoryRouter,
     supplierRouter,
-    placeRouter
+    placeRouter,
+    sanctionRouter
 }
