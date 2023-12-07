@@ -3,41 +3,56 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import {MDBInput} from "mdb-react-ui-kit";
 import Swal from "sweetalert2";
 import {updatePlace} from "../helpers/updatePlace.js";
+import {createPlace} from "../helpers/createPlace.js";
 
 
-export const EditModalPlace = ({show, onHide, place}) => {
+export const EditModalPlace = ({show, onHide, place= null}) => {
 
     const [name, setName] = useState("")
     const [direction, setDirection] = useState("")
     const [capacity, setCapacity] = useState(0)
     useEffect(() => {
-        setName(place.name)
-        setDirection(place.direction)
-        setCapacity(place.capacity)
+        if (place !== null) {
+            setName(place.name)
+            setDirection(place.direction)
+            setCapacity(place.capacity)
+        }else {
+            setName('')
+            setDirection('')
+            setCapacity(0)
+        }
     }, [show]);
 
     const onUpdate = async () =>{
         const result = await updatePlace({name, direction, capacity, id: place.uid})
         if (result === 'ERROR'){
-            resultFail()
+            resultFail('Ups, ha ocurrido un error al actualizar el área')
         }else {
-            resultOk()
+            resultOk('Área actualizada correctamente')
+        }
+    }
+    const onRegister = async () =>{
+        const result = await createPlace({name, direction, capacity})
+        if (result === 'ERROR'){
+            resultFail('Ups, ha ocurrido un error al registrar el área')
+        }else {
+            resultOk('Área registrada correctamente')
         }
     }
 
-    const resultOk = () => {
+    const resultOk = (text) => {
         Swal.fire({
             title: 'Tarea completada!',
-            text: 'Área actualizada correctamente',
+            text: text,
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
         }).then(res => onHide('reload'))
     }
-    const resultFail = () => {
+    const resultFail = (text) => {
         Swal.fire({
             title: 'Error!',
-            text: 'Ups, ha ocurrido un error al actualizar el área',
+            text: text,
             icon: 'danger',
             confirmButtonColor: '#d33',
             confirmButtonText: 'OK',
@@ -48,14 +63,18 @@ export const EditModalPlace = ({show, onHide, place}) => {
         event.preventDefault()
         Swal.fire({
             title: '¿Estás seguro?',
-            text: 'Quieres actualizar esta área',
+            text: place ? 'Quieres actualizar esta área' : 'Quieres registrar una nueva área',
             icon: 'question',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Aceptar',
             showLoaderOnConfirm: true,
             async preConfirm(inputValue) {
-                await onUpdate()
+                if (place){
+                    await onUpdate()
+                }else{
+                    await onRegister()
+                }
             }
         })
     }
@@ -90,7 +109,7 @@ export const EditModalPlace = ({show, onHide, place}) => {
 
                 <Modal.Footer>
                     <Button onClick={onHide} variant="secondary">Cerrar</Button>
-                    <Button type="submit" variant="primary">Guardar</Button>
+                    <Button type="submit" variant="primary">{place ? 'Guardar': 'Registrar'}</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

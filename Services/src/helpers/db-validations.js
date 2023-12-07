@@ -131,6 +131,19 @@ const status = async (status) =>{
     }
 }
 
+const thereCategoriesInDevices = async (id) =>{
+    const existDevice = await Device.exists({category: id})
+    if (existDevice){
+        throw new Error('This has devices')
+    }
+}
+const thereSameCategory = async (name) =>{
+    const existDevice = await Category.exists({name: name, _id: { $ne: id }})
+    if (existDevice){
+        throw new Error('Already exists')
+    }
+}
+
 module.exports ={
     validateEmail,
     validateId,
@@ -147,4 +160,6 @@ module.exports ={
     existDevice,
     roles,
     status,
+    thereCategoriesInDevices,
+    thereSameCategory
 }

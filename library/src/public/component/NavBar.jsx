@@ -1,6 +1,16 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCog, faUser, faSignOutAlt, faUsers, faLaptop, faUserEdit, faHandHoldingHand } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHome,
+  faCog,
+  faUser,
+  faSignOutAlt,
+  faUsers,
+  faLaptop,
+  faUserEdit,
+  faHandHoldingHand,
+  faBuilding, faStore, faList
+} from '@fortawesome/free-solid-svg-icons';
 // import logo from './logo.png';
 import '../style/SideNav.css';
 import { AuthContext } from '../../auth/context/AuthContext';
@@ -43,6 +53,24 @@ export const NavBar = () => {
           <a href="/admin/device">
             <FontAwesomeIcon icon={faLaptop} className="sidenav-icon" />
             Dispositivos
+          </a>
+        </li>
+        <li className="sidenav-item">
+          <a href="/admin/place">
+            <FontAwesomeIcon icon={faBuilding} className="sidenav-icon" />
+            Almacenes
+          </a>
+        </li>
+        <li className="sidenav-item">
+          <a href="/admin/supplier">
+            <FontAwesomeIcon icon={faStore} className="sidenav-icon" />
+            Proveedores
+          </a>
+        </li>
+        <li className="sidenav-item">
+          <a href="/admin/category">
+            <FontAwesomeIcon icon={faList} className="sidenav-icon" />
+            Categorías
           </a>
         </li>
         <li className="sidenav-item">
