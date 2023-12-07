@@ -3,39 +3,53 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import {MDBInput} from "mdb-react-ui-kit";
 import {updateCategory} from "../helpers/updateCategory.js";
 import Swal from "sweetalert2";
+import {createCategory} from "../helpers/createCategory.js";
 
 
-export const ModalEdit = ({show, onHide, category}) => {
+export const ModalEdit = ({show, onHide, category= null}) => {
 
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     useEffect(() => {
-        setName(category.name)
-        setDescription(category.description)
+        if (category !== null) {
+            setName(category.name)
+            setDescription(category.description)
+        }else{
+            setName('')
+            setDescription('')
+        }
     }, [show]);
 
     const onUpdate = async () =>{
         const result = await updateCategory({name, description, id: category.uid})
         if (result === 'ERROR'){
-            resultFail()
+            resultFail('Ups, ha ocurrido un error al actualizar la categoría')
         }else {
-            resultOk()
+            resultOk('Categoría actualizada correctamente')
+        }
+    }
+    const onRegister = async () =>{
+        const result = await createCategory({name, description})
+        if (result === 'ERROR'){
+            resultFail('Ups, ha ocurrido un error al registrar la categoría')
+        }else {
+            resultOk('Categoría registrada correctamente')
         }
     }
 
-    const resultOk = () => {
+    const resultOk = (text) => {
         Swal.fire({
             title: 'Tarea completada!',
-            text: 'Categoría actualizada correctamente',
+            text: text,
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
         }).then(res => onHide('reload'))
     }
-    const resultFail = () => {
+    const resultFail = (text) => {
         Swal.fire({
             title: 'Error!',
-            text: 'Ups, ha ocurrido un error al actualizar la categoría',
+            text: text,
             icon: 'danger',
             confirmButtonColor: '#d33',
             confirmButtonText: 'OK',
@@ -46,14 +60,19 @@ export const ModalEdit = ({show, onHide, category}) => {
         event.preventDefault()
         Swal.fire({
             title: '¿Estás seguro?',
-            text: 'Quieres actualizar esta categoría',
+            text: category ? 'Quieres actualizar esta categoría' : 'Quieres registrar una nueva categoría',
             icon: 'question',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Aceptar',
             showLoaderOnConfirm: true,
             async preConfirm(inputValue) {
-                await onUpdate()
+                if (category){
+                    await onUpdate()
+                }else {
+                    await onRegister()
+                }
+
             }
         })
     }
@@ -83,7 +102,7 @@ export const ModalEdit = ({show, onHide, category}) => {
 
                     <Modal.Footer>
                         <Button onClick={onHide} variant="secondary">Cerrar</Button>
-                        <Button type="submit" variant="primary">Guardar</Button>
+                        <Button type="submit" variant="primary">{category ? 'Guardar' : 'Registrar'}</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>

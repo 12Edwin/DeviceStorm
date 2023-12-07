@@ -3,42 +3,57 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import {MDBInput} from "mdb-react-ui-kit";
 import Swal from "sweetalert2";
 import {updateSupplier} from "../helpers/updateSupplier.js";
+import {createSupplier} from "../helpers/createSupplier.js";
 
 
-export const EditModalSupplier = ({show, onHide, supplier}) => {
+export const EditModalSupplier = ({show, onHide, supplier = null}) => {
 
     const [name, setName] = useState("")
     const [direction, setDirection] = useState("")
     const [contact, setContact] = useState(0)
 
     useEffect(() => {
-        setName(supplier.name)
-        setDirection(supplier.direction)
-        setContact(supplier.contact)
+        if(supplier) {
+            setName(supplier.name)
+            setDirection(supplier.direction)
+            setContact(supplier.contact)
+        }else{
+            setName('')
+            setDirection('')
+            setContact(0)
+        }
     }, [show]);
 
     const onUpdate = async () =>{
         const result = await updateSupplier({name, direction, contact, id: supplier.uid})
         if (result === 'ERROR'){
-            resultFail()
+            resultFail('Ups, ha ocurrido un error al actualizar el proveedor')
         }else {
-            resultOk()
+            resultOk('Proveedor actualizado correctamente')
+        }
+    }
+    const onRegister = async () =>{
+        const result = await createSupplier({name, direction, contact})
+        if (result === 'ERROR'){
+            resultFail('Ups, ha ocurrido un error al registrar el proveedor')
+        }else {
+            resultOk('Proveedor registrado correctamente')
         }
     }
 
-    const resultOk = () => {
+    const resultOk = (text) => {
         Swal.fire({
             title: 'Tarea completada!',
-            text: 'Proveedor actualizado correctamente',
+            text: text,
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
         }).then(res => onHide('reload'))
     }
-    const resultFail = () => {
+    const resultFail = (text) => {
         Swal.fire({
             title: 'Error!',
-            text: 'Ups, ha ocurrido un error al actualizar el proveedor',
+            text: text,
             icon: 'danger',
             confirmButtonColor: '#d33',
             confirmButtonText: 'OK',
@@ -49,14 +64,18 @@ export const EditModalSupplier = ({show, onHide, supplier}) => {
         event.preventDefault()
         Swal.fire({
             title: '¿Estás seguro?',
-            text: 'Quieres actualizar este proveedor',
+            text: supplier ? 'Quieres actualizar este proveedor' : 'Quieres registrar un nuevo proveedor',
             icon: 'question',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Aceptar',
             showLoaderOnConfirm: true,
             async preConfirm(inputValue) {
-                await onUpdate()
+                if(supplier) {
+                    await onUpdate()
+                }else{
+                    await onRegister()
+                }
             }
         })
     }
@@ -91,7 +110,7 @@ export const EditModalSupplier = ({show, onHide, supplier}) => {
 
                 <Modal.Footer>
                     <Button onClick={onHide} variant="secondary">Cerrar</Button>
-                    <Button type="submit" variant="primary">Guardar</Button>
+                    <Button type="submit" variant="primary">{supplier ? 'Guardar': 'Registrar'}</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

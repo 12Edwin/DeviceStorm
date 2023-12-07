@@ -9,9 +9,11 @@ import {ModalEdit} from "../component/ModalEdit.jsx";
 import Swal from "sweetalert2";
 import {updateCategory} from "../helpers/updateCategory.js";
 import {changeStatusCategory} from "../helpers/changeStatusCategory.js";
+import {Header} from "../../../public/component/Header.jsx";
 export const CategoryPage = () => {
 
     const [categories, setCategories] = useState([]);
+    const [aux, setAux] = useState([])
     const [category, setCategory] = useState({});
     const [loading, setLoading] = useState(false)
     const [openModal, setOpenModal] = useState(false);
@@ -39,6 +41,7 @@ export const CategoryPage = () => {
             resultFail()
         }else{
             setCategories(result)
+            setAux(result)
         }
 
         setLoading(false);
@@ -101,7 +104,8 @@ export const CategoryPage = () => {
     }
 
         return (
-            <div style={{marginLeft: '22vw', marginRight: '5vw'}}>
+            <div style={{marginLeft: '22vw', marginTop: '3vh', marginRight: '5vw'}}>
+                <Header title={'Categorías'} data={categories} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
                 <div className="rounded-5 header-table bg-info">
                     <span> Categorías </span>
                 </div>
@@ -115,7 +119,7 @@ export const CategoryPage = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {categories.map((item,ind) => (
+                {aux.map((item,ind) => (
                     <tr key={ind}>
                         <td>{ind + 1}</td>
                         <td>{item.name}</td>

@@ -36,7 +36,8 @@ const getById = async (req, res= Response) =>{
 const insert = async (req, res= Response) =>{
     try {
         const {name,description, gender} = req.body
-        const category = await new Category({name, description, gender});
+        const created_at = new Date()
+        const category = await new Category({name, description, created_at, status: true});
         await category.save();
 
         res.status(200).json({msg:'Successful request',category});

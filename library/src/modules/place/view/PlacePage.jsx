@@ -8,10 +8,12 @@ import Swal from "sweetalert2";
 import {getPlaces} from "../helpers/getPlaces.js";
 import {changeStatusPlace} from "../helpers/changeStatusPlace.js";
 import {EditModalPlace} from "../component/EditModalPlace.jsx";
+import {Header} from "../../../public/component/Header.jsx";
 
 export const PlacePage = ()=>{
 
     const [places, setPlaces] = useState([]);
+    const [aux, setAux] = useState([])
     const [place, setPlace] = useState({})
     const [loading, setLoading] = useState(true)
     const [showModal, setShowModal] = useState(false);
@@ -23,6 +25,7 @@ export const PlacePage = ()=>{
             resultFail()
         }else{
             setPlaces(result)
+            setAux(result)
         }
 
         setLoading(false);
@@ -102,34 +105,37 @@ export const PlacePage = ()=>{
     }
 
     return(
-        <div style={{marginTop: '3vh' ,marginLeft: '22vw', marginRight: '5vw'}} className="d-flex flex-row flex-wrap">
-            {places.map((card, ind) => (
-                <Card key={ind} className="card-place m-3" style={{width: "18rem"}}>
+        <div style={{marginTop: '3vh' ,marginLeft: '22vw', marginRight: '5vw'}}>
+            <Header title={'Espacios'} data={places} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
+            <div className="d-flex flex-row flex-wrap">
+                {aux.map((card, ind) => (
+                    <Card key={ind} className="card-place m-3" style={{width: "18rem"}}>
 
-                    <div className="d-flex justify-content-center p-4 bg-light">
-                        <FontAwesomeIcon icon={faBuilding} size="6x" />
-                    </div>
+                        <div className="d-flex justify-content-center p-4 bg-light">
+                            <FontAwesomeIcon icon={faBuilding} size="6x" />
+                        </div>
 
-                    <CardBody>
-                        <CardTitle className="text-center" style={{fontWeight: 600}}>
-                            {card.name}
-                        </CardTitle>
-                        <CardText className="text-center small">
-                            {card.direction}
-                        </CardText>
-                        <CardText className="text-center small">
-                            Capacidad: {card.capacity}
-                        </CardText>
-                    </CardBody>
+                        <CardBody>
+                            <CardTitle className="text-center" style={{fontWeight: 600}}>
+                                {card.name}
+                            </CardTitle>
+                            <CardText className="text-center small">
+                                {card.direction}
+                            </CardText>
+                            <CardText className="text-center small">
+                                Capacidad: {card.capacity}
+                            </CardText>
+                        </CardBody>
 
-                    <CardFooter className="d-flex justify-content-between">
-                        <Button color="primary" onClick={()=> onOpenModal(card)}> Editar <FontAwesomeIcon icon={faPencilAlt}/></Button>
-                        <Switch checked={card.status} onChange={()=> handleSwitchChange(card.uid)}/>
-                    </CardFooter>
+                        <CardFooter className="d-flex justify-content-between">
+                            <Button color="primary" onClick={()=> onOpenModal(card)}> Editar <FontAwesomeIcon icon={faPencilAlt}/></Button>
+                            <Switch checked={card.status} onChange={()=> handleSwitchChange(card.uid)}/>
+                        </CardFooter>
 
-                </Card>
-            ))}
-            <EditModalPlace place={place} show={showModal} onHide={(value)=> onCloseModal(value)}/>
+                    </Card>
+                ))}
+                <EditModalPlace place={place} show={showModal} onHide={(value)=> onCloseModal(value)}/>
+            </div>
         </div>
     )
 }
