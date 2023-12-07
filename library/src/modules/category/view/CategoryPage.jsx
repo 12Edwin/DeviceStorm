@@ -105,7 +105,7 @@ export const CategoryPage = () => {
 
         return (
             <div style={{marginLeft: '22vw', marginTop: '3vh', marginRight: '5vw'}}>
-                <Header title={'Categorías'} data={categories} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
+                <Header title={'Categorías'} showFilter={true} showInsert={true} data={categories} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
                 <div className="rounded-5 header-table bg-info">
                     <span> Categorías </span>
                 </div>

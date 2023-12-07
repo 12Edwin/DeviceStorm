@@ -1,7 +1,7 @@
 const {Router} = require("express");
 const Category = require('../category/Category');
 const {validateError, validateMiddlewares} = require("../../util/functions");
-const {validateJWT, validateIdCategory, status} = require("../../helpers/db-validations");
+const {validateJWT, validateIdCategory, status, thereCategoriesInDevices, thereSameCategory} = require("../../helpers/db-validations");
 const {check} = require("express-validator");
 const User = require("../user/User");
 
@@ -93,15 +93,17 @@ categoryRouter.post('/',[
     validateJWT,
     check('name', 'El nombre del status es obligatorio').not().isEmpty(),
     check('description').not().isEmpty().withMessage('Description required'),
+    check('name').custom(thereSameCategory),
     validateMiddlewares
 ], insert);
 
 categoryRouter.put('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdCategory),
-    check('name', 'El nombre del status es obligatorio').not().isEmpty(),
-    check('description').not().isEmpty().withMessage('Description required'),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('description').not().isEmpty().withMessage('Missing fields'),
+    check(['name', 'id']).custom(thereSameCategory),
     validateMiddlewares
 ], update);
 
@@ -109,6 +111,7 @@ categoryRouter.delete('/:id/:status',[
     validateJWT,
     check('id', 'El id debe ser de mongo').isMongoId(),
     check('id').custom(validateIdCategory),
+    check('id').custom(thereCategoriesInDevices),
     validateMiddlewares
 ],deletes);
 

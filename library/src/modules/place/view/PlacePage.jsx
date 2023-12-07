@@ -106,7 +106,7 @@ export const PlacePage = ()=>{
 
     return(
         <div style={{marginTop: '3vh' ,marginLeft: '22vw', marginRight: '5vw'}}>
-            <Header title={'Espacios'} data={places} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
+            <Header title={'Espacios'} showFilter={true} showInsert={true} data={places} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
             <div className="d-flex flex-row flex-wrap">
                 {aux.map((card, ind) => (
                     <Card key={ind} className="card-place m-3" style={{width: "18rem"}}>
