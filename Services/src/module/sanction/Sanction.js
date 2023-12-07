@@ -9,7 +9,7 @@ const sanctionSchema = Schema({
         type: String,
         required: true
     },
-    dueDate: {
+    returns: {
         type: Date,
         required: true
     },
