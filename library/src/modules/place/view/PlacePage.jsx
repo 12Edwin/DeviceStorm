@@ -21,8 +21,8 @@ export const PlacePage = ()=>{
     const fillPlaces = async () =>{
         setLoading(true)
         const result = await getPlaces();
-        if(result === "ERROR"){
-            resultFail()
+        if(typeof (result) === "string"){
+            resultFail(result)
         }else{
             setPlaces(result)
             setAux(result)
@@ -76,8 +76,8 @@ export const PlacePage = ()=>{
 
     const onChangeStatus = async (id) =>{
         const result = await changeStatusPlace(id)
-        if (result === 'ERROR'){
-            resultFail('Ups, ha ocurrido un error al actualizar la área')
+        if (typeof (result) === 'string'){
+            resultFail(result)
             return false
         }else {
             resultOk()

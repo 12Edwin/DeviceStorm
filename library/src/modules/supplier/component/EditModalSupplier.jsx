@@ -4,38 +4,67 @@ import {MDBInput} from "mdb-react-ui-kit";
 import Swal from "sweetalert2";
 import {updateSupplier} from "../helpers/updateSupplier.js";
 import {createSupplier} from "../helpers/createSupplier.js";
+import {useFormik} from "formik";
+import * as Yup from 'yup'
 
 
 export const EditModalSupplier = ({show, onHide, supplier = null}) => {
 
-    const [name, setName] = useState("")
-    const [direction, setDirection] = useState("")
-    const [contact, setContact] = useState(0)
-
     useEffect(() => {
-        if(supplier) {
-            setName(supplier.name)
-            setDirection(supplier.direction)
-            setContact(supplier.contact)
+        formik.handleReset()
+        if(supplier && show) {
+            formik.values.name = supplier.name
+            formik.values.direction = supplier.direction
+            formik.values.contact = supplier.contact
         }else{
-            setName('')
-            setDirection('')
-            setContact(0)
+            formik.values.name = ''
+            formik.values.direction = ''
+            formik.values.contact = 0
         }
     }, [show]);
 
-    const onUpdate = async () =>{
+    const resetForm = (value = '')=>{
+        formik.values.name = ''
+        formik.values.direction = ''
+        formik.values.contact = ''
+        formik.resetForm()
+        formik.handleReset()
+        onHide(value)
+    }
+
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            direction: '',
+            contact: 0,
+        },
+        validationSchema: Yup.object().shape({
+            name: Yup.string().required('El nombre es obligatorio'),
+            direction: Yup.string().required('La dirección es obligatoria'),
+            contact: Yup.string().required('Contacto obligatorio')
+                .matches(/^[0-9]+$/, 'Formato incorrecto')
+                .min(10, 'Formato incorrecto')
+                .max(10, 'Formato incorrecto')
+        }),
+        onSubmit: async (values,{setSubmitting}) => {
+            setSubmitting(true)
+            await onConfirm(values)
+            setSubmitting(false)
+        },
+    });
+
+    const onUpdate = async ({name, direction, contact}) =>{
         const result = await updateSupplier({name, direction, contact, id: supplier.uid})
-        if (result === 'ERROR'){
-            resultFail('Ups, ha ocurrido un error al actualizar el proveedor')
+        if (typeof (result) === 'string'){
+            resultFail(result)
         }else {
             resultOk('Proveedor actualizado correctamente')
         }
     }
-    const onRegister = async () =>{
+    const onRegister = async ({name, direction, contact}) =>{
         const result = await createSupplier({name, direction, contact})
-        if (result === 'ERROR'){
-            resultFail('Ups, ha ocurrido un error al registrar el proveedor')
+        if (typeof (result) === 'string'){
+            resultFail(result)
         }else {
             resultOk('Proveedor registrado correctamente')
         }
@@ -48,7 +77,7 @@ export const EditModalSupplier = ({show, onHide, supplier = null}) => {
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
-        }).then(res => onHide('reload'))
+        }).then(res => resetForm('reload'))
     }
     const resultFail = (text) => {
         Swal.fire({
@@ -60,8 +89,7 @@ export const EditModalSupplier = ({show, onHide, supplier = null}) => {
         });
     }
 
-    const onConfirm = (event) =>{
-        event.preventDefault()
+    const onConfirm = (data) =>{
         Swal.fire({
             title: '¿Estás seguro?',
             text: supplier ? 'Quieres actualizar este proveedor' : 'Quieres registrar un nuevo proveedor',
@@ -72,17 +100,17 @@ export const EditModalSupplier = ({show, onHide, supplier = null}) => {
             showLoaderOnConfirm: true,
             async preConfirm(inputValue) {
                 if(supplier) {
-                    await onUpdate()
+                    await onUpdate(data)
                 }else{
-                    await onRegister()
+                    await onRegister(data)
                 }
             }
         })
     }
 
     return (
-        <Modal show={show} onHide={onHide}  centered>
-            <Form onSubmit={(event)=> onConfirm(event)}>
+        <Modal show={show} onHide={resetForm}  centered>
+            <Form onSubmit={(event)=> {event.preventDefault(); formik.handleSubmit()}}>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         Editar proveedor
@@ -92,25 +120,40 @@ export const EditModalSupplier = ({show, onHide, supplier = null}) => {
                 <Modal.Body>
 
                     <Form.Group className="mb-3">
-                        <MDBInput wrapperClass='mb-4' label='Nombre' id='name' type='text'
-                                  value={name} onChange={txt => setName(txt.target.value)}/>
+                        <MDBInput wrapperClass='mb-2' label='Nombre' id='name' name="name" type='text'
+                                  onChange={formik.handleChange}
+                                  onBlur={formik.handleBlur}
+                                  value={formik.values.name}/>
+                        {formik.touched.name && formik.errors.name && (
+                            <span className="text-error">{formik.errors.name}</span>
+                        )}
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <MDBInput wrapperClass='mb-4'  label='Dirección' id='direction' type='text'
-                                  value={direction} onChange={txt => setDirection(txt.target.value)}/>
+                        <MDBInput wrapperClass='mb-2'  label='Dirección' id='direction' name='direction' type='text'
+                                  onChange={formik.handleChange}
+                                  onBlur={formik.handleBlur}
+                                  value={formik.values.direction}/>
+                        {formik.touched.direction && formik.errors.direction && (
+                            <span className="text-error">{formik.errors.direction}</span>
+                        )}
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <MDBInput wrapperClass='mb-4'  label='Contacto' id='space' type='number'
-                                  value={contact} onChange={txt => setContact(parseInt(txt.target.value) || -1)}/>
+                        <MDBInput wrapperClass='mb-2'  label='Contacto' id='contact' name='contact' type='number'
+                                  onChange={formik.handleChange}
+                                  onBlur={formik.handleBlur}
+                                  value={formik.values.contact}/>
+                        {formik.touched.contact && formik.errors.contact && (
+                            <span className="text-error">{formik.errors.contact}</span>
+                        )}
                     </Form.Group>
 
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button onClick={onHide} variant="secondary">Cerrar</Button>
-                    <Button type="submit" variant="primary">{supplier ? 'Guardar': 'Registrar'}</Button>
+                    <Button onClick={resetForm} disabled={formik.isSubmitting} variant="secondary">Cerrar</Button>
+                    <Button type="submit" disabled={formik.isSubmitting} variant="primary">{supplier ? 'Guardar': 'Registrar'}</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

@@ -21,8 +21,8 @@ export const SupplierPage = () =>{
     const fillSuppliers = async () =>{
         setLoading(true)
         const result = await getSuppliers();
-        if(result === "ERROR"){
-            resultFail()
+        if(typeof (result) === "string"){
+            resultFail(result)
         }else{
             setSuppliers(result)
             setAux(result)
@@ -76,8 +76,8 @@ export const SupplierPage = () =>{
 
     const onChangeStatus = async (id) =>{
         const result = await changeStatusSupplier(id)
-        if (result === 'ERROR'){
-            resultFail('Ups, ha ocurrido un error al actualizar el proveedor')
+        if (typeof (result) === 'string'){
+            resultFail(result)
             return false
         }else {
             resultOk()
@@ -106,7 +106,7 @@ export const SupplierPage = () =>{
 
     return(
         <div style={{marginTop: '3vh' ,marginLeft: '22vw', marginRight: '5vw'}}>
-            <Header title={'Proveedores'} showFilter={false} showInsert={false} data={suppliers} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
+            <Header title={'Proveedores'} showFilter={true} showInsert={true} data={suppliers} setAux={setAux} onCreate={()=> onOpenModal(null)}/>
             <div className="d-flex flex-row flex-wrap">
                 {aux.map((card, ind) => (
                     <Card key={ind} className="card-supplier m-3" style={{width: "18rem"}}>

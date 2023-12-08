@@ -1,7 +1,7 @@
 const {Router} = require("express");
 const Place = require('./Place');
 const {validateError, validateMiddlewares} = require("../../util/functions");
-const {validateJWT, validateIdPlace, validateIdCategory} = require("../../helpers/db-validations");
+const {validateJWT, validateIdPlace, validateIdCategory, thereDevicesInPlace, thereSamePlace, minDevicesForPlace} = require("../../helpers/db-validations");
 const {check} = require("express-validator");
 const Category = require("../category/Category");
 
@@ -53,13 +53,20 @@ const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
         const place = req.body;
+        await thereSamePlace(place.name, id)
+        await minDevicesForPlace(id, place.capacity)
         await Place.findByIdAndUpdate(id,place);
 
         res.status(200).json({msg:'Successful request', place});
     }catch (error){
-        const message = validateError(error);
-        res.status(400).json(message);
-        console.log(error);
+        if (error.toString().includes('Already exists') ){
+            res.status(400).json({msg: 'Already exists'})
+        } if (error.toString().includes('Capacity is so little')){
+            res.status(400).json({msg: 'Capacity is so little'})
+        } else{
+            res.status(500).json(error);
+            console.log(error);
+        }
     }
 }
 
@@ -96,6 +103,7 @@ placeRouter.post('/',[
     check('direction').not().isEmpty().withMessage('Direction is required'),
     check('capacity').not().isEmpty().withMessage('Capacity is required'),
     check('capacity').isNumeric().withMessage('Capacity must be number'),
+    check('name').custom((name)=> thereSamePlace(name)),
     validateMiddlewares
 ], insert);
 
@@ -107,6 +115,7 @@ placeRouter.put('/:id',[
     check('direction').not().isEmpty().withMessage('Direction is required'),
     check('capacity').not().isEmpty().withMessage('Capacity is required'),
     check('capacity').isNumeric().withMessage('Capacity must be number'),
+    check('capacity').isInt({min:5, max:200}).withMessage('Invalid fields'),
     validateMiddlewares
 ], update);
 
@@ -114,6 +123,7 @@ placeRouter.delete('/:id',[
     validateJWT,
     check('id', 'El id debe ser de mongo').isMongoId(),
     check('id').custom(validateIdPlace),
+    check('id').custom(thereDevicesInPlace),
     validateMiddlewares
 ],deletes);
 

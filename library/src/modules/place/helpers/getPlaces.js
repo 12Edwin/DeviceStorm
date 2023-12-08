@@ -5,6 +5,6 @@ export const getPlaces = async () =>{
         const response = await api.doGet(`/place/`);
         return response.data.places;
     }catch(err){
-        return 'ERROR';
+        return 'Ocurrió un error al obtener los alamacenes';
     }
 }
