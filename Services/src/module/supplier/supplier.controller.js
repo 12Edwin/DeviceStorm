@@ -1,7 +1,7 @@
 const {Router} = require("express");
 const Supplier = require('./Supplier');
 const {validateError, validateMiddlewares} = require("../../util/functions");
-const {validateJWT, validateIdSupplier} = require("../../helpers/db-validations");
+const {validateJWT, validateIdSupplier, thereSameSupplier} = require("../../helpers/db-validations");
 const {check} = require("express-validator");
 
 const getAll = async (req, res= Response) =>{
@@ -52,13 +52,17 @@ const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
         const supplier = req.body;
+        await thereSameSupplier(supplier.name, id)
         await Supplier.findByIdAndUpdate(id,supplier);
 
         res.status(200).json({msg:'Successful request', supplier});
     }catch (error){
-        const message = validateError(error);
-        res.status(400).json(message);
-        console.log(error);
+        if (error.toString().includes('Already exists') ){
+            res.status(400).json({msg: 'Already exists'})
+        }else{
+            res.status(500).json(error);
+            console.log(error);
+        }
     }
 }
 
@@ -84,34 +88,35 @@ supplierRouter.get('/',[
 
 supplierRouter.get('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdSupplier),
     validateMiddlewares
 ],getById);
 
 supplierRouter.post('/',[
     validateJWT,
-    check('name', 'Name is required').not().isEmpty(),
-    check('direction').not().isEmpty().withMessage('Direction is required'),
-    check('contact').not().isEmpty().withMessage('Contact is required'),
-    check('contact').isNumeric().withMessage('Contact must be number'),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('direction').not().isEmpty().withMessage('Missing fields'),
+    check('contact').not().isEmpty().withMessage('Missing fields'),
+    check('contact').isMobilePhone('es-MX').withMessage('Invalid fields'),
+    check('name').custom((name)=> thereSameSupplier(name)),
     validateMiddlewares
 ], insert);
 
 supplierRouter.put('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdSupplier),
-    check('name', 'Name is required').not().isEmpty(),
-    check('direction').not().isEmpty().withMessage('Direction is required'),
-    check('contact').not().isEmpty().withMessage('Contact is required'),
-    check('contact').isNumeric().withMessage('Contact must be number'),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('direction').not().isEmpty().withMessage('Missing fields'),
+    check('contact').isMobilePhone('es-MX').withMessage('Invalid fields'),
+    check('contact').isNumeric().withMessage('Invalid fields'),
     validateMiddlewares
 ], update);
 
 supplierRouter.delete('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdSupplier),
     validateMiddlewares
 ],deletes);

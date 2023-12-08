@@ -17,57 +17,57 @@ const validateEmail = async (email = '') =>{
 const validateId = async (id = '') =>{
     const idExist = await User.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 
 const validateIdDevice = async (id = '') =>{
     const idExist = await Device.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 
 const validateIdRole = async (id = '') =>{
     const idExist = await Role.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 const validateIdCategory = async (id = '') =>{
     const idExist = await Category.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 const validateIdPlace = async (id = '') =>{
     const idExist = await Place.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 const validateIdSupplier = async (id = '') =>{
     const idExist = await Supplier.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 const validateIdRequest = async (id = '') =>{
     const idExist = await Request.findById(id);
     if (!idExist){
-        throw new Error('Id no encontrado en la base de datos');
+        throw new Error('Not found');
     }
 }
 
 const validateAdmin = async (req, res = Response, next) =>{
     if ('ADMIN_ROLE' !== req.user.role){
-        return res.status(401).json({msg:'No autorizado'});
+        return res.status(403).json({msg:'Forbidden'});
     }
     next();
 }
 const validateUser = async (req, res = Response, next) =>{
     if ('USER_ROLE' !== req.user.role){
-        return res.status(401).json({msg:'No autorizado'});
+        return res.status(403).json({msg:'Forbidden'});
     }
     next();
 }
@@ -76,7 +76,7 @@ const validateJWT = async (req, res = Response, next) =>{
     let token = req.header('x-token');
     if (!token){
         return res.status(401).json(
-            {msg: 'Acceso denegado'}
+            {msg: 'No access token'}
         );
     }
     try {
@@ -88,7 +88,7 @@ const validateJWT = async (req, res = Response, next) =>{
 
         next()
     }catch (err){
-        res.status(401).json({msg:'Acceso denegado'});
+        res.status(401).json({msg:'Invalid token'});
         console.log(err);
     }
 }
@@ -137,10 +137,41 @@ const thereCategoriesInDevices = async (id) =>{
         throw new Error('This has devices')
     }
 }
-const thereSameCategory = async (name) =>{
-    const existDevice = await Category.exists({name: name, _id: { $ne: id }})
+const thereDevicesInPlace = async (id) =>{
+    const existDevice = await Device.exists({place: id})
     if (existDevice){
+        throw new Error('This has devices')
+    }
+}
+const thereSameCategory = async (name, id = '000000000000000000000000') =>{
+    const existCategory = await Category.exists({name: name, _id: { $ne: id }})
+
+    if (existCategory){
         throw new Error('Already exists')
+    }
+}
+const thereSameSupplier = async (name, id = '000000000000000000000000') =>{
+    const existSupplier = await Supplier.exists({name: name, _id: { $ne: id }})
+
+    if (existSupplier){
+        throw new Error('Already exists')
+    }
+}
+const thereSamePlace = async (name, id = '000000000000000000000000') =>{
+    const existPlace = await Place.exists({name: name, _id: { $ne: id }})
+
+    if (existPlace){
+        throw new Error('Already exists')
+    }
+}
+const minDevicesForPlace = async (id, capacity)=>{
+    let totalDevices = 0
+    const devices = await Device.find({place: id})
+    for (let device of devices){
+        totalDevices += device.stock
+    }
+    if (capacity < totalDevices){
+        throw new Error('Capacity is so little')
     }
 }
 
@@ -161,5 +192,9 @@ module.exports ={
     roles,
     status,
     thereCategoriesInDevices,
-    thereSameCategory
+    thereSameCategory,
+    thereDevicesInPlace,
+    thereSameSupplier,
+    thereSamePlace,
+    minDevicesForPlace
 }

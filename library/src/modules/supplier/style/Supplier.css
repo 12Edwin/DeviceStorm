@@ -19,3 +19,8 @@
 .title {
     color: #888
 }
+
+.text-error{
+    color: red;
+    margin: 0;
+}

@@ -76,15 +76,15 @@ export const CategoryPage = () => {
 
     const onChangeStatus = async (id, status) =>{
         const result = await changeStatusCategory(id, status)
-        if (result === 'ERROR'){
-            resultFail('Ups, ha ocurrido un error al actualizar la categoría')
+        if (typeof (result) === 'string'){
+            resultFail(result)
             return false
         }else {
             resultOk()
             return true
         }
     }
-    const resultFail = (text = 'Ups, ha ocurrido un error al obtener las categorías') => {
+    const resultFail = (text) => {
         Swal.fire({
             title: 'Error!',
             text,

@@ -5,6 +5,6 @@ export const getSuppliers = async () =>{
         const response = await api.doGet(`/supplier/`);
         return response.data.suppliers;
     }catch(err){
-        return 'ERROR';
+        return 'Ocurrió un error al obtener los proveedores';
     }
 }

@@ -51,14 +51,20 @@ const insert = async (req, res= Response) =>{
 const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
+
         const category = req.body;
+        await thereSameCategory(category.name, id)
         await Category.findByIdAndUpdate(id,category);
 
         res.status(200).json({msg:'Successful request', category});
     }catch (error){
-        const message = validateError(error);
-        res.status(400).json(message);
-        console.log(error);
+        if (error.toString().includes('Already exists') ){
+            res.status(400).json({msg: 'Already exists'})
+        }else{
+            res.status(500).json(error);
+            console.log(error);
+        }
+
     }
 }
 
@@ -84,16 +90,16 @@ categoryRouter.get('/',[
 
 categoryRouter.get('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdCategory),
     validateMiddlewares
 ],getById);
 
 categoryRouter.post('/',[
     validateJWT,
-    check('name', 'El nombre del status es obligatorio').not().isEmpty(),
-    check('description').not().isEmpty().withMessage('Description required'),
-    check('name').custom(thereSameCategory),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('description').not().isEmpty().withMessage('Missing fields'),
+    check('name').custom((name)=> thereSameCategory(name)),
     validateMiddlewares
 ], insert);
 
@@ -103,13 +109,12 @@ categoryRouter.put('/:id',[
     check('id').custom(validateIdCategory),
     check('name', 'Missing fields').not().isEmpty(),
     check('description').not().isEmpty().withMessage('Missing fields'),
-    check(['name', 'id']).custom(thereSameCategory),
     validateMiddlewares
 ], update);
 
 categoryRouter.delete('/:id/:status',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdCategory),
     check('id').custom(thereCategoriesInDevices),
     validateMiddlewares

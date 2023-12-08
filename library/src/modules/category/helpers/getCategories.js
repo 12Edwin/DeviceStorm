@@ -5,6 +5,6 @@ export const getCategories = async () =>{
         const response = await api.doGet('/category/');
         return response.data.category;
     }catch(err){
-        return 'ERROR';
+        return 'Ocurrió un error al obtener las categorías';
     }
 }
