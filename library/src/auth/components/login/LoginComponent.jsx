@@ -9,20 +9,19 @@ import * as Yup from 'yup';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import './Login.css'
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-
+import {ModalRecoveryPassword} from '../../../modules/user/component/ModalRecoveryPassword';
 export const LoginComponent = ({ onData, onRegister }) => {
   const [justifyActive, setJustifyActive] = useState('tab1');;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState("");
   const [errRegister, setErrRegister] = useState("");
-
+  const [onOpen, setOnOpen] = useState(false);
   const onAuth = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -92,9 +91,13 @@ export const LoginComponent = ({ onData, onRegister }) => {
               value={password} onChange={text => setPassword(text.target.value)} />
 
             <div className="d-flex justify-content-between mx-4 mb-4">
-              <a href="!#">Forgot password?</a>
+              <Button variant='link' onClick={() => setOpen(true)}>Forgot password?</Button>
+              <ModalRecoveryPassword
+                open={open}
+                onOpen={() => setOpen(false)}
+              />
             </div>
-
+            
             <MDBBtn className="mb-4 w-100" type='submit'> {loading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Sign in"}</MDBBtn>
           </form>
 

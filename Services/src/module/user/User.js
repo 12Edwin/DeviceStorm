@@ -30,6 +30,9 @@ const userSchema = Schema ({
     status: {
         type: Boolean,
         required: true
+    },
+    token: {
+        type: String
     }
 });
 
