@@ -1,17 +1,8 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 export const getHistory = async (id) =>{
     try{
-    const user = await JSON.parse(localStorage.getItem('user'))
-    const token = user.token;
-    const email = await getUser(id, token);
-    const url = `http://localhost:3000/api/request/email/${email}`;
-    const response = await axios(url,{
-        headers:{
-            'x-token': token
-        }
-    });
-    console.log(response);
+    const email = await getUser(id);
+    const response = await api.doGet(`/request/email/${email}`);
     return response.data;
 }catch(err){
     return 'ERROR';
@@ -20,12 +11,7 @@ export const getHistory = async (id) =>{
 
 
 const getUser = async(id, token) =>{
-    const url = `http://localhost:3000/api/user/${id}`;
-    const response = await axios(url,{
-        headers:{
-            'x-token': token
-        }
-    });
+    const response = await api.doGet(`/user/${id}`);
     return response.data.user.email
 }
 

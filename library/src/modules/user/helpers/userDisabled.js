@@ -1,16 +1,8 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 
 export const userDisabled = async(id) =>{
     try{
-        const user = await JSON.parse(localStorage.getItem('user'));
-        const token = user.token;
-        const url = `http://localhost:3000/api/user/${id}`;
-        const response = await axios.delete(url,{
-            headers:{
-                'x-token' : token
-            }
-        })
+        const response = await api.doDelete(`/user/${id}`)
         return response.data;
     }catch(err){
         return 'ERROR';

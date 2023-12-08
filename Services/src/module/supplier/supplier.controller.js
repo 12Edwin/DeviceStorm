@@ -48,10 +48,25 @@ const insert = async (req, res= Response) =>{
     }
 }
 
+const update = async (req, res = Response) =>{
+    try {
+        const {id} = req.params;
+        const supplier = req.body;
+        await Supplier.findByIdAndUpdate(id,supplier);
+
+        res.status(200).json({msg:'Successful request', supplier});
+    }catch (error){
+        const message = validateError(error);
+        res.status(400).json(message);
+        console.log(error);
+    }
+}
+
 const deletes = async (req, res= Response) =>{
     try {
         const {id} = req.params;
-        await Supplier.findByIdAndDelete(id);
+        const supplier = await Supplier.findById(id)
+        await Supplier.findByIdAndUpdate(id, {status: !supplier.status});
 
         res.status(200).json({msg:'Status deleted'});
     }catch (error){
@@ -82,6 +97,17 @@ supplierRouter.post('/',[
     check('contact').isNumeric().withMessage('Contact must be number'),
     validateMiddlewares
 ], insert);
+
+supplierRouter.put('/:id',[
+    validateJWT,
+    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id').custom(validateIdSupplier),
+    check('name', 'Name is required').not().isEmpty(),
+    check('direction').not().isEmpty().withMessage('Direction is required'),
+    check('contact').not().isEmpty().withMessage('Contact is required'),
+    check('contact').isNumeric().withMessage('Contact must be number'),
+    validateMiddlewares
+], update);
 
 supplierRouter.delete('/:id',[
     validateJWT,

@@ -1,17 +1,8 @@
-import axios from "axios";
-
+import api from '../../../config/http.js'
 export const updateUser = async(user) =>{
 try{
     const us = await JSON.parse(localStorage.getItem('user'));
-    const token = us.token;
-    const url = `http://localhost:3000/api/user/${us.id}`;
-    const response = await axios.put(url,user,{
-        headers:{
-            'x-token':token
-        }
-        
-    })
-    console.log(response);
+    const response = await api.doPut(`/user/${us.id}`,user)
     return true;
 }catch(error){
     return 'ERROR';

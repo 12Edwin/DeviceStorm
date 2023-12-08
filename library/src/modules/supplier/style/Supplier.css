@@ -1,0 +1,21 @@
+.card-supplier{
+    transition: transform 0.4s ease;
+}
+
+.card-supplier:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 12px #999;
+}
+
+.header {
+    background: linear-gradient(45deg, #f3f3f3, #eee);
+}
+
+.logo {
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.title {
+    color: #888
+}
