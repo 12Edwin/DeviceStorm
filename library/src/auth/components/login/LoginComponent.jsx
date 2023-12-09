@@ -1,5 +1,5 @@
 import {
-  MDBTabs, MDBTabsItem, MDBTabsLink, MDBTabsContent, MDBTabsPane, MDBBtn, MDBIcon, MDBInput, MDBCheckbox
+  MDBTabs, MDBTabsItem, MDBTabsLink, MDBTabsContent, MDBTabsPane, MDBBtn, MDBIcon, MDBInput, MDBCheckbox, MDBCardImage
 } from 'mdb-react-ui-kit';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,9 +12,9 @@ import './Login.css'
 import { Row, Col, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import {ModalRecoveryPassword} from '../../../modules/user/component/ModalRecoveryPassword';
+
 export const LoginComponent = ({ onData, onRegister }) => {
   const [justifyActive, setJustifyActive] = useState('tab1');;
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
@@ -39,9 +39,23 @@ export const LoginComponent = ({ onData, onRegister }) => {
 
   return (
 
-    <div className="p-3 my-5 d-flex flex-column w-50 main">
-
-      <MDBTabs pills justify className='mb-3 d-flex flex-row justify-content-between'>
+    <div className="p-3 my-2 d-flex flex-column w-50 main">
+      <Row>
+          <Col>
+            <div>
+              <div className='d-flex justify-content-center'>
+                <MDBCardImage
+                  src='/src/assets/img/compt.png'
+                  className='img-fluid'
+                  style={{ width: '32%', height: '32%' }}
+                  alt='login'
+                >
+                </MDBCardImage>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      <MDBTabs pills justify className='mb-2 d-flex flex-row justify-content-between'>
         <MDBTabsItem>
           <MDBTabsLink onClick={() => handleJustifyClick('tab1')} active={justifyActive === 'tab1'}>
             Login
@@ -55,32 +69,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
       </MDBTabs>
 
       <MDBTabsContent>
-
         <MDBTabsPane show={justifyActive === 'tab1'} >
-
-          <div className="text-center mb-3" >
-            <p>Sign in with:</p>
-
-            <div className='d-flex justify-content-between mx-auto' style={{ width: '40%' }}>
-              <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
-                <MDBIcon fab icon='facedevice-f' size="sm" />
-              </MDBBtn>
-
-              <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
-                <MDBIcon fab icon='twitter' size="sm" />
-              </MDBBtn>
-
-              <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
-                <MDBIcon fab icon='google' size="sm" />
-              </MDBBtn>
-
-              <MDBBtn tag='a' color='none' className='m-1' style={{ color: '#1266f1' }}>
-                <MDBIcon fab icon='github' size="sm" />
-              </MDBBtn>
-            </div>
-
-            <p className="text-center mt-3">or:</p>
-          </div>
           {errors && <div className="alert alert-danger" style={{ textAlign: "center" }}>{errors}</div>}
 
           <form onSubmit={event => onAuth(event)} style={{boxShadow:'none' }}>

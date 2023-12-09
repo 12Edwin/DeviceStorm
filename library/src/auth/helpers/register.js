@@ -9,7 +9,8 @@ export const register = async (form) =>{
             role: 'USER_ROLE',
             status: true,
             email: form.email,
-            password: form.password
+            password: form.password,
+            token: ''
         })
         return response;
 } 

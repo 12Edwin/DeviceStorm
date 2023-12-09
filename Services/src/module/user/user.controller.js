@@ -2,6 +2,8 @@ const {Response, Router} = require('express');
 const {validateError, hashPassword, validateMiddlewares} = require("../../util/functions");
 const User = require('./User');
 const {check} = require("express-validator");
+const {generatePasswordToken} = require("../../config/jwt")
+const {sendMail} = require("../email/mailer");
 const {validateEmail, validateId, validateJWT, validateAdmin, roles} = require("../../helpers/db-validations");
 const getAll = async  (req, res = Response) =>{
     try {
@@ -33,7 +35,7 @@ const getById = async (req, res = Response) =>{
 const insert = async (req, res = Response) =>{
     try {
         const {name,surname, lastname, email,role,password} = req.body;
-        const user = new User ({name,surname, lastname, email,career,role, password, status:true});
+        const user = new User ({name,surname, lastname, email,role, password, status:true, token: ''});
         user.password = await hashPassword(password);
         await user.save();
         sendMail(email,"Correo de bienvenida",emailHtml(name, surname, lastname));
@@ -557,24 +559,8 @@ const emailHtml = (name, surname,lastname) => {
     </html>`
 }
 
-const sendEmailRecovery = async (req, res = Response) =>{
-    try {
-        const {email} = req.params;
-        User.findOne({email}, (error, user) =>{
-            if(!error){
-                if(user){
-                    console.log("User found", usuario);
-                }
-            }else{
-                res.status(400).json({Error: error});
-            }
-        })
-    } catch (error) {
-        const message = validateError(error);
-        res.status(400).json({Error:message});
-        console.log(error);
-    }
-}
+
+
 
 const   userRouter = Router()
 
@@ -583,11 +569,6 @@ userRouter.get('/',[
     validateJWT,
     //validateAdmin
 ],getAll);
-
-userRouter.post('/recovery-password', [
-    check('email', 'Correo inválido').isEmail()
-], sendEmailRecovery)
-
 
 userRouter.get('/:id',[
     validateJWT,

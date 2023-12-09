@@ -2,11 +2,24 @@ import React from 'react';
 import { CSSTransition } from "react-transition-group";
 import '../style/Card.css'
 import { Formik, Field, Form, useFormik} from "formik";
+import {sendRecoveryPasswordEmail} from "../helpers/sendRecoveryPasswordEmail"
 import { Button, Col, Modal, Row} from "react-bootstrap";
 import * as yup from "yup";
 export const ModalRecoveryPassword = ({open, onOpen}) =>{
     const handleCloseModal = () => {
         onOpen(false);
+    }
+
+     const onEmailEntered = async (email) =>{
+        try {
+            const response = await sendRecoveryPasswordEmail(email);
+        } catch (error) {
+            console.log("error",error)
+        }
+    }
+
+    const emailSent = () =>{
+        alert("Se ha enviado un correo a tu cuenta de correo electrónico")
     }
     return (
         <div>
@@ -37,8 +50,11 @@ export const ModalRecoveryPassword = ({open, onOpen}) =>{
                                 validationSchema={yup.object().shape({
                                     email: yup.string().email('Formato Incorrecto').required("Ingresa un correo válido"),
                                 })}
-                                onSubmit={async (values) => {
-                                    console.log(values);
+                                onSubmit={async (values, { setSubmitting }) => {
+                                    setSubmitting(true);
+                                    onEmailEntered(values.email).then(()=>{emailSent()});
+                                    setSubmitting(false);
+                                    handleCloseModal();
                                 }}
                             >
                                 {({ values, errors, touched, isSubmitting, setFieldValue }) => (

@@ -1,9 +1,11 @@
-import axios from "axios";
+import api from "../../../config/http";
 
 export const sendRecoveryPasswordEmail = async(email) =>{
-    const url = "http://localhost:3000/api/user/recovery-password";
-    const response = await axios.post(url,{
-        email: email
-    })
-    return response;
+    try{
+        const response = await api.doPost('/auth/recovery-password/', {email});
+        console.log("respuesta =>", response)
+        return response
+    }catch{
+        return 'CORREO INVÁLIDO';
+    }
 } 
