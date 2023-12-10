@@ -22,10 +22,6 @@ td{
     background-color: red;
 }
 
-.actionButton {
-    width: 90%;
-    height: 40%;
-}
 
 .align{
     display: flex;

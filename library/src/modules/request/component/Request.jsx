@@ -3,10 +3,12 @@ import '../style/Request.css'
 import { Card, CardHeader, CardBody, Table, Row, Col } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { Button } from 'react-bootstrap';
+import { Button } from '@material-ui/core';
 const MySwal = withReactContent(Swal);
 import { updateRequest, sanction } from '../helpers/updateRequest'
 import { SanctionModal } from './SanctionModal';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 export const Request = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
@@ -14,11 +16,11 @@ export const Request = ({ requests = [] }) => {
   const [open, setOpen] = useState(false);
   const [idRequest, setIdRequest] = useState("");
   useEffect(() => {
-    // Filtrar usuarios según el término de búsqueda
+    // Filtrar solicitudes según el término de búsqueda
     const filtered = requests.filter(
       (req) =>
-        req.device.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        req.email.toLowerCase().includes(searchTerm.toLowerCase())
+        req.device[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.user.toLowerCase().includes(searchTerm.toLowerCase())
 
     );
     setFilteredUsers(filtered);
@@ -107,15 +109,15 @@ export const Request = ({ requests = [] }) => {
                 <tbody>
                   {filteredUsers.map((req) => (
                     <tr key={req.uid}>
-                      <td>{req.device}</td>
+                      <td>{req.device[0]?.name}</td>
                       <td>{req.user}</td>
                       <td>{req.created_at}</td>
                       <td>{req.returns}</td>
                       <td>{req.status}</td>
                       <td>{req.sanction}</td>
                       <td>
-                        <Button variant='primary' className='actionButton' onClick={() => onRequest(req.uid)}>Resolver</Button>
-                        <Button variant='danger' className='actionButton' onClick={() => onSanction(req.uid)}>Sanción</Button>
+                        <Button onClick={()=>onRequest(req.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'green', color:'white'}} variant="primary" className='actionButton' startIcon={<AssignmentTurnedInIcon />}>Resolver</Button>
+                        <Button onClick={()=>onSanction(req.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'red', color:'white'}} variant="danger" className='actionButton' startIcon={<InfoOutlinedIcon />}>Sancionar</Button>
                       </td>
                     </tr>))
                   }

@@ -96,7 +96,7 @@ export const RequestModal = ({open,onOpen, email}) => {
                                                 >
                                                     <option value="">Selecciona una opción</option>
                                                     {devices.map(dev => (
-                                                        <option key={dev.uid} value={dev.name}>
+                                                        <option key={dev.uid} value={dev.uid}>
                                                             {dev.name}
                                                         </option>
                                                     ))}
