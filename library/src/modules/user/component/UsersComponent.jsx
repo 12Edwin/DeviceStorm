@@ -6,7 +6,9 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faToggleOff, faToggleOn, faPlus } from '@fortawesome/free-solid-svg-icons';
 import {CreateUser} from "../component/CreateUserComponent"
+import {Header} from "../../../public/component/Header.jsx";
 export const UsersComponent = ({ users }) => {
+  
   const [selectedUser, setSelectedUser] = useState(null);
   const [filteredUsers, setFilteredUsers] = useState(users);
   const [searchTerm, setSearchTerm] = useState('');

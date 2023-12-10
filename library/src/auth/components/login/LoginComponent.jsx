@@ -58,12 +58,12 @@ export const LoginComponent = ({ onData, onRegister }) => {
       <MDBTabs pills justify className='mb-2 d-flex flex-row justify-content-between'>
         <MDBTabsItem>
           <MDBTabsLink onClick={() => handleJustifyClick('tab1')} active={justifyActive === 'tab1'}>
-            Login
+            Iniciar sesión
           </MDBTabsLink>
         </MDBTabsItem>
         <MDBTabsItem>
           <MDBTabsLink onClick={() => handleJustifyClick('tab2')} active={justifyActive === 'tab2'}>
-            Register
+            Registrar
           </MDBTabsLink>
         </MDBTabsItem>
       </MDBTabs>
@@ -74,24 +74,21 @@ export const LoginComponent = ({ onData, onRegister }) => {
 
           <form onSubmit={event => onAuth(event)} style={{boxShadow:'none' }}>
 
-            <MDBInput wrapperClass='mb-4' label='Email address' id='form1' type='email'
+            <MDBInput wrapperClass='mb-4' label='Correo electrónico' id='form1' type='email'
               value={email} onChange={text => setEmail(text.target.value)} />
-            <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password'
+            <MDBInput wrapperClass='mb-4' label='Contraseña' id='form2' type='password'
               value={password} onChange={text => setPassword(text.target.value)} />
 
-            <div className="d-flex justify-content-between mx-4 mb-4">
-              <Button variant='link' onClick={() => setOpen(true)}>Forgot password?</Button>
+            <div className="d-flex justify-content-center mx-4 mb-4">
+              <Button variant='link'onClick={() => setOpen(true)}>Olvide mi contraseña</Button>
               <ModalRecoveryPassword
                 open={open}
                 onOpen={() => setOpen(false)}
               />
             </div>
             
-            <MDBBtn className="mb-4 w-100" type='submit'> {loading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Sign in"}</MDBBtn>
+            <MDBBtn className="mb-4 w-100" type='submit'> {loading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Iniciar sesión"}</MDBBtn>
           </form>
-
-          <p className="text-center">Not a member? <a href="#!">Register</a></p>
-
         </MDBTabsPane>
 
         <MDBTabsPane show={justifyActive === 'tab2'}>
@@ -123,14 +120,14 @@ export const LoginComponent = ({ onData, onRegister }) => {
                   <div className="field-container">
                     <Field className='mt-4 form-control field' id='name' name='name' type='text' />
                     <label htmlFor='name' className="animated-label reqired-label">Nombre:</label>
-                    {touched.name && errors.name && <div className="alert alert-danger error">{errors.name}</div>}
+                    {touched.name && errors.name && <div className="alert alert-danger error mt-2">{errors.name}</div>}
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={12}>
                   <div className="field-container">
                     <Field className='mt-4 form-control field' id='lastname' name='lastname' type='text' />
                     <label htmlFor='lastname' className="animated-label reqired-label">Apellido paterno:</label>
-                    {touched.lastname && errors.lastname && <div className="alert alert-danger error">{errors.lastname}</div>}
+                    {touched.lastname && errors.lastname && <div className="alert alert-danger error mt-2">{errors.lastname}</div>}
                   </div>
                 </Col>
               </Row>
@@ -139,14 +136,14 @@ export const LoginComponent = ({ onData, onRegister }) => {
                   <div className="field-container">
                     <Field className='mt-4 form-control field' id='surname' name='surname' type='text' />
                     <label htmlFor='surname' className="animated-label">Apellido Materno:</label>
-                    {touched.surname && errors.surname && <div className="alert alert-danger error">{errors.surname}</div>}
+                    {touched.surname && errors.surname && <div className="alert alert-danger error mt-1">{errors.surname}</div>}
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={12}>
                   <div className="field-container">
                     <Field className='mt-4 form-control field' id='email' name='email' type='email' />
                     <label htmlFor='email' className="animated-label reqired-label">Correo electronico: </label>
-                    {touched.email && errors.email && <div className="alert alert-danger error">{errors.email}</div>}
+                    {touched.email && errors.email && <div className="alert alert-danger error mt-1">{errors.email}</div>}
                   </div>
                 </Col>
               </Row>
@@ -161,12 +158,12 @@ export const LoginComponent = ({ onData, onRegister }) => {
                 <Col md={6}>
                   <div className="field-container">
                     <Field className='mt-4 form-control field' id='repeatPass' name='repeatPass' type='password' />
-                    <label htmlFor='repeatPass' className="animated-label reqired-label">Repetir password:</label>
+                    <label htmlFor='repeatPass' className="animated-label reqired-label">Repetir contraseña:</label>
                     {touched.repeatPass && errors.repeatPass && <div className="alert alert-danger error">{errors.repeatPass}</div>}
                   </div>
                 </Col>
               </Row>
-              <MDBBtn className="mt-4 w-100" type='submit' disabled={isSubmitting}>{isSubmitting ? <FontAwesomeIcon icon={faSpinner} spin /> : "Sign up"}</MDBBtn>
+              <MDBBtn className="mt-4 w-100" type='submit' disabled={isSubmitting}>{isSubmitting ? <FontAwesomeIcon icon={faSpinner} spin /> : "Registrarte"}</MDBBtn>
 
             </Form>)}
 

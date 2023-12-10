@@ -188,7 +188,7 @@ export const CreateUser = ({isOpen, onClose}) => {
                                     <Col md={12} className="text-center">
                                         <div className="form-buttons">
                                         <hr/>
-                                            <Button className="btn-enviar" disabled={isSubmitting} type="submit">
+                                            <Button className="btn-enviar w-100" disabled={isSubmitting} type="submit">
                                                 {isSubmitting ? 'Cargando...' : 'Guardar'}
                                             </Button>
                                         </div>

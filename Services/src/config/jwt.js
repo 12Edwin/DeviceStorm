@@ -44,8 +44,21 @@ const validateToken = (token) => {
     return result;
 }
 
+const decryptToken = (token) => {
+    let result = { valid: false, message: '' };
+    try {
+        const payload = jwt.verify(token, process.env.SECRET);
+        result.valid = true;
+        result.payload = payload;
+    } catch (error) {
+        result.message = error.message;
+    }
+    return result;
+}
+
 module.exports = {
     generateJWT,
     validateToken,
+    decryptToken,
     generatePasswordToken
 }

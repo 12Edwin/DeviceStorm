@@ -2,7 +2,6 @@ const {Response, Router} = require('express');
 const {validateError, hashPassword, validateMiddlewares} = require("../../util/functions");
 const User = require('./User');
 const {check} = require("express-validator");
-const {generatePasswordToken} = require("../../config/jwt")
 const {sendMail} = require("../email/mailer");
 const {validateEmail, validateId, validateJWT, validateAdmin, roles} = require("../../helpers/db-validations");
 const getAll = async  (req, res = Response) =>{
@@ -57,7 +56,6 @@ const update = async (req, res = Response) =>{
         }
         const user = await User.findByIdAndUpdate(id , rest);
         res.status(200).json({Message:'Successful request', user});
-
     }catch (error){
         const message = validateError(error);
         res.status(400).json({Error:message});
@@ -559,10 +557,7 @@ const emailHtml = (name, surname,lastname) => {
     </html>`
 }
 
-
-
-
-const   userRouter = Router()
+const userRouter = Router()
 
 
 userRouter.get('/',[
