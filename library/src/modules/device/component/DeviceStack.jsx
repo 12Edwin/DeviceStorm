@@ -67,7 +67,7 @@ export const DeviceStack = () => {
       return sortDirection === 'asc' ? compareResult : -compareResult;
     });
 
-    setDevices(sortedDevices);
+    setdevices(sortedDevices);
   };
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export const DeviceStack = () => {
     const filteredDevices = devices.filter((device) =>
       device.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setDevices(filteredDevices);
+    setdevices(filteredDevices);
   };
 
   useEffect(() => {
