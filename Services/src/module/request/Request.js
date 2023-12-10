@@ -1,18 +1,19 @@
-const {Schema, model} = require('mongoose');
-
+const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 const requestSchema = Schema({
-    device:{
-        type: String,
+    device: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Device",
         required: true,
     },
-    sanction:{
+    sanction: {
         type: String
     },
-    quantity:{
+    quantity: {
         type: Number,
         required: true
     },
-    user:{
+    user: {
         type: String,
         required: true
     },
@@ -20,24 +21,24 @@ const requestSchema = Schema({
         type: Date,
         required: true
     },
-    starts:{
+    starts: {
         type: Date,
         required: true
     },
-    returns:{
+    returns: {
         type: Date,
         required: true
     },
-    status:{
+    status: {
         type: String,
         required: true,
-        enum: ['Active','Canceled','Finished','Pending','Sanction']
+        enum: ['Active', 'Canceled', 'Finished', 'Pending', 'Sanction']
     }
 
 });
 
-requestSchema.methods.toJSON = function (){
-    const { __v, _id, ... request } = this.toObject();
+requestSchema.methods.toJSON = function () {
+    const { __v, _id, ...request } = this.toObject();
     request.uid = _id;
     return request;
 }

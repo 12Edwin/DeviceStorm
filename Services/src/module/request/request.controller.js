@@ -1,14 +1,23 @@
 const { Router } = require("express");
 const { validateError, validateMiddlewares } = require("../../util/functions");
 const Request = require('./Request');
-const { validateJWT, validateIdRequest, validateDevice, status } = require("../../helpers/db-validations");
+const { validateJWT, validateIdRequest, validateIdDevice, status } = require("../../helpers/db-validations");
 const { check } = require("express-validator");
 //const { mailer, creatT, sendMail } = require("../email/mailer")
 const getAll = async (req, res = Response) => {
     try {
         const query = req.query;
         const [requests, total] = await Promise.all([
-            Request.find(query),
+            Request.aggregate([
+                {
+                    $lookup: {
+                        from: 'devices',
+                        localField: 'device',
+                        foreignField: '_id',
+                        as: 'device'
+                    }
+                }
+            ]),
             Request.countDocuments()
         ]);
 
@@ -42,6 +51,14 @@ const getByEmail = async (req, res = Response) => {
                 $match: {
                     user: email,
                 }
+            },
+            {
+                $lookup: {
+                    from: 'devices',
+                    localField: 'device',
+                    foreignField: '_id',
+                    as: 'device'
+                }
             }
         ]
         );
@@ -59,7 +76,7 @@ const insert = async (req, res = Response) => {
         const { device, email, returns } = req.body;
         const created_at = new Date().toISOString().split('T')[0];
         const request = await new Request({
-            device,
+            device: device,
             user: email,
             quantity: 1,
             returns,
@@ -98,10 +115,10 @@ const sancionar = async (req, res = Response) => {
         const { sanction } = req.body;
         const { id } = req.params;
         const [updated, request] = await Promise.all([
-            Request.findByIdAndUpdate(id, {sanction, sanction}),
+            Request.findByIdAndUpdate(id, { sanction, sanction }),
             Request.findById(id)
         ]);
-        res.status(200).json({ msg: 'Successful request', request, status});
+        res.status(200).json({ msg: 'Successful request', request, status });
     } catch (err) {
         const message = validateError(err);
         res.status(400).json(message);
@@ -131,7 +148,7 @@ requestRouter.get('/email/:email', [
 requestRouter.post('/', [
     validateJWT,
     check('device', 'Título del libro necesario').not().isEmpty(),
-    check('device').custom(validateDevice),
+    check('device').custom(validateIdDevice),
     check('email', 'El correo es necesario').not().isEmpty(),
     check('email', 'Correo inválido').isEmail(),
     check('returns', 'Fecha de retorno necesaria').not().isEmpty(),
@@ -145,7 +162,7 @@ requestRouter.put('/status/:id', [
     validateMiddlewares
 ], update);
 
-requestRouter.put('/sanction/:id',[
+requestRouter.put('/sanction/:id', [
     validateJWT,
     check('id', 'El id no es de mongo').isMongoId(),
     check('id').custom(validateIdRequest),
