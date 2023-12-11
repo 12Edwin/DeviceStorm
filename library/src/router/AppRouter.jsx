@@ -6,17 +6,19 @@ import { PrivateRouteAdmin } from "./PrivateRouteAdmin"
 import { PrivateRouteUser } from "./PrivateRouteUser"
 import { PublicRoute } from "./PublicRoute"
 import LoginPage  from "../auth/pages/LoginPage"
-
+import { ResetPasswordPage } from "../modules/user/component/ResetPasswordComponent"
 export const AppRouter = () =>{
     return(
         <>
             <Routes>
+                <Route path="/recoverypassword/:token/" element={
+                     <ResetPasswordPage/>
+                }/>
                 <Route path="/login" element={
                     <PublicRoute>
                         <LoginPage/>
                     </PublicRoute>
                 }/>
-
                 <Route path="/user/*" element={
                     <PrivateRouteUser>
                         <UserRouter/>

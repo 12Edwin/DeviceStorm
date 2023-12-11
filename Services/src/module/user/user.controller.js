@@ -2,8 +2,8 @@ const {Response, Router} = require('express');
 const {validateError, hashPassword, validateMiddlewares} = require("../../util/functions");
 const User = require('./User');
 const {check} = require("express-validator");
+const {sendMail} = require("../email/mailer");
 const {validateEmail, validateId, validateJWT, validateAdmin, roles} = require("../../helpers/db-validations");
-const { mailer, creatT, sendMail } = require("../email/mailer")
 const getAll = async  (req, res = Response) =>{
     try {
         const query = req.query;
@@ -33,8 +33,8 @@ const getById = async (req, res = Response) =>{
 }
 const insert = async (req, res = Response) =>{
     try {
-        const {name,surname, lastname, email,career,role,password} = req.body;
-        const user = new User ({name,surname, lastname, email,career,role, password, status:true});
+        const {name,surname, lastname, email,role,password} = req.body;
+        const user = new User ({name,surname, lastname, email,role, password, status:true, token: ''});
         user.password = await hashPassword(password);
         await user.save();
         sendMail(email,"Correo de bienvenida",emailHtml(name, surname, lastname));
@@ -46,6 +46,7 @@ const insert = async (req, res = Response) =>{
     }
 }
 
+
 const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
@@ -55,7 +56,6 @@ const update = async (req, res = Response) =>{
         }
         const user = await User.findByIdAndUpdate(id , rest);
         res.status(200).json({Message:'Successful request', user});
-
     }catch (error){
         const message = validateError(error);
         res.status(400).json({Error:message});
@@ -557,12 +557,14 @@ const emailHtml = (name, surname,lastname) => {
     </html>`
 }
 
-const   userRouter = Router()
+const userRouter = Router()
+
 
 userRouter.get('/',[
     validateJWT,
     //validateAdmin
 ],getAll);
+
 userRouter.get('/:id',[
     validateJWT,
     check('id').custom(validateId),

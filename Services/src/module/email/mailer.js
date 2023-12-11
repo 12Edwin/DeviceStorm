@@ -7,8 +7,8 @@ const mailer = async () => {
     port: 465,
     secure: true,
     auth: {
-      user: '20203tn078@utez.edu.mx',
-      pass: 'iwhx fzej weuv cnpe'
+      user: '20213tn103@utez.edu.mx',
+      pass: 'ckwy ghrq mxyd amqf'
     }
   });
   return creatT;

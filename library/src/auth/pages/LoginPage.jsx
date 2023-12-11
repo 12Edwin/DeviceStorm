@@ -41,6 +41,7 @@ export default function LoginPage (){
             });
         })
         .catch( error =>{
+            console.log(error.response)
             data.setErrRegister(error.response.data.errors[0].msg || "Ocurrió un error");
             data.setSubmitting(false)
 
