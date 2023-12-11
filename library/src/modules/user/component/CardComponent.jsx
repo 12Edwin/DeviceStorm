@@ -91,7 +91,7 @@ export const CardComponent = () => {
                                 style={{fontSize: '30px'}}
                                 alt="author-img"
                             />
-                            <h5 className="mb-3">{data.name} {data.surname}</h5>
+                            <h5 className="mb-3">{data.name} {data.lastname} {data.surname}</h5>
                             <div className="social-icons social-icons-sm mb-3">
                                 <a
                                     className="social-icon"
