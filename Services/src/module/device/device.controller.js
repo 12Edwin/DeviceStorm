@@ -40,7 +40,7 @@ const insert = async (req, res = Response) =>{
     try {
         const {name, code, place, supplier, category, stock} = req.body;
         const created_at = new Date();
-        const device = await new Device({name, code, place, supplier, category, stock, created_at, available:true});
+        const device = await new Device({name, code, place, supplier, category, stock, created_at, available:true, status: true});
         await device.save();
         res.status(200).json({message:'Successful request', device});
     }catch (error){
