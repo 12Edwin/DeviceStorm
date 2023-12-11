@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../style/Request.css'
 import { Card, CardHeader, CardBody, Table, Row, Col } from 'reactstrap';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-import { Button } from 'react-bootstrap';
-const MySwal = withReactContent(Swal);
-import {updateRequest}  from '../helpers/updateRequest'
-import Modal from 'react-modal';
+import { Button } from '@material-ui/core';
 import { RequestModal } from './RequestModal';
-import { getUser } from '../../user/helpers';
-
+import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 export const UserRequest = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
@@ -19,7 +13,7 @@ export const UserRequest = ({ requests = [] }) => {
     // Filtrar usuarios según el término de búsqueda
     const filtered = requests.filter(
       (req) =>
-        req.device.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        req.device[0]?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         req.email.toLowerCase().includes(searchTerm.toLowerCase())
 
     );
@@ -27,7 +21,7 @@ export const UserRequest = ({ requests = [] }) => {
   }, [searchTerm]);
 
 
-  const openModal = () =>{
+  const openModal = () => {
     setOpen(true);
   }
 
@@ -44,9 +38,9 @@ export const UserRequest = ({ requests = [] }) => {
             </CardHeader>
             <CardBody>
               <Table className="tablesorter" responsive>
-                
+
                 <thead className="text-primary" style={{ color: 'black' }}>
-                  
+
                   <tr >
                     <th>device</th>
                     <th>Email user</th>
@@ -57,9 +51,9 @@ export const UserRequest = ({ requests = [] }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  { filteredUsers.map((req) => (
+                  {filteredUsers.map((req) => (
                     <tr key={req.uid}>
-                      <td>{req.device}</td>
+                      <td>{req.device[0]?.name}</td>
                       <td>{req.user}</td>
                       <td>{req.created_at}</td>
                       <td>{req.returns}</td>
@@ -68,12 +62,12 @@ export const UserRequest = ({ requests = [] }) => {
                   }
                 </tbody>
               </Table>
-              <Button className="btn-siguiente" onClick={openModal} >
-                          Nueva Solicitud
-                        </Button>
+              <Button className="btn-siguiente" onClick={openModal} startIcon={<AddCircleOutlineOutlinedIcon />}>
+                Nueva Solicitud
+              </Button>
             </CardBody>
           </Card>
-          <RequestModal open = {open} onOpen={setOpen}/>
+          <RequestModal open={open} onOpen={setOpen} />
         </Col>
       </Row>
     </div>

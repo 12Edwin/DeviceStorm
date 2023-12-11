@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const {userRouter, authRouter, bookRouter, roleRouter, requestRouter, categoryRouter, supplierRouter, placeRouter} = require("../module/routes");
+const {userRouter, authRouter, bookRouter, roleRouter, requestRouter, categoryRouter, supplierRouter, placeRouter,sanctionRouter} = require("../module/routes");
 const {deviceRouter} = require("../module/device/device.controller");
 
 require('dotenv').config()
@@ -27,6 +27,7 @@ app.use('/api/request',requestRouter);
 app.use('/api/category',categoryRouter);
 app.use('/api/supplier',supplierRouter);
 app.use('/api/place', placeRouter);
+app.use('/api/sanction', sanctionRouter);
 
 
 module.exports = {

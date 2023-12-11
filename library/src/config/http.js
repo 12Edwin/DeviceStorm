@@ -26,7 +26,28 @@ api.interceptors.response.use(
         return response
     },
     async (error) => {
-        console.log(error.response)
+        if (!error.response) {
+            const newError = await Swal.fire({
+                title: 'El servidor no responde',
+                text: 'El servidor no está respondiendo',
+                icon: 'error',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            }).then(()=> {
+                return {
+                    ...error,
+                    response:{
+                        data:{
+                            code: 503,
+                            error: true,
+                            msg: 'Server no responding'
+                        }
+                    }
+                }
+            })
+            return Promise.reject(newError);
+        }
         if (error.response.status === 401 && error.response.data.msg.toLowerCase() !== 'bad credentials'){
             localStorage.removeItem('user')
             await Swal.fire({

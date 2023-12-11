@@ -3,64 +3,107 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import {MDBInput} from "mdb-react-ui-kit";
 import {updateCategory} from "../helpers/updateCategory.js";
 import Swal from "sweetalert2";
+import {createCategory} from "../helpers/createCategory.js";
+import {useFormik} from "formik";
+import * as Yup from "yup";
 
 
-export const ModalEdit = ({show, onHide, category}) => {
+export const ModalEdit = ({show, onHide, category= null}) => {
 
-    const [name, setName] = useState("")
-    const [description, setDescription] = useState("")
     useEffect(() => {
-        setName(category.name)
-        setDescription(category.description)
+        formik.handleReset()
+        if(category && show) {
+            formik.values.name = category.name
+            formik.values.description = category.description
+        }else{
+            formik.values.name = ''
+            formik.values.description = ''
+        }
     }, [show]);
 
-    const onUpdate = async () =>{
+    const resetForm = (value = '')=>{
+        formik.values.name = ''
+        formik.values.description = ''
+        formik.resetForm()
+        formik.handleReset()
+        onHide(value)
+    }
+
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            description: ''
+        },
+        validationSchema: Yup.object().shape({
+            name: Yup.string().required('El nombre es obligatorio'),
+            description: Yup.string().required('La descripción es obligatoria'),
+        }),
+        onSubmit: async (values,{setSubmitting}) => {
+            setSubmitting(true)
+            await onConfirm(values)
+            setSubmitting(false)
+        },
+    });
+
+    const onUpdate = async ({name, description}) =>{
         const result = await updateCategory({name, description, id: category.uid})
-        if (result === 'ERROR'){
-            resultFail()
+        if (typeof (result) === 'string'){
+            resultFail(result)
         }else {
-            resultOk()
+            resultOk('Categoría actualizada correctamente')
+        }
+    }
+    const onRegister = async ({name, description}) =>{
+        const result = await createCategory({name, description})
+        if (typeof (result) === 'string'){
+            resultFail(result)
+        }else {
+            resultOk('Categoría registrada correctamente')
         }
     }
 
-    const resultOk = () => {
+    const resultOk = (text) => {
         Swal.fire({
             title: 'Tarea completada!',
-            text: 'Categoría actualizada correctamente',
+            text: text,
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
-        }).then(res => onHide('reload'))
+        }).then(res => resetForm('reload'))
     }
-    const resultFail = () => {
+    const resultFail = (text) => {
         Swal.fire({
             title: 'Error!',
-            text: 'Ups, ha ocurrido un error al actualizar la categoría',
+            text: text,
             icon: 'danger',
             confirmButtonColor: '#d33',
             confirmButtonText: 'OK',
         });
     }
 
-    const onConfirm = (event) =>{
-        event.preventDefault()
+    const onConfirm = (data) =>{
         Swal.fire({
             title: '¿Estás seguro?',
-            text: 'Quieres actualizar esta categoría',
+            text: category ? 'Quieres actualizar esta categoría' : 'Quieres registrar una nueva categoría',
             icon: 'question',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Aceptar',
             showLoaderOnConfirm: true,
             async preConfirm(inputValue) {
-                await onUpdate()
+                if (category){
+                    await onUpdate(data)
+                }else {
+                    await onRegister(data)
+                }
+
             }
         })
     }
 
      return (
-            <Modal show={show} onHide={onHide}  centered>
-                <Form onSubmit={(event)=> onConfirm(event)}>
+            <Modal show={show} onHide={resetForm}  centered>
+                <Form onSubmit={(event)=> formik.handleSubmit(event)}>
                     <Modal.Header closeButton>
                         <Modal.Title>
                             Editar Categoría
@@ -70,20 +113,30 @@ export const ModalEdit = ({show, onHide, category}) => {
                     <Modal.Body>
 
                             <Form.Group className="mb-3">
-                                <MDBInput wrapperClass='mb-4' label='Nombre' id='name' type='text'
-                                          value={name} onChange={txt => setName(txt.target.value)}/>
+                                <MDBInput wrapperClass='mb-2' label='Nombre' id='name' type='text'
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          value={formik.values.name}/>
+                                {formik.touched.name && formik.errors.name && (
+                                    <span className="text-error">{formik.errors.name}</span>
+                                )}
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <MDBInput wrapperClass='mb-4'  label='Descripción' id='description' type='text'
-                                          value={description} onChange={txt => setDescription(txt.target.value)}/>
+                                <MDBInput wrapperClass='mb-2'  label='Descripción' id='description' type='text'
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          value={formik.values.description}/>
+                                {formik.touched.description && formik.errors.description && (
+                                    <span className="text-error">{formik.errors.description}</span>
+                                )}
                             </Form.Group>
 
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button onClick={onHide} variant="secondary">Cerrar</Button>
-                        <Button type="submit" variant="primary">Guardar</Button>
+                        <Button onClick={resetForm} disabled={formik.isSubmitting} variant="secondary">Cerrar</Button>
+                        <Button type="submit" disabled={formik.isSubmitting} variant="primary">{category ? 'Guardar' : 'Registrar'}</Button>
                     </Modal.Footer>
                 </Form>
             </Modal>

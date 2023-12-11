@@ -9,7 +9,6 @@
   },
   "author": "Edwin Yaret",
   "license": "ISC",
-
   "dependencies": {
     "audit": "^0.0.6",
     "bcryptjs": "^2.4.3",

@@ -71,11 +71,9 @@ export const DeviceStack = () => {
       return sortDirection === 'asc' ? compareResult : -compareResult;
     });
   
-    setdevices(sortedDevices);
-  };
-  
   
 
+  
   useEffect(() => {
     sortDevices();
   }, [sortCriteria, sortDirection]);
