@@ -1,0 +1,13 @@
+.carta{
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .carta-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }

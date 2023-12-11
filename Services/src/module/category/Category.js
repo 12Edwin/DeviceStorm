@@ -10,9 +10,13 @@ const categorySchema = new mongoose.Schema({
     description:{
         type:String,
     },
-    gender:{
-        type:String,
+    created_at:{
+        type:Date,
         required:true
+    },
+    status:{
+        type: Boolean,
+        required: true
     }
 });
 

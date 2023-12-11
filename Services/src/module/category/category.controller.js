@@ -1,8 +1,9 @@
 const {Router} = require("express");
 const Category = require('../category/Category');
 const {validateError, validateMiddlewares} = require("../../util/functions");
-const {validateJWT, validateIdCategory} = require("../../helpers/db-validations");
+const {validateJWT, validateIdCategory, status, thereCategoriesInDevices, thereSameCategory} = require("../../helpers/db-validations");
 const {check} = require("express-validator");
+const User = require("../user/User");
 
 const getAll = async (req, res= Response) =>{
     try {
@@ -11,7 +12,6 @@ const getAll = async (req, res= Response) =>{
             Category.find(query),
             Category.countDocuments(query)
         ]);
-
         res.status(200).json({msg:'Successful request', total, category});
     }catch (error){
         const message = validateError(error);
@@ -36,7 +36,8 @@ const getById = async (req, res= Response) =>{
 const insert = async (req, res= Response) =>{
     try {
         const {name,description, gender} = req.body
-        const category = await new Category({name, description, gender});
+        const created_at = new Date()
+        const category = await new Category({name, description, created_at, status: true});
         await category.save();
 
         res.status(200).json({msg:'Successful request',category});
@@ -47,12 +48,33 @@ const insert = async (req, res= Response) =>{
     }
 }
 
+const update = async (req, res = Response) =>{
+    try {
+        const {id} = req.params;
+
+        const category = req.body;
+        await thereSameCategory(category.name, id)
+        await Category.findByIdAndUpdate(id,category);
+
+        res.status(200).json({msg:'Successful request', category});
+    }catch (error){
+        if (error.toString().includes('Already exists') ){
+            res.status(400).json({msg: 'Already exists'})
+        }else{
+            res.status(500).json(error);
+            console.log(error);
+        }
+
+    }
+}
+
 const deletes = async (req, res= Response) =>{
     try {
         const {id} = req.params;
-        await Category.findByIdAndDelete(id);
-
-        res.status(200).json({msg:'Status deleted'});
+        const category = await Category.findById(id);
+        const status = !category.status;
+        const result = await Category.findByIdAndUpdate(id, {status})
+        res.status(200).json(result ?{result_delete: 'Successful'}:{restored: 'Successful'});
     }catch (error){
         const message = validateError(error);
         res.status(400).json(message);
@@ -68,22 +90,33 @@ categoryRouter.get('/',[
 
 categoryRouter.get('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdCategory),
     validateMiddlewares
 ],getById);
 
 categoryRouter.post('/',[
     validateJWT,
-    check('name', 'El nombre del status es obligatorio').not().isEmpty(),
-    check('gender').not().isEmpty().withMessage('Género obligatorio'),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('description').not().isEmpty().withMessage('Missing fields'),
+    check('name').custom((name)=> thereSameCategory(name)),
     validateMiddlewares
 ], insert);
 
-categoryRouter.delete('/:id',[
+categoryRouter.put('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdCategory),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('description').not().isEmpty().withMessage('Missing fields'),
+    validateMiddlewares
+], update);
+
+categoryRouter.delete('/:id/:status',[
+    validateJWT,
+    check('id', 'Invalid id').isMongoId(),
+    check('id').custom(validateIdCategory),
+    check('id').custom(thereCategoriesInDevices),
     validateMiddlewares
 ],deletes);
 

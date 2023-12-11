@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const {userRouter, authRouter, bookRouter, roleRouter, requestRouter, statusRouter, saleRouter, categoryRouter} = require("../module/routes");
-const {validateBookBought} = require("../helpers/db-validations");
+const {userRouter, authRouter, bookRouter, roleRouter, requestRouter, categoryRouter, supplierRouter, placeRouter,sanctionRouter} = require("../module/routes");
+const {deviceRouter} = require("../module/device/device.controller");
 
 require('dotenv').config()
 
@@ -15,18 +15,19 @@ app.use(cors({
 app.use(express.json({limit:'50mb'}));
 
 app.get('/',(request,response) =>{
-    response.send('Bienvenido a la biblioteca');
+    response.send('Bienvenido a REPADE');
 });
 
 
 app.use('/api/user',userRouter);
 app.use('/api/auth',authRouter);
-app.use('/api/book',bookRouter);
+app.use('/api/device',deviceRouter);
 app.use('/api/role',roleRouter);
 app.use('/api/request',requestRouter);
-app.use('/api/status',statusRouter);
-app.use('/api/sale',saleRouter);
 app.use('/api/category',categoryRouter);
+app.use('/api/supplier',supplierRouter);
+app.use('/api/place', placeRouter);
+app.use('/api/sanction', sanctionRouter);
 
 
 module.exports = {

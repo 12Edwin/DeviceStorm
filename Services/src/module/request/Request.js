@@ -1,32 +1,44 @@
-const {Schema, model} = require('mongoose');
-
+const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 const requestSchema = Schema({
-    book:{
-        type: String,
-        required: (true, 'Título del libro necesario'),
+    device: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Device",
+        required: true,
     },
-    email:{
-        type: String,
-        required: (true,'Correo requerido')
+    sanction: {
+        type: String
     },
-    created: {
+    quantity: {
+        type: Number,
+        required: true
+    },
+    user: {
         type: String,
         required: true
     },
-    returns:{
-        type: String,
-        required: (true, 'Fecha de retorno necesaria')
+    created_at: {
+        type: Date,
+        required: true
     },
-    status:{
+    starts: {
+        type: Date,
+        required: true
+    },
+    returns: {
+        type: Date,
+        required: true
+    },
+    status: {
         type: String,
         required: true,
-        enum: ['Active','Canceled','Finished','Pending']
+        enum: ['Active', 'Canceled', 'Finished', 'Pending', 'Sanction']
     }
 
 });
 
-requestSchema.methods.toJSON = function (){
-    const { __v, _id, ... request } = this.toObject();
+requestSchema.methods.toJSON = function () {
+    const { __v, _id, ...request } = this.toObject();
     request.uid = _id;
     return request;
 }
