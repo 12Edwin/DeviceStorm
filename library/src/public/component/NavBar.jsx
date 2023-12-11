@@ -9,7 +9,8 @@ import {
   faLaptop,
   faUserEdit,
   faHandHoldingHand,
-  faBuilding, faStore, faList
+  faBuilding, faStore, faList,
+  faMoon, faSun
 } from '@fortawesome/free-solid-svg-icons';
 // import logo from './logo.png';
 import '../style/SideNav.css';
@@ -89,6 +90,12 @@ export const NavBar = () => {
           <a href="" onClick={onLogout}>
             <FontAwesomeIcon icon={faSignOutAlt} className="sidenav-icon" />
             Cerrar sesión
+          </a>
+        </li>
+        <li className="sidenav-item">
+          <a href="">
+            <FontAwesomeIcon icon={faMoon} className="sidenav-icon" />
+            Modo claro
           </a>
         </li>
       </ul>
