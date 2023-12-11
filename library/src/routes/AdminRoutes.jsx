@@ -8,6 +8,7 @@ import { NavBar } from "../public/component/NavBar"
 import {CategoryPage} from "../modules/category/view/CategoryPage.jsx";
 import {PlacePage} from "../modules/place/view/PlacePage.jsx";
 import {SupplierPage} from "../modules/supplier/view/SupplierPage.jsx";
+//Ruta sanciones
 import {SanctionPage} from "../modules/sanctions/view/SanctionPage.jsx";
 
 export const AdminRoute = () =>{

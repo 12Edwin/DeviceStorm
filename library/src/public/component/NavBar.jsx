@@ -79,7 +79,7 @@ export const NavBar = () => {
         <li className="sidenav-item">
           <a href="/admin/sanctions">
             <FontAwesomeIcon icon={faExclamationCircle} className="sidenav-icon" />
-            Sanciones
+            sanciones
           </a>
         </li>
         <li className="sidenav-item">

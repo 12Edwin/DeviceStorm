@@ -6,5 +6,6 @@ export const getSanctions = async () => {
         return response.data.sanctions;
     }catch(err){
         return 'Ocurrió un error al obtener las sanciones';
+        
     }
 };

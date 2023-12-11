@@ -51,7 +51,7 @@ export const SanctionPage = () => {
                             <td>{sanction.amount}</td>
                             <td className={`text-center ${sanction.status ? 'paid' : 'unpaid'}`}>
                                 <div className="status-box">
-                                    {sanction.status ? 'Pagado' : 'Sin pagar'}
+                                    {sanction.status ? 'Pagado' : 'Sin pagar '}
                                 </div>
                             </td>
                         </tr>
