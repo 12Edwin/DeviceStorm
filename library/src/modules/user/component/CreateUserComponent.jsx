@@ -31,7 +31,6 @@ export const CreateUser = ({isOpen, onClose}) => {
             lastname: yup.string().required("Debes ingresar un apellido válido"),
             password: yup.string().required("Ingresa una contraseña válida").min(6, "Mínimo 6 caracteres"),
             email: yup.string().email('Formato Incorrecto').required("Ingresa un correo válido"),
-            password: Yup.string().min(6, "El mínimo es de 6 caracteres").required("Contraseña requerdia"),
             repeatPass: Yup.string().oneOf([Yup.ref('password')], "Contraseñas desiguales").required("Contraseñas desiguales")
         })
     }) 

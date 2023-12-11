@@ -4,7 +4,6 @@ const User = require('./User');
 const {check} = require("express-validator");
 const {sendMail} = require("../email/mailer");
 const {validateEmail, validateId, validateJWT, validateAdmin, roles} = require("../../helpers/db-validations");
-const { mailer, creatT, sendMail } = require("../email/mailer")
 
 const getAll = async  (req, res = Response) =>{
     try {
