@@ -16,7 +16,7 @@ export const CategoryPage = () => {
     const [aux, setAux] = useState([])
     const [category, setCategory] = useState({});
     const [loading, setLoading] = useState(false)
-    const [openModal, setOpenModal] = useState(false);
+    const [openModal, setOpenModal] = useState(false); 
 
     const onOpenModal = (data) =>{
         setOpenModal(true)
