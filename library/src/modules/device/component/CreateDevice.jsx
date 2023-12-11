@@ -37,22 +37,56 @@ export const CreateDevice = () => {
     }
   }
 
-  const adddevice = async (device) => {
-    const { img, category, ...data } = device;
-    const categor = categories.find(c => c.uid === category);
-    const response = await insertdevice({...data, category: categor});
-    if (response === 'ERROR') {
+const addDevice = async (device) => {
+  const { img, category, ...data } = device;
+  const categor = categories.find(c => c.uid === category);
+
+  if (formStep === 2) {
+    try {
+      console.log("Data to be sent to insertDevice:", {
+        ...data,
+        category: categor.uid,
+        code: device.code,
+        place: device.place,
+        supplier: device.supplier,
+      });
+
+      const response = await insertDevice({
+        ...data,
+        category: categor.uid,
+        code: device.code,
+        place: device.place,
+        supplier: device.supplier,
+      });
+
+      console.log("Response from insertDevice:", response);
+
+      if (response === 'ERROR') {
+        setApiError(true);
+        resultFail();
+      } else {
+        setApiError(false);
+        console.log(response);
+        await uploadImage(response, img);
+      }
+    } catch (error) {
+      console.error("Error in addDevice:", error);
       setApiError(true);
       resultFail();
-    } else {
-      setApiError(false);
-      console.log(response);
-      await uploadImage(response,img);
     }
   }
+};
 
-  const uploadImage = async (id,img) =>{
-    const response = await insertImage(id,img);
+const uploadImage = async (id, img) => {
+  const formData = new FormData();
+  formData.append('img', img); 
+  try {
+    console.log("Data to be sent to insertImage:", formData);
+
+    const response = await insertImage(id, formData);
+
+    console.log("Response from insertImage:", response);
+
     if (response === 'ERROR') {
       setApiError(true);
       resultFail();
@@ -60,12 +94,17 @@ export const CreateDevice = () => {
       setApiError(false);
       resultOk();
     }
+  } catch (error) {
+    console.error("Error in uploadImage:", error);
+    setApiError(true);
+    resultFail();
   }
+};
 
   const resultOk = () => {
     Swal.fire({
       title: 'Tarea completada!',
-      text: 'Felicidades, has creado un nuevo libro.',
+      text: 'Felicidades, has creado un nuevo dispositivo.',
       icon: 'success',
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'OK',
@@ -97,50 +136,63 @@ export const CreateDevice = () => {
       <div className="formulario-container col-5 m-4">
 
         <Formik
-          initialValues={{ name: '', author: '', publication: '', resume: '', editorial: '', price: 0, category: '' }}
+          initialValues={{
+            name: '',
+            created_at: '',
+            category: '',
+            code: '',
+            place: '',
+            supplier: '',
+            stock: '',
+            img: null,
+            available: true,
+          }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required("Campo obligatorio"),
-            author: Yup.string().required("Campo obligatorio"),
-            publication: Yup.date().max(new Date(), "La fecha debe ser menor a la de hoy").required('Debe ingresar una fecha válida'),
-            resume: Yup.string().required("Campo obligatorio"),
-            editorial: Yup.string().required("Campo obligatorio"),
-            price: Yup.number().required("Campo obligatorio"),
+            created_at: Yup.date().max(new Date(), "La fecha debe ser menor a la de hoy").required('Debe ingresar una fecha válida'),
             category: Yup.string().required("Campo obligatorio"),
-
+            code: Yup.string().required("Campo obligatorio"),
+            place: Yup.string().required("Campo obligatorio"),
+            supplier: Yup.string().required("Campo obligatorio"),
+            
             img: Yup.mixed().test(
               'fileSize',
               'El archivo es demasiado grande',
-              value => value && value.size <= 5000000 // 5MB
+              value => value && value.size <= 5000000
             ).test(
               'fileType',
               'Solo se permiten archivos de imagen',
               value => value && ['image/jpeg', 'image/png', 'image/gif'].includes(value.type)
-            )
-
-          })
-          }
+            ),
+          })}
 
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
-            await adddevice(values);
-            setSubmitting(false);
+
+            if (formStep === 1) {
+              nextStep(); 
+            } else if (formStep === 2) {
+              await addDevice(values); 
+              setSubmitting(false);
+            }
           }}
         >
-          {({ values, errors, touched, isSubmitting, setFieldValue }) => (
+
+          {({ submitForm, errors, touched, isSubmitting, setFieldValue }) => (
             <Form>
-              <h2 className="text-center">Crea un nuevo libro</h2>
+              <h2 className="text-center">Crea un nuevo dispositivo</h2>
               {formStep === 1 && (
                 <div className="form-step">
                   <div className="mb-3">
-                    <label htmlFor="nombre" className="form-label">
-                      Título del libro
+                    <label htmlFor="name" className="form-label">
+                      Nombre del dispositivo
                     </label>
                     <Field
                       type="text"
                       className="form-control"
-                      id="nombre"
+                      id="name"
                       name='name'
-                      placeholder="Ingrese el nombre del producto"
+                      placeholder="Ingrese el nombre del dispositivo"
                     />
                     {errors.name && touched.name && <div style={{ color: 'red', fontSize: '12px' }}>{errors.name}</div>}
                   </div>
@@ -151,44 +203,38 @@ export const CreateDevice = () => {
                     <Field
                       type="date"
                       className="form-control"
-                      id="publicacion"
-                      name='publication'
+                      id="created_at"
+                      name='created_at'
                       placeholder="Ingrese la fecha de publicación"
                     />
-                    {errors.publication && touched.publication && <div style={{ color: 'red', fontSize: '12px' }}>{errors.publication}</div>}
+                    {errors.created_at && touched.created_at && <div style={{ color: 'red', fontSize: '12px' }}>{errors.created_at}</div>}
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="descripcion" className="form-label">
-                      Reseña
+                    <label htmlFor="code" className="form-label">
+                      Código
                     </label>
-                    <Field name="resume">
-                      {({ field, form }) => (
-                        <div>
-                          <textarea className="form-control form"
-                            {...field}
-                            placeholder="Escribe una breve reseña"
-                          />
-                          <ErrorMessage name="message" />
-                        </div>
-                      )}
-                    </Field>
-                    {errors.resume && touched.resume && <div style={{ color: 'red', fontSize: '12px' }}>{errors.resume}</div>}
+                    <Field
+                      type="text"
+                      className="form-control"
+                      id="code"
+                      name='code'
+                      placeholder="Ingrese el código del dispositivo"
+                    />
+                    {errors.code && touched.code && <div style={{ color: 'red', fontSize: '12px' }}>{errors.code}</div>}
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="categoria" className="form-label">
+                    <label htmlFor="category" className="form-label">
                       Categoría
                     </label>
                     <Field type='select' name="category" as="select" className={`form-control ${errors.category && touched.category ? 'is-invalid' : ''}`}>
                       {categories.map(category => (
                         <>
-                        <option value="">Selecciona una opción</option>
-                        <option key={category.uid} value={category.uid}>{category.name}</option>
+                          <option value="">Selecciona una opción</option>
+                          <option key={category.uid} value={category.uid}>{category.name}</option>
                         </>
                       ))
                       }
                     </Field>
-
-
                     {errors.category && touched.category && <div style={{ color: 'red', fontSize: '12px' }}>{errors.category.name}</div>}
                   </div>
                   <Button className="btn-siguiente" onClick={nextStep}>
@@ -200,7 +246,7 @@ export const CreateDevice = () => {
                 <div className="form-step">
                   <div className="mb-3">
                     <label htmlFor="imagen" className="form-label">
-                      Imagen del libro
+                      Imagen del dispositivo
                     </label>
                     <div className="input-group">
                       <Field name="img">
@@ -223,51 +269,36 @@ export const CreateDevice = () => {
                     </div>
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="precio" className="form-label">
-                      Precio
+                    <label htmlFor="supplier" className="form-label">
+                      Supplier
                     </label>
-                    <Field
-                      type="number"
-                      className="form-control"
-                      id="precio"
-                      name='price'
-                      placeholder="Ingrese el precio del producto"
-                    />
-                    {errors.price && touched.price && <div style={{ color: 'red', fontSize: '12px' }}>{errors.price}</div>}
+                    <Field type="text" className="form-control" id="supplier" name="supplier" />
+                    <ErrorMessage name="supplier" component="div" className="error-message" />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="author" className="form-label">
-                      Autor
+                    <label htmlFor="stock" className="form-label">
+                      Stock
                     </label>
-                    <Field
-                      type="text"
-                      className="form-control"
-                      id="author"
-                      name='author'
-                      placeholder="Ingrese el autor"
-                    />
-                    {errors.author && touched.author && <div style={{ color: 'red', fontSize: '12px' }}>{errors.author}</div>}
+                    <Field type="number" className="form-control" id="stock" name="stock" />
+                    <ErrorMessage name="stock" component="div" className="error-message" />
                   </div>
-                  <div className="mb-3">
-                    <label htmlFor="editorial" className="form-label">
-                      Editorial
-                    </label>
-                    <Field
-                      type="text"
-                      className="form-control"
-                      id="editorial"
-                      name='editorial'
-                      placeholder="Ingrese la editorial"
-                    />
-                    {errors.editorial && touched.editorial && <div style={{ color: 'red', fontSize: '12px' }}>{errors.editorial}</div>}
-                  </div>
+                  
                   <div className="form-buttons">
-                    <Button className="btn-atras" disabled={isSubmitting} onClick={prevStep}>
-                      Atrás
-                    </Button>
-                    <Button className="btn-enviar" disabled={isSubmitting} type="submit">
-                      {isSubmitting ? 'Cargando...' : 'Enviar'}
-                    </Button>
+                    {formStep === 1 && (
+                      <Button className="btn-siguiente" onClick={submitForm}>
+                        Siguiente
+                      </Button>
+                    )}
+                    {formStep === 2 && (
+                      <>
+                        <Button className="btn-atras" disabled={isSubmitting} onClick={prevStep}>
+                          Atrás
+                        </Button>
+                        <Button className="btn-enviar" disabled={isSubmitting} onClick={submitForm}>
+                          {isSubmitting ? 'Cargando...' : 'Enviar'}
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -279,4 +310,3 @@ export const CreateDevice = () => {
     </Row>
   );
 }
-

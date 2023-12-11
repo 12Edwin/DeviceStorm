@@ -61,34 +61,39 @@ export const DeviceStack = () => {
 
   const sortDevices = () => {
     const sortedDevices = [...devices].sort((a, b) => {
-      const valueA = a[sortCriteria];
-      const valueB = b[sortCriteria];
+      const valueA = sortCriteria === 'name' ? a.name : a.code;
+      const valueB = sortCriteria === 'name' ? b.name : b.code;
+  
+      console.log('ValueA:', valueA);
+      console.log('ValueB:', valueB);
+  
       const compareResult = valueA.localeCompare(valueB);
       return sortDirection === 'asc' ? compareResult : -compareResult;
     });
+  
+  
 
-    setdevices(sortedDevices);
-  };
-
+  
   useEffect(() => {
     sortDevices();
   }, [sortCriteria, sortDirection]);
 
   const searchDevices = () => {
-    const filteredDevices = devices.filter((device) =>
-      device.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setdevices(filteredDevices);
+    if (searchTerm.trim() === '') {
+      fillDevices();
+    } else {
+      const filteredDevices = devices.filter((device) =>
+        device.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setdevices(filteredDevices);
+    }
   };
-
-  useEffect(() => {
-    searchDevices();
-  }, [searchTerm]);
+  
 
   const openModalRemove = (id) => {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: '¡Deceas deshabilitar este libro!',
+      text: '¡Deceas deshabilitar este despositivo!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -142,24 +147,42 @@ export const DeviceStack = () => {
         (<><div className="deviceshelf-header">
           <h3>Best Sellers</h3>
           <div className="deviceshelf-controls">
-            <div className="deviceshelf-controls">
-              <label>Ordenar por:</label>
-              <select value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
-                <option value="name">Nombre</option>
-              </select>
-              <label>Dirección:</label>
-              <select value={sortDirection} onChange={(e) => setSortDirection(e.target.value)}>
-                <option value="asc">Ascendente</option>
-                <option value="desc">Descendente</option>
-              </select>
+            <label htmlFor="sortCriteria">Ordenar por:</label>
+            <select
+              id="sortCriteria"
+              value={sortCriteria}
+              onChange={(e) => setSortCriteria(e.target.value)}
+            >
+              <option value="name">Nombre</option>
+              <option value="code">Codigo</option>
+            </select>
 
-              <label>Buscar por nombre:</label>
-              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <label htmlFor="sortDirection">Dirección:</label>
+            <select
+              id="sortDirection"
+              value={sortDirection}
+              onChange={(e) => setSortDirection(e.target.value)}
+            >
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
 
-              <button onClick={sortDevices}>Ordenar</button>
-              <button onClick={searchDevices}>Buscar</button>
-            </div>
+            <label htmlFor="searchTerm">Buscar por nombre:</label>
+            <input
+              type="text"
+              id="searchTerm"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <button className="action-button" onClick={sortDevices}>
+              Ordenar
+            </button>
+            <button className="action-button" onClick={searchDevices}>
+              Buscar
+            </button>
           </div>
+
         </div>
           <div className="deviceshelf-devices">
             {devices.map(device => (
