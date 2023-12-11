@@ -1,140 +1,146 @@
 import React, { useState, useEffect } from 'react';
-import '../../request/style/Request.css';
-import { Card, CardHeader, CardBody, Table, Row, Col, Button } from 'reactstrap';
-import {userDisabled} from '../helpers';
+import { Table, Button } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faToggleOff, faToggleOn, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import {CreateUser} from "../component/CreateUserComponent"
-export const UsersComponent = ({ users }) => {
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [filteredUsers, setFilteredUsers] = useState(users);
-  const [searchTerm, setSearchTerm] = useState('');
+import Switch from "react-switch"
+import "../../category/style/Category.css"
+import {getAllUsers, userDisabled} from "../helpers/"
+import { Header } from '../../../public/component/Header';
+export const UsersComponent = () => {
+  const [users, setUsers] = useState([]);
+  const [aux, setAux] = useState([]);
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [isOpenNew, setIsOpenNew] = useState(false);
-  
+  const onOpenModal = (data) => {
+    setOpenModal(true);
+    setUser(data);
+  }
+
+  const onClose = (value) => {
+    if (value === 'reload') {
+      fillUsers();
+    }
+    setOpenModal(false);
+  }
+
   useEffect(() => {
-    // Filtrar usuarios según el término de búsqueda
-    const filtered = users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredUsers(filtered);
-  }, [searchTerm]);
+    fillUsers();
+  }, []);
 
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
-  };
+  const fillUsers = async () => {
+    setLoading(true);
+    const result = await getAllUsers();
+    if (result === 'ERROR') {
+      resultFail();
+    } else {
+      setUsers(result);
+      setAux(result);
+    }
+    setLoading(false);
+  }
 
-  const handleStatus = async (id) =>{
-    Swal.fire({
-      title: '¿Está seguro?',
-      text: '¿Está seguro de realizar esta acción?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, realizar',
-      cancelButtonText: 'Cancelar',
-      preConfirm: async() =>{
-        const result = await userDisabled(id);
-        if(result === 'ERROR'){
-          onFail();
-        }else
-          onSuccess();
-      }      
+  async function handleSwitchChange(itemId) {
+    console.log("id =>",itemId)
+    if (await onConfirm(itemId)) {
+      const updatedItems = users.map(item => {
+        if (item.uid === itemId) {
+          return { ...item, status: !item.status };
+        }
+        return item;
+      });
+      setUsers(updatedItems);
+    }
+  }
+
+  const onConfirm = async (itemId) => {
+    return await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Quieres cambiar el estado de este usuario',
+        icon: 'question',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Aceptar',
+        showLoaderOnConfirm: true,
+        async preConfirm(inputValue) {
+            return await onChangeStatus(itemId)
+        }
+    }).then((result) => {
+        result.isConfirmed
     })
   }
 
-  const onSuccess = () =>{
-    Swal.fire({
-      title: '¡Éxito!',
-      text: 'Los datos se han guardado correctamente.',
-      icon: 'success'
-    }).then(() => window.location.reload());
+  const onChangeStatus = async (id) =>{
+    console.log("id =>",id)
+    const result = await userDisabled(id)
+    if (typeof (result) === 'string'){
+        resultFail(result)
+        return false
+    }else {
+        resultOk()
+        return true
+    }
   }
 
-  const onFail = () =>{
+  const resultFail = (text) => {
     Swal.fire({
-      title: '¡Error!',
-      text: 'Ocurrión un error al realizar la transacción.',
-      icon: 'danger'
+        title: 'Error!',
+        text,
+        icon: 'danger',
+        confirmButtonText: 'OK',
     });
   }
 
+  const resultOk = () => {
+    Swal.fire({
+        title: 'Tarea completada!',
+        text: 'Usuario correctamente',
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
+    }).then(res => fillUsers())
+  }
+
   return (
-      <div className="content">
-        <Row>
-          <Col md="12" style={{ paddingLeft: "50px", paddingTop:"20px", marginRight: "100%"}}>
-            <Card>
-              <CardHeader>
-              <div className='coloration'>
-                <h4 className="card-title">Usuarios</h4>
-              </div>
-              </CardHeader>
-              <CardBody>
-                <Row>
-                  <Col lg="12" className='align'>
-                      <input
-                        type="text"
-                        placeholder="Buscar..."
-                        value={searchTerm}
-                        className='form-control'
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                      
-                  </Col>
-                </Row>
-                <Row>
-                  <Col lg="12" className='align'>
-                    <div style={{width: '100%', display: 'flex', justifyContent: 'end'}}>
-                      <Button onClick={() => setIsOpenNew(true)} style={{borderRadius: '50%', height: '45px', width: '45px', padding: '0px'}} >
-                      <FontAwesomeIcon icon={faPlus} style={{ fontSize: '20px' }}/>
-                      </Button>
-                      <CreateUser
-                        isOpen={isOpenNew}
-                        onClose={() => setIsOpenNew(false)}
-                      />
-                    </div>
-                  </Col>
-                </Row>
-                <Table class="tablesorter" responsive>
-                  <thead class="text-primary" style={{ color: 'black' }}>
-                    <tr >
-                      <th>Nombre</th>
-                      <th>Apellido</th>
-                      <th>Correo</th>
-                      <th>Acciones</th>
-                      <th></th>
-                    </tr>
-                  </thead>
+    <div style={{marginLeft: '22vw', marginTop:'3vh', marginRight: '5vw'}}>
+      <Header title={'Usuarios'} showFilter={true} showInsert={true} data={users} setAux={setAux} onCreate={()=>setIsOpenNew(true)}/>
+        <div className="rounded-5 header-table bg-primary">
+          <span> Usuarios </span>
+        </div>
+        <Table align="center" hover variant="dark" className=" table-category shadow-lg rounded-5 overflow-hidden">
+                <thead>
+                <tr>
+                    <th className="text-center"> # </th>
+                    <th className="text-center">Nombre</th>
+                    <th className="text-center">Apellido paterno</th>
+                    <th className="text-center">Apellido materno</th>
+                    <th className="text-center">Correo electrónico</th>
+                    <th className="text-center">Acciones</th>
+                </tr>
+                </thead>
                 <tbody>
-                  {filteredUsers.map((user) => (
-                    <tr
-                      key={user.uid}
-                      onClick={() => handleSelectUser(user)}
-                      className={selectedUser === user ? 'selected' : ''}
-                    >
-                      <td >{user.name}</td>
-                      <td>{user.surname || '-'}</td>
-                      <td>{user.email}</td>
-                      <td>
-                        <Row>
-                          <Col>
-                            <div className={`status ${user.status ? 'active' : 'inactive'}`} style={{ cursor: 'pointer' }}
-                              onClick={() => handleStatus(user.uid)}
-                            >
-                              {user.status ? <FontAwesomeIcon icon={faToggleOn} /> : <FontAwesomeIcon icon={faToggleOff} />}
-                            </div>
-                          </Col>
-                        </Row>
-                      </td>
+                {aux.map((item,ind) => (
+                    <tr key={ind}>
+                        <td>{ind + 1}</td>
+                        <td>{item.name}</td>
+                        <td>{item.lastname}</td>
+                        <td>{item.surname || 'S/A'}</td>
+                        <td>{item.email}</td>
+                        <td className="d-flex justify-content-around">
+                            <Switch checked={item.status} onChange={()=> handleSwitchChange(item.uid)}/>
+                        </td>
                     </tr>
-                  ))}
+                ))}
                 </tbody>
-                </Table>
-                </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </div>
-  );
+            </Table>
+            <CreateUser
+              isOpen={isOpenNew}
+              onClose={() => setIsOpenNew(false)}
+            />
+    </div>
+  )
+
 };
