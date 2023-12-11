@@ -7,6 +7,8 @@ import {
   faSignOutAlt,
   faUsers,
   faLaptop,
+  faExclamationCircle,
+  faBan,
   faUserEdit,
   faHandHoldingHand,
   faBuilding, faStore, faList,
@@ -72,6 +74,12 @@ export const NavBar = () => {
           <a href="/admin/category">
             <FontAwesomeIcon icon={faList} className="sidenav-icon" />
             Categorías
+          </a>
+        </li>
+        <li className="sidenav-item">
+          <a href="/admin/sanctions">
+            <FontAwesomeIcon icon={faExclamationCircle} className="sidenav-icon" />
+            sanciones
           </a>
         </li>
         <li className="sidenav-item">

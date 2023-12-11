@@ -2,7 +2,6 @@ const {Response, Router} = require('express');
 const {validateError, hashPassword, validateMiddlewares} = require("../../util/functions");
 const User = require('./User');
 const {check} = require("express-validator");
-const {sendMail} = require("../email/mailer");
 const {validateEmail, validateId, validateJWT, validateAdmin, roles} = require("../../helpers/db-validations");
 
 const getAll = async  (req, res = Response) =>{
