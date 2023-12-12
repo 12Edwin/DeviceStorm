@@ -1,11 +1,18 @@
 const { Schema, model } = require('mongoose');
 const mongoose = require('mongoose');
 const requestSchema = Schema({
-    device: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Device",
-        required: true,
-    },
+    devices: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Device",
+            required: true,
+        },{
+            cantidad: {
+                type: Number,
+                required: false,
+            }
+        }
+    ],
     sanction: {
         type: String
     },

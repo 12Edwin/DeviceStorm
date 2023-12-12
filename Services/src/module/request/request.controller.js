@@ -12,7 +12,7 @@ const getAll = async (req, res = Response) => {
                 {
                     $lookup: {
                         from: 'devices',
-                        localField: 'device',
+                        localField: 'devices',
                         foreignField: '_id',
                         as: 'device'
                     }
@@ -53,13 +53,34 @@ const getByEmail = async (req, res = Response) => {
                 }
             },
             {
+                $unwind: '$devices',
+            },
+            {
                 $lookup: {
-                    from: 'devices',
-                    localField: 'device',
+                    from: 'devices', // Reemplaza con el nombre real de tu colección de devices
+                    localField: 'devices',
                     foreignField: '_id',
-                    as: 'device'
-                }
-            }
+                    as: 'devices.deviceInfo',
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    requestInfo: {
+                        $first: '$$ROOT', // Preserva la información original del Request
+                    },
+                    devices: {
+                        $push: '$devices',
+                    },
+                },
+            },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects: ['$requestInfo', { devices: '$devices' }],
+                    },
+                },
+            },
         ]
         );
 
@@ -73,10 +94,10 @@ const getByEmail = async (req, res = Response) => {
 
 const insert = async (req, res = Response) => {
     try {
-        const { device, email, returns } = req.body;
+        const { devices, email, returns } = req.body;
         const created_at = new Date().toISOString().split('T')[0];
         const request = await new Request({
-            device: device,
+            devices: [...devices],
             user: email,
             quantity: 1,
             returns,
@@ -94,6 +115,7 @@ const insert = async (req, res = Response) => {
     }
 
 }
+
 const update = async (req, res = Response) => {
     try {
         const { status } = req.body;
@@ -147,8 +169,8 @@ requestRouter.get('/email/:email', [
 
 requestRouter.post('/', [
     validateJWT,
-    check('device', 'Título del libro necesario').not().isEmpty(),
-    check('device').custom(validateIdDevice),
+    check('devices', 'Título del libro necesario').not().isEmpty(),
+    check('devices').custom(validateIdDevice),
     check('email', 'El correo es necesario').not().isEmpty(),
     check('email', 'Correo inválido').isEmail(),
     check('returns', 'Fecha de retorno necesaria').not().isEmpty(),

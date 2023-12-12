@@ -97,12 +97,12 @@ export const Request = ({ requests = [] }) => {
                 <thead className="text-primary" style={{ color: 'black' }}>
 
                   <tr >
-                    <th>device</th>
-                    <th>Email user</th>
-                    <th>Created</th>
-                    <th>Returns</th>
-                    <th>Status</th>
-                    <th>Sanction</th>
+                    <th>Dispositivo</th>
+                    <th>Correo</th>
+                    <th>Fecha de petición</th>
+                    <th>Fecha de retorno</th>
+                    <th>Estatus</th>
+                    <th>Sanción</th>
                     <th>-</th>
                   </tr>
                 </thead>
