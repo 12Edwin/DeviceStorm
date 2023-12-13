@@ -35,12 +35,12 @@ export const RequestModal = ({ open, onOpen, email }) => {
         onSubmit: (values) => {
             console.log(values)
             const request = {
-                fecha: values.fecha,
+                returns: values.fecha,
                 devices: values.devices.map(device => {
                     return device.device
                 })
             }
-            console.log(request)
+            addRequest(request);
             handleCloseModal();
         }
     })
@@ -72,6 +72,7 @@ export const RequestModal = ({ open, onOpen, email }) => {
 
     const addDevice = () => {
         try {
+            if (formik.values.devices.length < 3)
             formik.setValues({ ...formik.values, devices: [...formik.values.devices, ''] });
         } catch (err) {
 

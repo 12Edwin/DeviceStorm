@@ -28,6 +28,28 @@ const validateIdDevice = async (id = '') => {
     }
 }
 
+const validateStock = async (ids) => {
+    try {
+      const devices = await Device.find({});
+  
+      ids.forEach((idDevice) => {
+        const device = devices.findIndex(dev => dev.id === idDevice);
+  
+        if (device !== -1 && devices[device].stock === 0) {
+          throw new Error('Not enough stock');
+        }
+  
+        if (device !== -1) {
+          devices[device].stock -= 1;
+        }
+      });
+  
+  
+    } catch (error) {
+      console.error('Error al validar el stock:', error);
+      throw error; 
+    }
+  };
 const validateIdRole = async (id = '') => {
     const idExist = await Role.findById(id);
     if (!idExist) {
@@ -109,11 +131,11 @@ const validateDevice = async (device = '') => {
         throw new Error('Libro no disponible')
     }
 }
-const validateDeviceById = async(device = '') => {
+const validateDeviceById = async (device = '') => {
     const [deviceExist] = await Promise.all([
-        Device.findById({id:device})
+        Device.findById({ id: device })
     ]);
-    if(!deviceExist) {
+    if (!deviceExist) {
         throw new Error('Artículo no encotrado en la bas de datos')
     }
 }
@@ -203,5 +225,6 @@ module.exports = {
     thereDevicesInPlace,
     thereSameSupplier,
     thereSamePlace,
-    minDevicesForPlace
+    minDevicesForPlace,
+    validateStock,
 }

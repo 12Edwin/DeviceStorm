@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const { validateError, validateMiddlewares } = require("../../util/functions");
 const Request = require('./Request');
-const { validateJWT, validateIdRequest, validateIdDevice, status } = require("../../helpers/db-validations");
+const { validateJWT, validateIdRequest, validateIdDevice, status, validateStock } = require("../../helpers/db-validations");
 const { check } = require("express-validator");
+const Device = require("../device/Device");
 //const { mailer, creatT, sendMail } = require("../email/mailer")
 const getAll = async (req, res = Response) => {
     try {
@@ -10,16 +11,36 @@ const getAll = async (req, res = Response) => {
         const [requests, total] = await Promise.all([
             Request.aggregate([
                 {
+                    $unwind: '$devices',
+                },
+                {
                     $lookup: {
-                        from: 'devices',
+                        from: 'devices', // Reemplaza con el nombre real de tu colección de devices
                         localField: 'devices',
                         foreignField: '_id',
-                        as: 'device'
-                    }
-                }
-            ]),
-            Request.countDocuments()
-        ]);
+                        as: 'devices.deviceInfo',
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        requestInfo: {
+                            $first: '$$ROOT', // Preserva la información original del Request
+                        },
+                        devices: {
+                            $push: '$devices',
+                        },
+                    },
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: {
+                            $mergeObjects: ['$requestInfo', { devices: '$devices' }],
+                        },
+                    },
+                },
+            ]
+            ),Request.countDocuments]);
 
         res.status(200).json({ total, requests });
     } catch (error) {
@@ -99,12 +120,12 @@ const insert = async (req, res = Response) => {
         const request = await new Request({
             devices: [...devices],
             user: email,
-            quantity: 1,
             returns,
-            status: 'Pending',
+            status: 'Pendiente',
             created_at,
             starts: created_at,
         })
+        updateStock(devices);
         await request.save();
         //sendMail(email,"Nueva solicitud", "Mensaje del cuerpo del correo");
         res.status(200).json({ msg: 'Successful request', request });
@@ -114,6 +135,20 @@ const insert = async (req, res = Response) => {
         console.log(error);
     }
 
+}
+
+const updateStock = async (devices) => {
+    for(const element of devices) {
+        try {
+            const device = await Device.findById(element);
+            if (device) {
+                device.stock -= 1,
+                await device.save();
+            }
+        }catch(err) {
+
+        }
+    }
 }
 
 const update = async (req, res = Response) => {
@@ -171,6 +206,7 @@ requestRouter.post('/', [
     validateJWT,
     check('devices', 'Título del libro necesario').not().isEmpty(),
     check('devices').custom(validateIdDevice),
+    check('devices').custom(validateStock),
     check('email', 'El correo es necesario').not().isEmpty(),
     check('email', 'Correo inválido').isEmail(),
     check('returns', 'Fecha de retorno necesaria').not().isEmpty(),
