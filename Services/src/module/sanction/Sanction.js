@@ -5,6 +5,10 @@ const sanctionSchema = Schema({
         type: String,
         required: true
     },
+    emailUser: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         required: true

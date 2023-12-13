@@ -16,6 +16,14 @@ const getAll = async (req, res = Response) => {
                         foreignField: '_id',
                         as: 'device'
                     }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user',
+                        foreignField: 'email',
+                        as: 'user'
+                    }
                 }
             ]),
             Request.countDocuments()
@@ -129,7 +137,7 @@ const sancionar = async (req, res = Response) => {
 const requestRouter = Router();
 
 requestRouter.get('/', [
-    validateJWT
+    //validateJWT
 ], getAll);
 
 requestRouter.get('/id/:id', [

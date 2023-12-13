@@ -23,8 +23,22 @@
     border-radius: 5px;
 }
 
-
 .table-category {
+    margin-top: 10vh;
     margin-top: -2vh;
     z-index: 2;
 }
+
+td .pagar-button {
+    background-color: #003f69;
+    color: #fff;
+    height: 30px;
+    width: 80px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+

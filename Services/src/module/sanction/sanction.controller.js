@@ -3,6 +3,7 @@ const Sancation = require('./Sanction');
 const { validateError, validateMiddlewares } = require("../../util/functions");
 const { validateJWT, validateIdSupplier } = require("../../helpers/db-validations");
 const { check } = require("express-validator");
+const User = require('../user/User');
 
 const getAll = async (req, res = Response) => {
     try {
@@ -23,10 +24,7 @@ const getAll = async (req, res = Response) => {
 const getSanctionsByUserId = async (req, res) => {
     try {
         const { userId } = req.params;
-
-        // Buscar sanciones en la base de datos por el ID de usuario
         const sanctions = await Sancation.find({ idUser: userId });
-
         res.status(200).json({ msg: 'Sanciones encontradas', sanctions });
     } catch (error) {
         const message = validateError(error);
@@ -37,20 +35,23 @@ const getSanctionsByUserId = async (req, res) => {
 
 const insert = async (req, res = Response) => {
     try {
-        const { idUser, description, returns } = req.body;
+        const { idUser,emailUser, description, returns } = req.body;
+        const user = await User.findById(idUser);
 
-        // Obtén la fecha actual en formato UTC sin horas, minutos, segundos y milisegundos
+        if (!user) {
+            return res.status(404).json({ msg: 'El usuario no existe' });
+        }
+        // btiene la fecha actual sin horas ni minutos
         const currentDate = new Date();
         currentDate.setUTCHours(0, 0, 0, 0);
 
-        // Asegúrate de que returns sea un objeto de tipo Date en formato UTC sin horas, minutos, segundos y milisegundos
         const returnsObj = new Date(returns);
         returnsObj.setUTCHours(0, 0, 0, 0);
 
-        // Calcular la diferencia en días utilizando getTime() para obtener milisegundos y convertir a días
+        // Calcular la diferencia en días convitriendo solo dias
         const daysDifference = Math.max(Math.ceil((currentDate.getTime() - returnsObj.getTime()) / (1000 * 3600 * 24)), 0);
 
-        // Calcular el monto automáticamente basado en la cantidad de días de atraso
+        // Calcula el monto de la multa
         const amount = daysDifference * 60;
 
         console.log(`La diferencia en días es: ${daysDifference}`);
@@ -60,11 +61,12 @@ const insert = async (req, res = Response) => {
         if (daysDifference > 0) {
             const sanction = await new Sancation({
                 idUser,
+                emailUser,
                 description,
                 returns: returnsObj,
                 days: daysDifference,
                 amount,
-                status: true,
+                status: false,
             });
 
             await sanction.save();
@@ -79,7 +81,7 @@ const insert = async (req, res = Response) => {
     }
 };
 
-//eliminar sancion por id
+//eliminar sancion por id solo para pruebas
 const deleteSanction = async (req, res = Response) => {
     try {
         const { id } = req.params;
