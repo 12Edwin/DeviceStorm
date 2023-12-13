@@ -561,7 +561,7 @@ const userRouter = Router()
 
 
 userRouter.get('/',[
-    validateJWT,
+    //validateJWT,
     //validateAdmin
 ],getAll);
 
