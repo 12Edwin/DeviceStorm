@@ -261,7 +261,6 @@ const passwordTemplate = (token) =>{
 const sendEmailRecovery = async (req, res = Response) =>{
     try {
         const { email } = req.body;
-        console.log(email);
         const user = await User.findOne({ 'email': email });
         if (user) {
             const {_id, email} = user
@@ -292,7 +291,7 @@ const changePassword = async (req, res = Response) => {
             await User.updateOne({ 'email': email }, { $set: { password: encryptedPassword, token: "" }});
             return res.status(200).json({ message: 'Contraseña actualizada' });
         }else{
-            return res.status(403).json({ message: message });
+            return res.status(403).json({ message: 'Token expirado' });
         }
         
     } catch (error) {
