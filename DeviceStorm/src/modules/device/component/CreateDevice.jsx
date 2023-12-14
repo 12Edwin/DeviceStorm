@@ -3,12 +3,12 @@ import { Button, Row } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import '../style/CreateProduct.css'
-import { getCategories } from "../helpers";
+import { getCategories } from "../helpers/boundary.js";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from 'yup';
-import { insertdevice } from '../helpers'
+import { insertdevice } from '../helpers/boundary.js'
 import Swal from 'sweetalert2';
-import { insertImage } from "../helpers";
+import { insertImage } from "../helpers/boundary.js";
 
 export const CreateDevice = () => {
   const [formStep, setFormStep] = useState(1);

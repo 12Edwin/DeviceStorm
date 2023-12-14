@@ -54,13 +54,18 @@ const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
         const device = req.body;
+        await existDevice(device.name, id )
         await Device.findByIdAndUpdate(id,device);
+
 
         res.status(200).json({msg:'Successful request', device});
     }catch (error){
-        const message = validateError(error);
-        res.status(400).json(message);
-        console.log(error);
+        if (error.toString().includes('Already exists') ){
+            res.status(400).json({msg: 'Already exists'})
+        }else{
+            res.status(500).json(error);
+            console.log(error);
+        }
     }
 }
 
@@ -147,33 +152,43 @@ deviceRouter.get('/:id',[
 // ],insert);
  deviceRouter.post('/',[
     validateJWT,
-    check('name', 'Name is required').not().isEmpty(),
+    check('name', 'Missing fields').not().isEmpty(),
     check('name').custom(existDevice),
-    check('code').isString().not().isEmpty().withMessage('Code is required'),
-    check('place').not().isEmpty().withMessage('Place is required'),
-    check('place').isMongoId().withMessage('Invalid place'),
-    check('place').custom(validateIdPlace).withMessage('Invalid place'),
-    check('supplier', 'Supplier is required').not().isEmpty(),
-    check('supplier').isMongoId().withMessage('Invalid supplier'),
-    check('supplier').custom(validateIdSupplier).withMessage('Invalid supplier'),
-    check('category').not().isEmpty().withMessage('Category is required'),
-    check('category').isMongoId().withMessage('Invalid category'),
-    check('category').custom(validateIdCategory).withMessage('Invalid category'),
-    check('stock').not().isEmpty().withMessage('Stock is required'),
-    check('stock').isNumeric().withMessage('Stock must be numeric'),
+    check('place').not().isEmpty().withMessage('Missing fields'),
+    check('place').isMongoId().withMessage('Invalid fields'),
+    check('place').custom(validateIdPlace).withMessage('Invalid fields'),
+    check('supplier', 'Missing fields').not().isEmpty(),
+    check('supplier').isMongoId().withMessage('Invalid fields'),
+    check('supplier').custom(validateIdSupplier).withMessage('Invalid fields'),
+    check('category').not().isEmpty().withMessage('Missing fields'),
+    check('category').isMongoId().withMessage('Invalid fields'),
+    check('category').custom(validateIdCategory).withMessage('Invalid fields'),
+    check('stock').not().isEmpty().withMessage('Missing fields'),
+    check('stock').isNumeric().withMessage('Invalid fields'),
     validateMiddlewares
  ], insert)
 deviceRouter.put('/:id',[
     validateJWT,
-    check('publication').optional().isDate().withMessage('Must be a valid date'),
-    check('id','El id debe ser de mongo').isMongoId(),
+    check('name', 'Missing fields').not().isEmpty(),
+    check('place').not().isEmpty().withMessage('Missing fields'),
+    check('place').isMongoId().withMessage('Invalid fields'),
+    check('place').custom(validateIdPlace).withMessage('Invalid fields'),
+    check('supplier', 'Missing fields').not().isEmpty(),
+    check('supplier').isMongoId().withMessage('Invalid fields'),
+    check('supplier').custom(validateIdSupplier).withMessage('Invalid fields'),
+    check('category').not().isEmpty().withMessage('Missing fields'),
+    check('category').isMongoId().withMessage('Invalid fields'),
+    check('category').custom(validateIdCategory).withMessage('Invalid fields'),
+    check('stock').not().isEmpty().withMessage('Missing fields'),
+    check('stock').isNumeric().withMessage('Invalid fields'),
+    check('id','Invalid id').isMongoId(),
     check('id').custom(validateIdDevice),
     validateMiddlewares
 ],update);
 
 deviceRouter.put('/image/:id',[
     validateJWT,
-    check('id','El id debe ser de mongo').isMongoId(),
+    check('id','Invalid id').isMongoId(),
     check('id').custom(validateIdDevice),
     upload.single('image'),
     validateMiddlewares
