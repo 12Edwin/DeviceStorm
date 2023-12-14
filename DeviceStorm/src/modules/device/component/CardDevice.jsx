@@ -4,7 +4,7 @@ import {Col, Row} from "react-bootstrap";
 import {Button} from "@material-ui/core";
 import {Cancel, EditRounded, Restore} from "@material-ui/icons";
 import {DeviceEditModal} from "./DeviceEditModal.jsx";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Switch from "react-switch";
 import Swal from "sweetalert2";
 

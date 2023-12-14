@@ -152,10 +152,10 @@ const validateDeviceById = async (device = '') => {
         throw new Error('Artículo no encotrado en la bas de datos')
     }
 }
-const existDevice = async (device) => {
-    const exist = await Device.findOne({ name: device });
+const existDevice = async (name, id= '000000000000000000000000') => {
+    const exist = await Device.exists({ name: name, _id: { $ne: id } })
     if (exist) {
-        throw new Error(`El libro ${device} ya está registrado`);
+        throw new Error(`Already exists`);
     }
 }
 

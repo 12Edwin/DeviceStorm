@@ -175,17 +175,22 @@ label {
   margin: 10px;
 }
 
+.formulario-container{
+  display: flex;
+  overflow-x: hidden;
+  height: 300px;
+}
+
 .form-steps{
-  transform: translateX(100%);
+  transform: translateX(100%) scaleX(0);
+  overflow-x: hidden;
   opacity: 0;
   width: 0;
-  height: 0;
   transition: all 0.4s ease-in-out;
 }
 
 .display-steps{
   opacity: 100%;
-  width: 100% !important;
-  height: 100% !important;
-  transform: translateX(0);
+  width: 100%;
+  transform: translateX(0) scaleX(1);
 }

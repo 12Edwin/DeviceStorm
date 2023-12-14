@@ -1,12 +1,13 @@
 import {Input, Card, CardBody, Button} from "reactstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faComputer, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
-import React from "react";
+import {faChevronUp, faComputer, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
+import React, {useState} from "react";
 import '../style/Header.css'
 
-export const Header = ({title, onCreate = ()=>{}, data = [], setAux = ()=>{}, showFilter = false, showInsert = false}) => {
+export const Header = ({title, onCreate = ()=>{}, data = [], setAux = ()=>{}, showFilter = false, showInsert = false, showSort = false, chevron= false, setChevron = ()=>{}}) => {
 
     const onFilter = (value) => {
+
         if (value !== '' && data.length > 0){
             const labels = Object.getOwnPropertyNames(data[0])
             const filter = data.filter(object => {
@@ -24,7 +25,7 @@ export const Header = ({title, onCreate = ()=>{}, data = [], setAux = ()=>{}, sh
     }
 
     return (
-        <div className="ms-3 rounded-4 w-100 border-0 shadow mb-2">
+        <div className="rounded-4 w-100 border-0 shadow mb-2">
             <CardBody className="bg-light rounded-bottom p-3 d-flex align-items-center">
 
                 <div className="bg-primary rounded-circle p-2 me-3">
@@ -70,6 +71,13 @@ export const Header = ({title, onCreate = ()=>{}, data = [], setAux = ()=>{}, sh
                             <h1 className="header-title">REPADE</h1>
                         </div>
                     </div>
+                }
+                { showSort &&
+                    <Button style={{borderRadius: '100%', width:'15px', height:'50px'}}
+                            className="me-3 d-flex justify-content-center align-items-center"
+                            onClick={()=> setChevron()}>
+                        <FontAwesomeIcon className={(chevron ? 'chevron-header-up ' : '') + 'chevron-header'} icon={faChevronUp}/>
+                    </Button>
                 }
                 { showInsert &&
                 <Button color="primary" onClick={onCreate} className="d-flex align-items-center"> Agregar <FontAwesomeIcon className="ms-3" size="2x" icon={faPlusSquare}/></Button>
