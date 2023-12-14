@@ -3,7 +3,7 @@ import { Button } from "@material-ui/core";
 import { useFormik } from "formik";
 import Modal from "react-modal";
 import * as Yup from 'yup';
-import { getdevices } from "../../device/helpers";
+import { getdevices } from "../../device/helpers/boundary.js";
 import { CSSTransition } from "react-transition-group";
 import '../style/ModalRequest.css'
 import '../style/RequestModal.css';

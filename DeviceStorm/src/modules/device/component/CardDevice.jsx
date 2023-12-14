@@ -8,10 +8,7 @@ import React, {useState} from "react";
 import Switch from "react-switch";
 import Swal from "sweetalert2";
 
-export const CardDevice = ({
-                               devices = [], setDevices = () => {
-    }, requests = []
-                           }) => {
+export const CardDevice = ({devices = [], setDevices = () => {}, requests = []}) => {
 
     const [editModal, setEditModal] = useState(false)
     const [device, setDevice] = useState({})
@@ -30,6 +27,7 @@ export const CardDevice = ({
 
     const onModalEdit = (data) => {
         setDevice(data)
+        setEditModal(true)
     }
 
     const onConfirm = async (id, text) => {
@@ -53,7 +51,7 @@ export const CardDevice = ({
                 (<>
                     <Card style={{width: '18rem', margin: '15px', display: 'flex', alignItems: 'center'}}>
                         <Card.Header style={{height: '330px'}}>
-                            <Card.Img variant="top" style={{width: '200px'}} src={device.img ? device.img : image}/>
+                            <Card.Img variant="top" style={{width: '200px'}} src={device.img ? (import.meta.env.VITE_SECRET + '/device/image/' + device.img) : image}/>
                         </Card.Header>
                         <Card.Body>
                             <Card.Title>{device.name}</Card.Title>
@@ -87,7 +85,7 @@ export const CardDevice = ({
             </div>
             )
             )}
-            <DeviceEditModal open={editModal} onOpen={setEditModal} data={device}/>
+            <DeviceEditModal show={editModal} setShow={setEditModal} data={device}/>
         </>
     )
 }

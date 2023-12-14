@@ -174,3 +174,18 @@ label {
 .btn-atras, .btn-enviar{
   margin: 10px;
 }
+
+.form-steps{
+  transform: translateX(100%);
+  opacity: 0;
+  width: 0;
+  height: 0;
+  transition: all 0.4s ease-in-out;
+}
+
+.display-steps{
+  opacity: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  transform: translateX(0);
+}
