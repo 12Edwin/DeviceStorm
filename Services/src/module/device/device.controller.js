@@ -189,7 +189,7 @@ deviceRouter.get('/image/:filename',[],getImage);
 
 deviceRouter.delete('/:id',[
     validateJWT,
-    check('id', 'El id debe ser de mongo').isMongoId(),
+    check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdDevice),
     validateMiddlewares
 ],deletes);

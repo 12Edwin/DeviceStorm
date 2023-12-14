@@ -51,21 +51,37 @@ export const DeviceStack = () => {
 
     const sortDevices = () => {
         const sortedDevices = [...devices].sort((a, b) => {
-            const valueA = sortCriteria === 'name' ? a.name : a.code;
-            const valueB = sortCriteria === 'name' ? b.name : b.code;
-
-            console.log('ValueA:', valueA);
-            console.log('ValueB:', valueB);
-
-            const compareResult = valueA.localeCompare(valueB);
+            let valueA = '';
+            let valueB = ''
+            switch (sortCriteria) {
+                case 'name':
+                    valueA = a.name
+                    valueB = b.name
+                    break;
+                case 'code':
+                    valueA = a.code
+                    valueB = b.code
+                    break;
+                case 'created_at':
+                    valueA = a.created_at
+                    valueB = b.created_at
+                    break;
+                case 'stock':
+                    valueA = a.stock
+                    valueB = b.stock
+                    break;
+            }
+            let compareResult = 0
+            if (typeof (valueA) === "string") {
+                compareResult = valueA.localeCompare(valueB);
+            }else{
+                compareResult = valueA - valueB
+            }
             return sortDirection === 'asc' ? compareResult : -compareResult;
         })
+        console.log('entra')
+        setAux(sortedDevices)
     }
-
-
-    useEffect(() => {
-        sortDevices();
-    }, [sortCriteria, sortDirection]);
 
     const searchDevices = () => {
         if (searchTerm.trim() === '') {
@@ -130,9 +146,10 @@ export const DeviceStack = () => {
             {apiError ? <SomeProblems/> : loading ? <LoadingComponent/> :
                 (<>
                     <div className="pe-5">
-                        <Header data={devices} setAux={setAux} showInsert={true} title={'Inventario'} showFilter={true} showSort={true} onCreate={openModalEdit}
-                                chevron={showOrder} setChevron={()=> setShowOrder(prev => !prev )}/>
-                        <div className={ (showOrder ? 'display-bar-order ':'') + "deviceshelf-controls"}>
+                        <Header data={devices} setAux={setAux} showInsert={true} title={'Inventario'} showFilter={true}
+                                showSort={true} onCreate={openModalEdit}
+                                chevron={showOrder} setChevron={() => setShowOrder(prev => !prev)}/>
+                        <div className={(showOrder ? 'display-bar-order ' : '') + "deviceshelf-controls"}>
                             <select
                                 className="form-control me-4"
                                 id="sortCriteria"
@@ -141,6 +158,8 @@ export const DeviceStack = () => {
                                 <option value="">Ordenar por...</option>
                                 <option value="name">Nombre</option>
                                 <option value="code">Codigo</option>
+                                <option value="created_at">Fecha de creación</option>
+                                <option value="stock">Stock</option>
                             </select>
 
                             <select
@@ -154,7 +173,9 @@ export const DeviceStack = () => {
                                 <option value="desc">Descendente</option>
                             </select>
 
-                            <Button className="action-button" disabled={!(sortCriteria.length > 0 && sortDirection.length > 0)} onClick={sortDevices}>
+                            <Button className="action-button"
+                                    disabled={!(sortCriteria.length > 0 && sortDirection.length > 0)}
+                                    onClick={sortDevices}>
                                 Ordenar
                             </Button>
                         </div>
