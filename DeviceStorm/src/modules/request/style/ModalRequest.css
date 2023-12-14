@@ -11,3 +11,11 @@
   height: auto;
   object-fit: cover;
 }
+
+.request-field {
+  display: flex;
+  height: 2em;
+  text-wrap: nowrap;
+  width: 100%;
+
+}

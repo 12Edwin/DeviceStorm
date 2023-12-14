@@ -1,17 +1,15 @@
 const { Schema, model } = require('mongoose');
 const mongoose = require('mongoose');
 const requestSchema = Schema({
-    device: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Device",
-        required: true,
-    },
+    devices: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Device",
+            required: true,
+        }
+    ],
     sanction: {
         type: String
-    },
-    quantity: {
-        type: Number,
-        required: true
     },
     user: {
         type: String,
@@ -32,7 +30,7 @@ const requestSchema = Schema({
     status: {
         type: String,
         required: true,
-        enum: ['Active', 'Canceled', 'Finished', 'Pending', 'Sanction']
+        enum: ['Activa', 'Cancelada', 'Finalizada', 'Pendiente', 'Sancion']
     }
 
 });
