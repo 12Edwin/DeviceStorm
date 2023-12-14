@@ -7,6 +7,7 @@ import {DeviceEditModal} from "./DeviceEditModal.jsx";
 import React, {useEffect, useState} from "react";
 import Switch from "react-switch";
 import Swal from "sweetalert2";
+import {removedevice} from "../helpers/boundary.js";
 
 export const CardDevice = ({devices = [], setDevices = () => {}, requests = []}) => {
 
@@ -40,16 +41,46 @@ export const CardDevice = ({devices = [], setDevices = () => {}, requests = []})
             confirmButtonText: 'Aceptar',
             showLoaderOnConfirm: true,
             async preConfirm(inputValue) {
-                //return await onChangeStatus(id)
+                return await onChangeStatus(id)
             }
         }).then(result => result.isConfirmed)
+    }
+
+    const onChangeStatus = async (id) =>{
+        const result = await removedevice(id)
+        if (typeof (result) === 'string'){
+            resultFail(result)
+            return false
+        }else {
+            resultOk()
+            return true
+        }
+    }
+
+    const resultFail = (text) => {
+        Swal.fire({
+            title: 'Error!',
+            text,
+            icon: 'danger',
+            confirmButtonText: 'OK',
+        });
+    }
+
+    const resultOk = () => {
+        Swal.fire({
+            title: 'Tarea completada!',
+            text: 'Dispositivo actualizado correctamente',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+        })
     }
 
     return (<>
         {devices.map(device => (
             <div key={device.uid}>{!device.available || requests.includes(device.name) ? <></> :
                 (<>
-                    <Card style={{width: '18rem', margin: '15px', display: 'flex', alignItems: 'center'}}>
+                    <Card className="card-device" style={{width: '18rem', margin: '15px', display: 'flex', alignItems: 'center'}}>
                         <Card.Header style={{height: '330px'}}>
                             <Card.Img variant="top" style={{width: '200px'}} src={device.img ? (import.meta.env.VITE_SECRET + '/device/image/' + device.img) : image}/>
                         </Card.Header>
@@ -62,7 +93,7 @@ export const CardDevice = ({devices = [], setDevices = () => {}, requests = []})
                     </Card>
                     <Card style={{width: '18rem', margin: '1rem', padding: '0px'}}>
                         <Card.Body>
-                            <Row>
+                            <Row className="justify-content-around">
                                 <Col md={5}>{requests.includes(device.name) ?
                                     <></>
                                     :
