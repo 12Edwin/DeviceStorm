@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { ProfilePage, UsersPage} from '../modules/user/view'
-import { CretaedevicePage, InventoryPage} from '../modules/device/view'
+import { InventoryPage} from '../modules/device/view'
 import { RequestPage} from '../modules/request/view'
 
 import PageNotFound from "../auth/pages/PageNotFound"
@@ -18,7 +18,6 @@ export const AdminRoute = () =>{
             <Routes>
                 <Route path="stock" element={<><NavBar /><InventoryPage/></>}/>
                 <Route path="requests" element={<><NavBar /><RequestPage/></>}/>
-                <Route path="device" element={<><NavBar /><CretaedevicePage/></>}/>
                 <Route path="category" element={<><NavBar/><CategoryPage/></>}/>
                 <Route path="place" element={<><NavBar/><PlacePage/></>}/>
                 <Route path="supplier" element={<><NavBar/><SupplierPage/></>}/>

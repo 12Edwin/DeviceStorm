@@ -1,20 +1,22 @@
 .deviceshelf-controls {
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: space-between;
+  border-radius: 15px;
+  background-color: white;
+  padding: 0;
+  opacity: 0;
   margin-bottom: 20px;
+  height: 0;
+  transition: all 0.4s ease-in-out;
 }
 
-.deviceshelf-controls label {
-  margin-right: 10px;
-}
-
-.deviceshelf-controls select,
-.deviceshelf-controls input {
-  margin-right: 10px;
-  padding: 10px; 
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.display-bar-order{
+  height: 100px;
+  opacity: 1;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .action-button {
@@ -46,10 +48,6 @@
     font-weight: 600;
   }
   
-  .deviceshelf-controls {
-    display: flex;
-  }
-  
   .deviceshelf-control {
     background-color: transparent;
     border: none;
@@ -77,13 +75,11 @@
   .deviceshelf-devices {
     display: flex;
     overflow-x: auto;
-    /* scrollbar-width: none; */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 12px solid rgba(0, 0, 0, 0.0);
     -ms-overflow-style: none;
   }
-  
-  .deviceshelf-devices::-webkit-scrollbar {
-    display: none;
-  }
+
   
   .device {
     background-color: #fff;

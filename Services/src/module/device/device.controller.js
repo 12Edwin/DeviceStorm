@@ -9,7 +9,7 @@ const fs = require("fs");
 
 const getAll = async (req, res = Response) =>{
     try {
-        const query = req.query;
+        const query = req.body;
         const [total, devices ] = await Promise.all([
             Device.countDocuments(),
             Device.find(query)
@@ -38,8 +38,9 @@ const getById = async (req, res = Response) =>{
 
 const insert = async (req, res = Response) =>{
     try {
-        const {name, code, place, supplier, category, stock} = req.body;
+        const {name, place, supplier, category, stock} = req.body;
         const created_at = new Date();
+        const code = 'DEV' + Date.now()
         const device = await new Device({name, code, place, supplier, category, stock, created_at, available:true, status: true});
         await device.save();
         res.status(200).json({message:'Successful request', device});
@@ -129,7 +130,7 @@ const getImage = async (req, res ) =>{
 
 const deviceRouter = Router();
 
-deviceRouter.get('/',[
+deviceRouter.post('/devices',[
 validateJWT,
 ],getAll);
 
@@ -140,20 +141,10 @@ deviceRouter.get('/:id',[
     validateMiddlewares
 ],getById);
 
-// deviceRouter.post('/',[
-//     validateJWT,
-//     check('name', 'El titulo del libro es obligatorio').not().isEmpty(),
-//     check('name').custom(existDevice),
-//     check('author', 'El autor del libro es obligatorio').not().isEmpty(),
-//     check('publication', 'La fecha de publicación es obligatoria').not().isEmpty(),
-//     check('publication').trim().isDate().withMessage('Must be a valid date'),
-//     check('price').not().isEmpty().withMessage('El precio es obligatorio'),
-//     validateMiddlewares
-// ],insert);
  deviceRouter.post('/',[
     validateJWT,
     check('name', 'Missing fields').not().isEmpty(),
-    check('name').custom(existDevice),
+    check('name').custom((name)=>existDevice(name)),
     check('place').not().isEmpty().withMessage('Missing fields'),
     check('place').isMongoId().withMessage('Invalid fields'),
     check('place').custom(validateIdPlace).withMessage('Invalid fields'),

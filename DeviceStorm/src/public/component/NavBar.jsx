@@ -53,12 +53,6 @@ export const NavBar = () => {
           </a>
         </li>
         <li className="sidenav-item">
-          <a href="/admin/device">
-            <FontAwesomeIcon icon={faLaptop} className="sidenav-icon" />
-            Dispositivos
-          </a>
-        </li>
-        <li className="sidenav-item">
           <a href="/admin/place">
             <FontAwesomeIcon icon={faBuilding} className="sidenav-icon" />
             Almacenes

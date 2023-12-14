@@ -1,10 +1,8 @@
-import {faUpload} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {ErrorMessage, useFormik} from 'formik';
+import {useFormik} from 'formik';
 import {useEffect, useState} from 'react';
 import {Modal, Form, Button} from 'react-bootstrap';
 import * as Yup from 'yup';
-import {getCategories, getPlaces, getSuppliers, updatedevice} from '../helpers/boundary.js';
+import {getCategories, getPlaces, getSuppliers, insertdevice, updatedevice} from '../helpers/boundary.js';
 import {insertImage} from '../helpers/boundary.js'
 import Swal from 'sweetalert2';
 
@@ -107,7 +105,8 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
     const onRegister = async (device) => {
         const {img, ...fields} = device;
-        const response = await updatedevice(fields);
+        console.log(fields)
+        const response = await insertdevice(fields);
         if (typeof (response) === 'string') {
             resultFail(response);
         } else {
@@ -117,28 +116,27 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
     const uploadImage = async (id, img) => {
         const response = await insertImage(id, img);
-        if (response === 'ERROR') {
-            setApiError(true);
-            resultFail();
+        if (typeof (response) === 'string') {
+            resultFail(response);
         } else {
             setApiError(false);
-            resultOk();
+            resultOk("Dispositivo guardado correctamente");
         }
     }
 
-    const resultOk = () => {
+    const resultOk = (text) => {
         Swal.fire({
             title: 'Tarea completada!',
-            text: 'Felicidades, has creado un nuevo libro.',
+            text: text,
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
         }).then(() => window.location.reload());
     }
-    const resultFail = () => {
+    const resultFail = (text) => {
         Swal.fire({
             title: 'Error!',
-            text: 'Ups, ha ocurrido un error con la transacción, checa que el nombre no sea identico a los que ya tienes.',
+            text: text,
             icon: 'danger',
             confirmButtonColor: '#d33',
             confirmButtonText: 'OK',
@@ -210,7 +208,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                     <div className="formulario-container">
                         {formStep === 1 && (
                             <div className={class1}>
-                                <div className="mb-3">
                                     <Form.Group className="mb-3">
                                         <MDBInput label='Nombre' id='name' type='text'
                                                   className="form-control"
@@ -222,8 +219,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                         {formik.errors.name && formik.touched.name &&
                                             <div style={{color: 'red', fontSize: '12px'}}>{formik.errors.name}</div>}
                                     </Form.Group>
-                                </div>
-                                <div className="mb-3">
                                     <Form.Group className="mb-3">
                                         <MDBInput label='Número de unidades' id='stock' type='number'
                                                   className="form-control"
@@ -235,8 +230,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                         {formik.errors.stock && formik.touched.stock && <div
                                             style={{color: 'red', fontSize: '12px'}}>{formik.errors.stock}</div>}
                                     </Form.Group>
-                                </div>
-                                <div className="mb-3">
                                     <Form.Group className="mb-3">
                                         <select className="form-control" id='supplier'
                                                 onChange={formik.handleChange}
@@ -244,8 +237,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                                 value={formik.values.supplier}>
                                             <option value="">Seleccione un proveedor</option>
                                             {suppliers.map((item, ind) => (
-                                                <option value={item.uid} key={ind}
-                                                        selected={item.uid === data.supplier}>
+                                                <option value={item.uid} key={ind}>
                                                     {item.name}
                                                 </option>
                                             ))}
@@ -254,8 +246,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                             <div
                                                 style={{color: 'red', fontSize: '12px'}}>{formik.errors.supplier}</div>}
                                     </Form.Group>
-                                </div>
-                                <div className="mb-3">
                                     <Form.Group className="mb-3">
                                         <select name="category" id="category" className="form-control"
                                                 onChange={formik.handleChange}
@@ -264,7 +254,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                             <option value="">Selecciona una categoría</option>
                                             {categories.map(category => (
                                                 <option key={category.uid}
-                                                        selected={data.category === category.uid}
                                                         value={category.uid}>{category.name}</option>
                                             ))}
                                         </select>
@@ -273,7 +262,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                             fontSize: '12px'
                                         }}>{formik.errors.category}</div>}
                                     </Form.Group>
-                                </div>
                                 <Button className="btn-siguiente" onClick={nextStep}>
                                     Siguiente
                                 </Button>
@@ -281,15 +269,13 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                         )}
                         {(
                             <div className={class2}>
-                                <div className="mb-3">
                                     <Form.Group className="mb-3">
-                                        <MDBFile label='Imagen del disositivo' id='image' onChange={event => {
+                                        <MDBFile label='Imagen del dispositivo' id='image' onChange={event => {
                                             formik.setFieldValue('img', event.currentTarget.files[0])
                                         }}/>
                                         {formik.errors.img && formik.touched.img && <div
                                             style={{color: 'red', fontSize: '12px'}}>{formik.errors.img}</div>}
                                     </Form.Group>
-                                </div>
                                 <div className="mb-3">
                                     <Form.Group className="mb-3">
                                         <select name="place" id="place" className="form-control"
@@ -299,7 +285,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                             <option value="">Selecciona un almacen</option>
                                             {places.map(place => (
                                                 <option key={place.uid}
-                                                        selected={place.uid === data.place}
                                                         value={place.uid}>{place.name}</option>
                                             ))}
                                         </select>
@@ -315,7 +300,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                         Atrás
                                     </Button>
                                     <Button className="btn-enviar" disabled={formik.isSubmitting} type="submit">
-                                        Guardar
+                                        {data ? 'Guardar': 'Registrar'}
                                     </Button>
                                 </div>
                             </div>
