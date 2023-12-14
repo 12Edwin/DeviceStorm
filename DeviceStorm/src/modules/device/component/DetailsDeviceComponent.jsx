@@ -4,7 +4,7 @@ import images from '../../../assets/img/500.png'
 import { Button, Card, CardContent, CardHeader, CardMedia } from '@material-ui/core';
 //import { ShoppingCart,deviceTwoTone, VisibilityRounded } from '@material-ui/icons';
 import { Navigate, useParams } from 'react-router-dom';
-import { getdeviceDetails } from '../helpers';
+import { getdeviceDetails } from '../helpers/boundary.js';
 import image from '../../../assets/img/device.jpg'
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent';

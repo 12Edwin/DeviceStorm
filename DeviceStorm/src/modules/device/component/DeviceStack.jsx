@@ -8,16 +8,16 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import '../style/DeviceStack.css';
 import { SomeProblems } from '../../../auth/pages/SomeProblems.jsx';
 import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent.jsx';
-import { getCategories, getdevices } from '../helpers/index.js';
+import { getCategories, getdevices } from '../helpers/boundary.js';
 import { AuthContext } from '../../../auth/context/AuthContext.jsx'
 import { Button } from '@material-ui/core';
 import Card from 'react-bootstrap/Card';
 //import { deviceTwoTone, EditRounded, Cancel, Restore } from '@material-ui/icons';
 import { Col, Row } from 'react-bootstrap';
 import image from '../../../assets/img/device.jpg';
-import { getRequestGral } from '../helpers/index.js';
+import { getRequestGral } from '../helpers/boundary.js';
 import Swal from 'sweetalert2';
-import { removedevice } from '../helpers/index.js';
+import { removedevice } from '../helpers/boundary.js';
 import { DeviceEditModal } from './DeviceEditModal.jsx';
 import { EditRounded } from '@material-ui/icons';
 import { Restore } from '@material-ui/icons';
