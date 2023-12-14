@@ -10,6 +10,9 @@ import '../style/RequestModal.css';
 import { createRequest } from "../helpers/createRequest";
 import DeleteIcon from "@material-ui/icons/Delete"
 import AddIcon from "@material-ui/icons/Add";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+const MySwal = withReactContent(Swal)
 export const RequestModal = ({ open, onOpen, email }) => {
     const [devices, setDevices] = useState([]);
     const [devicesFields, setDevicesFields] = useState([]);
@@ -22,13 +25,35 @@ export const RequestModal = ({ open, onOpen, email }) => {
         fecha: '',
         devices: ['']
     }
+    const returnDate = () => {
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 4);
+        return currentDate;
+    }
     const validationSchema = Yup.object({
-        fecha: Yup.date().min(new Date(), "La fecha debe ser mayor a la actual").required("La fecha es obligatoria"),
+        fecha: Yup.date().min(new Date(), "La fecha debe ser mayor a la actual").max(returnDate(),'El plazo máximo es de 4 díaz').required("La fecha es obligatoria"),
         devices: Yup.array().of(
             Yup.object({
                 device: Yup.string().required('Campo obligatorio')
             }))
     })
+
+    const confirm = (request) => {
+        MySwal.fire({
+            title: '¿Seguro de registrar la solicitud?',
+            showCancelButton: true,
+            showConfirmButton: true,
+            confirmButtonText: 'Aceptar',
+            cancelButtonText: 'Cancelar',            
+        }).then( async (result)=> {
+            if(result.isConfirmed) {
+                addRequest(request) ;
+            }
+        })
+        handleCloseModal();
+    }
+
+
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -40,8 +65,7 @@ export const RequestModal = ({ open, onOpen, email }) => {
                     return device.device
                 })
             }
-            addRequest(request);
-            handleCloseModal();
+            confirm(request);
         }
     })
 
@@ -60,7 +84,9 @@ export const RequestModal = ({ open, onOpen, email }) => {
 
     const addRequest = async (request) => {
         try {
-            const response = await createRequest(request);
+            const response = await createRequest(request).then(()=>{
+                location.reload();
+            });
         } catch (err) {
             console.log("Error al enviar datos :C");
         }

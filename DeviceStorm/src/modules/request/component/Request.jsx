@@ -147,7 +147,7 @@ export const Request = ({ requests = [] }) => {
                         <Tooltip title="Cambiar Status" placement="top">
                           <Button onClick={() => onRequest(req._id, req.status)} variant="primary" className='actionButton' style={{ color: '#1a73e8' }}><AssignmentTurnedInIcon></AssignmentTurnedInIcon></Button>
                         </Tooltip>
-                        <Tooltip title="Sancionar" placement='top'><Button onClick={() => onSanction(req._id)} variant="danger" className='actionButton' style={{ color: '#1a73e8' }}><InfoIcon></InfoIcon></Button></Tooltip>
+                        {/* <Tooltip title="Sancionar" placement='top'><Button onClick={() => onSanction(req._id)} variant="danger" className='actionButton' style={{ color: '#1a73e8' }}><InfoIcon></InfoIcon></Button></Tooltip> */}
 
                       </td>
                     </tr>))
