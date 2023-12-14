@@ -40,7 +40,7 @@ const getAll = async (req, res = Response) => {
                     },
                 },
             ]
-            ), Request.countDocuments]);
+            ).sort({ created_at: -1 }), Request.countDocuments]);
 
         res.status(200).json({ total, requests });
     } catch (error) {
@@ -103,7 +103,7 @@ const getByEmail = async (req, res = Response) => {
                 },
             },
         ]
-        );
+        ).sort({created_at: -1});
 
         res.status(200).json(response);
     } catch (error) {
