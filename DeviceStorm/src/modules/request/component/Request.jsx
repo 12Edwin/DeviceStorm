@@ -3,13 +3,13 @@ import '../style/Request.css'
 import { Card, CardHeader, CardBody, Table, Row, Col } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { Button } from '@material-ui/core';
+import { Button, Tooltip } from '@material-ui/core';
 const MySwal = withReactContent(Swal);
 import { updateRequest, sanction } from '../helpers/updateRequest'
 import { SanctionModal } from './SanctionModal';
-import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import moment from 'moment';
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import InfoIcon from '@material-ui/icons/Info';
 export const Request = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
@@ -20,12 +20,12 @@ export const Request = ({ requests = [] }) => {
     // Filtrar solicitudes según el término de búsqueda
     const filtered = requests.filter(
       (req) =>
-        req.devices.some(device =>{
-          return device.deviceInfo.some(info=>{            
+        req.devices.some(device => {
+          return device.deviceInfo.some(info => {
             return info.name.toLowerCase().includes(searchTerm.toLowerCase());
           });
         }
-          ) ||
+        ) ||
         req.user.toLowerCase().includes(searchTerm.toLowerCase())
 
     );
@@ -33,25 +33,25 @@ export const Request = ({ requests = [] }) => {
   }, [searchTerm]);
 
 
-  const onRequest = (id) => {
+  const onRequest = (id, currentStatus) => {
     MySwal.fire({
       title: '¿Qué decea realizar?, \nAutorizar solicitud o denegar solicitud',
       showDenyButton: true,
       showCancelButton: true,
-      confirmButtonText: `Autorizar`,
-      denyButtonText: `Denegar`,
+      confirmButtonText: `${currentStatus === 'Pendiente' ? 'Autorizar' : 'Reactivar'}`,
+      denyButtonText: `${currentStatus === 'Pendiente' ? 'Denegar' : 'Finalizar'}`,
       cancelButtonText: `Cancelar`,
     }).then(async (result) => {
       /* Manejar la respuesta del usuario */
       if (result.isConfirmed) {
-        const response = await updateRequest(id, { status: 'Active' });
+        const response = await updateRequest(id, { status: 'Activa' });
         if (response === 'ERROR') {
           onFail()
         } else {
           onSuccess();
         }
       } else if (result.isDenied) {
-        const response = await updateRequest(id, { status: 'Finished' });
+        const response = await updateRequest(id, { status: 'Finalizada' });
         if (response === 'ERROR') {
           onFail();
         } else {
@@ -84,21 +84,21 @@ export const Request = ({ requests = [] }) => {
     let ids = [];
     devices.forEach(element => {
       const info = element.deviceInfo[0];
-      if(devicesNames.some(device => device.id === info._id) ) {
-        devicesNames[devicesNames.findIndex(device=> device.id === info._id)].cantidad+=1;
-                
-      }else {
+      if (devicesNames.some(device => device.id === info._id)) {
+        devicesNames[devicesNames.findIndex(device => device.id === info._id)].cantidad += 1;
+
+      } else {
         ids.push(info._id);
         devicesNames.push({
           id: info._id,
-          name:info.name,
+          name: info.name,
           cantidad: 1
         })
       }
     });
     let name = '';
-    devicesNames.forEach((device)=> {
-      name+= device.name+'x'+device.cantidad+' '
+    devicesNames.forEach((device) => {
+      name += device.name + 'x' + device.cantidad + ' '
     })
     return name
   }
@@ -115,7 +115,7 @@ export const Request = ({ requests = [] }) => {
             <CardBody>
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Buscar por dispositivo/usuario..."
                 value={searchTerm}
                 className='form-control'
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -131,7 +131,7 @@ export const Request = ({ requests = [] }) => {
                     <th>Fecha de retorno</th>
                     <th>Estatus</th>
                     <th>Sanción</th>
-                    <th>-</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -142,10 +142,13 @@ export const Request = ({ requests = [] }) => {
                       <td>{moment(req.created_at).format('YYYY-MM-DD')}</td>
                       <td>{moment(req.returns).format('YYYY-MM-DD')}</td>
                       <td>{req.status}</td>
-                      <td>{req.sanction?req.sanction:<span style={{ fontStyle: 'italic' }}>No aplica</span>}</td>
+                      <td>{req.sanction ? req.sanction : <span style={{ fontStyle: 'italic' }}>No aplica</span>}</td>
                       <td>
-                        <Button onClick={()=>onRequest(req.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'green', color:'white'}} variant="primary" className='actionButton' startIcon={<AssignmentTurnedInIcon />}>Resolver</Button>
-                        <Button onClick={()=>onSanction(req.uid)} style={{fontSize:'10px', marginLeft:'10px', backgroundColor:'red', color:'white'}} variant="danger" className='actionButton' startIcon={<InfoOutlinedIcon />}>Sancionar</Button>
+                        <Tooltip title="Cambiar Status" placement="top">
+                          <Button onClick={() => onRequest(req._id, req.status)} variant="primary" className='actionButton' style={{ color: '#1a73e8' }}><AssignmentTurnedInIcon></AssignmentTurnedInIcon></Button>
+                        </Tooltip>
+                        <Tooltip title="Sancionar" placement='top'><Button onClick={() => onSanction(req._id)} variant="danger" className='actionButton' style={{ color: '#1a73e8' }}><InfoIcon></InfoIcon></Button></Tooltip>
+                        
                       </td>
                     </tr>))
                   }

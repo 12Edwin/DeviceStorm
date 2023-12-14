@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api/',//import.meta.env.VITE_SECRET,
+    baseURL: import.meta.env.VITE_SECRET,//'http://localhost:3000/api/',
     timeout: 10000,
 });
 

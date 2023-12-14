@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { validateError, validateMiddlewares } = require("../../util/functions");
 const Request = require('./Request');
-const { validateJWT, validateIdRequest, validateIdDevice, status, validateStock } = require("../../helpers/db-validations");
+const { validateJWT, validateIdRequest, validateIdDevice, status, validateStock, validateUpdateStatus } = require("../../helpers/db-validations");
 const { check } = require("express-validator");
 const Device = require("../device/Device");
 //const { mailer, creatT, sendMail } = require("../email/mailer")
@@ -40,7 +40,7 @@ const getAll = async (req, res = Response) => {
                     },
                 },
             ]
-            ),Request.countDocuments]);
+            ), Request.countDocuments]);
 
         res.status(200).json({ total, requests });
     } catch (error) {
@@ -138,14 +138,14 @@ const insert = async (req, res = Response) => {
 }
 
 const updateStock = async (devices) => {
-    for(const element of devices) {
+    for (const element of devices) {
         try {
             const device = await Device.findById(element);
             if (device) {
                 device.stock -= 1,
-                await device.save();
+                    await device.save();
             }
-        }catch(err) {
+        } catch (err) {
 
         }
     }
@@ -155,9 +155,34 @@ const update = async (req, res = Response) => {
     try {
         const { status } = req.body;
         const { id } = req.params;
+        const returnStocks = [
+            'Cancelada',
+            'Finalizada'
+        ]
+        const notReturnStocks = [
+            'Pendiente',
+            'Activa',
+            'Sancion'
+        ]
+        const requestI = await Request.findById(id);
+        if (!returnStocks.includes(requestI.status) && returnStocks.includes(status)) {
+            console.log(requestI.devices);
+            for (const deviceId of requestI.devices) {
+                const device = await Device.findById(deviceId);
+                device.stock += 1;
+                await device.save();
+            }
+        }
+        if (!notReturnStocks.includes(requestI.status) && notReturnStocks.includes(status)) {
+            for (const deviceId of requestI.devices) {
+                const device = await Device.findById(deviceId);
+                device.stock -= 1;
+                await device.save();
+            }
+        }
+        
         const [updated, request] = await Promise.all([
-            Request.findByIdAndUpdate(id, { status: status }),
-            Request.findById(id)
+            Request.findByIdAndUpdate(id, { status: status }),            
         ]);
         res.status(200).json({ msg: 'Successful request', request, status });
     } catch (error) {
@@ -217,6 +242,7 @@ requestRouter.put('/status/:id', [
     validateJWT,
     check('id', 'El id no es de mongo').isMongoId(),
     check('id').custom(validateIdRequest),
+    check('status').custom(validateUpdateStatus),
     validateMiddlewares
 ], update);
 
