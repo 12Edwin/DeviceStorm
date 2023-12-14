@@ -10,14 +10,20 @@ import { SanctionModal } from './SanctionModal';
 import moment from 'moment';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 import InfoIcon from '@material-ui/icons/Info';
+import Moment from 'moment';
+import 'moment/locale/es';
+Moment.locale('es');
+import { setAppElement } from 'react-modal';
+setAppElement(document.body);
+import { createSanction } from '../../sanctions/helpers/createSanction';
 export const Request = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
   const [idRequest, setIdRequest] = useState("");
+  const [sanction, setSanctions] = useState(null);
   useEffect(() => {
-    // Filtrar solicitudes según el término de búsqueda
     const filtered = requests.filter(
       (req) =>
         req.devices.some(device => {
@@ -26,8 +32,7 @@ export const Request = ({ requests = [] }) => {
           });
         }
         ) ||
-        req.user.toLowerCase().includes(searchTerm.toLowerCase())
-
+        (req.user[0]?.email.toLowerCase().includes(searchTerm.toLowerCase()) && req.user.length > 0)
     );
     setFilteredUsers(filtered);
   }, [searchTerm]);
@@ -60,10 +65,6 @@ export const Request = ({ requests = [] }) => {
       }
     });
   }
-  const onSanction = (id) => {
-    setIdRequest(id);
-    setOpen(true);
-  }
   const onSuccess = () => {
     Swal.fire({
       title: '¡Éxito!',
@@ -71,7 +72,6 @@ export const Request = ({ requests = [] }) => {
       icon: 'success'
     }).then(() => window.location.reload());
   }
-
   const onFail = () => {
     Swal.fire({
       title: '¡Error!',
@@ -148,7 +148,7 @@ export const Request = ({ requests = [] }) => {
                           <Button onClick={() => onRequest(req._id, req.status)} variant="primary" className='actionButton' style={{ color: '#1a73e8' }}><AssignmentTurnedInIcon></AssignmentTurnedInIcon></Button>
                         </Tooltip>
                         <Tooltip title="Sancionar" placement='top'><Button onClick={() => onSanction(req._id)} variant="danger" className='actionButton' style={{ color: '#1a73e8' }}><InfoIcon></InfoIcon></Button></Tooltip>
-                        
+
                       </td>
                     </tr>))
                   }
@@ -156,7 +156,6 @@ export const Request = ({ requests = [] }) => {
               </Table>
             </CardBody>
           </Card>
-          <SanctionModal open={open} onOpen={setOpen} idR={idRequest}></SanctionModal>
         </Col>
       </Row>
     </div>

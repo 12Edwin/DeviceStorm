@@ -180,9 +180,9 @@ const update = async (req, res = Response) => {
                 await device.save();
             }
         }
-        
+
         const [updated, request] = await Promise.all([
-            Request.findByIdAndUpdate(id, { status: status }),            
+            Request.findByIdAndUpdate(id, { status: status }),
         ]);
         res.status(200).json({ msg: 'Successful request', request, status });
     } catch (error) {
@@ -211,7 +211,7 @@ const sancionar = async (req, res = Response) => {
 const requestRouter = Router();
 
 requestRouter.get('/', [
-    validateJWT
+    //validateJWT
 ], getAll);
 
 requestRouter.get('/id/:id', [
