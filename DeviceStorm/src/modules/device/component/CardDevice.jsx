@@ -113,7 +113,7 @@ export const CardDevice = ({devices = [], setDevices = () => {}}) => {
                                 <Card style={{width: '18rem', margin: '1rem', padding: '0px'}}>
                                     <Card.Body>
                                         <Row className="justify-content-around">
-                                            <Col className="w-100" md={5}>{permission ?
+                                            <Col className={!permission && "w-100"} md={5}>{permission ?
                                                 <Button onClick={() => onModalEdit(device)}
                                                         style={{fontSize: '10px', marginRight: '10px'}} variant="contained"
                                                         color="primary" startIcon={<EditRounded/>}>Editar</Button> :
