@@ -95,4 +95,13 @@
     margin: 0 auto;
     height: 200px;
     width: 120px;
-  }  
+  }
+
+  .card-device{
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card-device:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 12px #999;
+  }

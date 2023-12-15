@@ -8,6 +8,8 @@ import {getRequestGral} from '../../request/helpers/index.js'
 import {getCategories} from '../../category/helpers/getCategories'
 import {getSuppliers} from '../../supplier/helpers/getSuppliers.js'
 import {getPlaces} from '../../place/helpers/getPlaces.js'
+import {findPlace} from '../../place/helpers/findPlace.js'
+import {findCategory} from '../../category/helpers/findCategory.js'
 
 export {
     getdeviceDetails,
@@ -19,5 +21,7 @@ export {
     getRequestGral,
     getCategories,
     getSuppliers,
-    getPlaces
+    getPlaces,
+    findPlace,
+    findCategory
 }
