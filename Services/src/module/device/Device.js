@@ -39,6 +39,10 @@ const deviceSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    total:{
+        type: Number,
+        required: true
+    },
     img:{
         type: String,
     }

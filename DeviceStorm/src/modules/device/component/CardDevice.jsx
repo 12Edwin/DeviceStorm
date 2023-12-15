@@ -9,8 +9,9 @@ import Switch from "react-switch";
 import Swal from "sweetalert2";
 import {removedevice} from "../helpers/boundary.js";
 import {Navigate, useNavigate} from "react-router-dom";
+import {Badge} from "reactstrap";
 
-export const CardDevice = ({devices = [], setDevices = () => {}}) => {
+export const CardDevice = ({devices = [], setDevices = () => {}, reload = ()=>{}}) => {
 
     const [editModal, setEditModal] = useState(false)
     const [device, setDevice] = useState({})
@@ -40,6 +41,13 @@ export const CardDevice = ({devices = [], setDevices = () => {}}) => {
     const onModalEdit = (data) => {
         setDevice(data)
         setEditModal(true)
+    }
+
+    const onCloseModal = (value) =>{
+        if(value === 'reload'){
+            reload('reload')
+        }
+        setEditModal(false)
     }
 
     const onConfirm = async (id, text) => {
@@ -84,7 +92,7 @@ export const CardDevice = ({devices = [], setDevices = () => {}}) => {
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
-        })
+        }).then(()=> onCloseModal('reload'))
     }
 
     return (<>
@@ -103,11 +111,11 @@ export const CardDevice = ({devices = [], setDevices = () => {}}) => {
                                         <Card.Text>
                                             <strong>Code:</strong> {device.code}
                                         </Card.Text>
-                                        {device.stock <= 0 &&
-                                                <Button disabled={true} className="w-100"
-                                                        style={{fontSize: '10px'}} variant="contained"
-                                                        color="secondary" startIcon={<Cancel/>}>Agotado</Button>
-                                        }
+                                            <Badge className="w-100"
+                                                    style={{fontSize: '13px'}} variant="contained" pill={true}
+                                                    color={device.stock <= 0 ? "secondary": "success"}>
+                                                {(device.stock <= 0) ? "Agotado": (device.stock + " unidades") }
+                                            </Badge>
                                     </Card.Body>
                                 </Card>
                                 <Card style={{width: '18rem', margin: '1rem', padding: '0px'}}>
@@ -137,7 +145,7 @@ export const CardDevice = ({devices = [], setDevices = () => {}}) => {
                     </div>
                 )
             )}
-            <DeviceEditModal show={editModal} setShow={setEditModal} data={device}/>
+            <DeviceEditModal show={editModal} setShow={onCloseModal} data={device}/>
         </>
     )
 }

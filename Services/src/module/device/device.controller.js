@@ -2,7 +2,9 @@ const {Router} = require("express");
 const {validateError, validateMiddlewares} = require("../../util/functions");
 const Device = require ('./Device');
 const {check} = require("express-validator");
-const {validateJWT, validateIdDevice, existDevice, validateIdPlace, validateIdSupplier, validateIdCategory} = require("../../helpers/db-validations");
+const {validateJWT, validateIdDevice, existDevice, validateIdPlace, validateIdSupplier, validateIdCategory,
+    maxDevicesForPlace, thisDeviceIsBusy
+} = require("../../helpers/db-validations");
 const multer = require('multer');
 const path = require('path');
 const fs = require("fs");
@@ -38,16 +40,21 @@ const getById = async (req, res = Response) =>{
 
 const insert = async (req, res = Response) =>{
     try {
-        const {name, place, supplier, category, stock} = req.body;
+        const {name, place, supplier, category, total} = req.body;
         const created_at = new Date();
+        const stock = total;
         const code = 'DEV' + Date.now()
-        const device = await new Device({name, code, place, supplier, category, stock, created_at, available:true, status: true});
+        await maxDevicesForPlace(place, total)
+        const device = await new Device({name, code, place, supplier, category, stock, total, created_at, available:true, status: true});
         await device.save();
         res.status(200).json({message:'Successful request', device});
     }catch (error){
-        const  message = validateError(error);
-        res.status(400).json(message);
-        console.log(error);
+        if (error.toString().includes('Capacity is so little') ){
+            res.status(400).json({msg: 'Capacity is so little'})
+        }else{
+            res.status(500).json(error);
+            console.log(error);
+        }
     }
 }
 
@@ -56,6 +63,7 @@ const update = async (req, res = Response) =>{
         const {id} = req.params;
         const device = req.body;
         await existDevice(device.name, id )
+        await maxDevicesForPlace(device.place, device.total, id)
         await Device.findByIdAndUpdate(id,device);
 
 
@@ -63,6 +71,9 @@ const update = async (req, res = Response) =>{
     }catch (error){
         if (error.toString().includes('Already exists') ){
             res.status(400).json({msg: 'Already exists'})
+        }
+        if (error.toString().includes('Capacity is so little') ){
+            res.status(400).json({msg: 'Capacity is so little'})
         }else{
             res.status(500).json(error);
             console.log(error);
@@ -154,8 +165,8 @@ deviceRouter.get('/:id',[
     check('category').not().isEmpty().withMessage('Missing fields'),
     check('category').isMongoId().withMessage('Invalid fields'),
     check('category').custom(validateIdCategory).withMessage('Invalid fields'),
-    check('stock').not().isEmpty().withMessage('Missing fields'),
-    check('stock').isNumeric().withMessage('Invalid fields'),
+    check('total').not().isEmpty().withMessage('Missing fields'),
+    check('total').isNumeric().withMessage('Invalid fields'),
     validateMiddlewares
  ], insert)
 deviceRouter.put('/:id',[
@@ -170,8 +181,8 @@ deviceRouter.put('/:id',[
     check('category').not().isEmpty().withMessage('Missing fields'),
     check('category').isMongoId().withMessage('Invalid fields'),
     check('category').custom(validateIdCategory).withMessage('Invalid fields'),
-    check('stock').not().isEmpty().withMessage('Missing fields'),
-    check('stock').isNumeric().withMessage('Invalid fields'),
+    check('total').not().isEmpty().withMessage('Missing fields'),
+    check('total').isNumeric().withMessage('Invalid fields'),
     check('id','Invalid id').isMongoId(),
     check('id').custom(validateIdDevice),
     validateMiddlewares
@@ -191,6 +202,7 @@ deviceRouter.delete('/:id',[
     validateJWT,
     check('id', 'Invalid id').isMongoId(),
     check('id').custom(validateIdDevice),
+    check('id').custom(thisDeviceIsBusy),
     validateMiddlewares
 ],deletes);
 
