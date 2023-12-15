@@ -40,12 +40,12 @@ const getById = async (req, res = Response) =>{
 
 const insert = async (req, res = Response) =>{
     try {
-        const {name, place, supplier, category, total} = req.body;
+        const {name, description, place, supplier, category, total} = req.body;
         const created_at = new Date();
         const stock = total;
         const code = 'DEV' + Date.now()
         await maxDevicesForPlace(place, total)
-        const device = await new Device({name, code, place, supplier, category, stock, total, created_at, available:true, status: true});
+        const device = await new Device({name, description, code, place, supplier, category, stock, total, created_at, available:true, status: true});
         await device.save();
         res.status(200).json({message:'Successful request', device});
     }catch (error){
@@ -156,6 +156,7 @@ deviceRouter.get('/:id',[
     validateJWT,
     check('name', 'Missing fields').not().isEmpty(),
     check('name').custom((name)=>existDevice(name)),
+    check('description').not().isEmpty().withMessage('Missing fields'),
     check('place').not().isEmpty().withMessage('Missing fields'),
     check('place').isMongoId().withMessage('Invalid fields'),
     check('place').custom(validateIdPlace).withMessage('Invalid fields'),
@@ -172,6 +173,7 @@ deviceRouter.get('/:id',[
 deviceRouter.put('/:id',[
     validateJWT,
     check('name', 'Missing fields').not().isEmpty(),
+    check('description').not().isEmpty().withMessage('Missing fields'),
     check('place').not().isEmpty().withMessage('Missing fields'),
     check('place').isMongoId().withMessage('Invalid fields'),
     check('place').custom(validateIdPlace).withMessage('Invalid fields'),

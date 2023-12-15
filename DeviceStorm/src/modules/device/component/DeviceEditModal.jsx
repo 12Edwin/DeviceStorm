@@ -31,6 +31,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
     const resetForm = (value = '')=>{
         formik.values.name = ''
+        formik.values.description = ''
         formik.values.total = 0
         formik.values.supplier = ''
         formik.values.category = ''
@@ -51,6 +52,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
         if (data && show) {
             formik.values.name = data.name
+            formik.values.description = data.description
             formik.values.total = data.total
             formik.values.supplier = data.supplier
             formik.values.category = data.category
@@ -58,6 +60,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
             formik.values.img = data.img
         } else {
             formik.values.name = ''
+            formik.values.description = ''
             formik.values.total = 0
             formik.values.supplier = ''
             formik.values.category = ''
@@ -105,7 +108,6 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
     const onRegister = async (device) => {
         const {img, ...fields} = device;
-        console.log(fields)
         const response = await insertdevice(fields);
         if (typeof (response) === 'string') {
             resultFail(response);
@@ -166,6 +168,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
     const formik = useFormik({
         initialValues: {
             name: '',
+            description: '',
             total: 0,
             supplier: '',
             category: '',
@@ -174,6 +177,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required("El nombre es requerido"),
+            description: Yup.string().required("La descripción es requerida"),
             total: Yup.number().required('La cantidad de unidades es requerida'),
             supplier: Yup.string().required("El proveedor es requerido"),
             category: Yup.string().required("La categoría es requerida"),
@@ -200,7 +204,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
             <Form onSubmit={(event) => formik.handleSubmit(event)}>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        Editar Dispositivo
+                        {data ? 'Editar Dispositivo': 'Registrar Dispositivo'}
                     </Modal.Title>
                 </Modal.Header>
 
@@ -292,6 +296,17 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                             color: 'red',
                                             fontSize: '12px'
                                         }}>{formik.errors.place}</div>}
+                                    </Form.Group>
+                                    <Form.Group className="mb-3">
+                                        <MDBInput label='Descripción' id='description' type='text'
+                                                  className="form-control"
+                                                  placeholder="Ingrese la descripción del dispositivo"
+                                                  onChange={formik.handleChange}
+                                                  onBlur={formik.handleBlur}
+                                                  value={formik.values.description}
+                                        />
+                                        {formik.errors.description && formik.touched.description &&
+                                            <div style={{color: 'red', fontSize: '12px'}}>{formik.errors.description}</div>}
                                     </Form.Group>
                                 </div>
                                 <div className="form-buttons">
