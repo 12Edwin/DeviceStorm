@@ -1,11 +1,8 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import '../style/DeviceStack.css';
 import {SomeProblems} from '../../../auth/pages/SomeProblems.jsx';
 import {LoadingComponent} from '../../../auth/components/loading/LoadingComponent.jsx';
-import {getCategories, getdevices} from '../helpers/boundary.js';
-import {getRequestGral} from '../helpers/boundary.js';
-import Swal from 'sweetalert2';
-import {removedevice} from '../helpers/boundary.js';
+import {getdevices} from '../helpers/boundary.js';
 import {CardDevice} from "./CardDevice.jsx";
 import {Header} from "../../../public/component/Header.jsx";
 import {Button} from "reactstrap";
@@ -16,13 +13,10 @@ export const DeviceStack = () => {
     const [aux, setAux] = useState([])
     const [loading, setLoading] = useState(false)
     const [apiError, setApiError] = useState(false);
-    const [data, setData] = useState({});
-    const [requests, setRequests] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortDirection, setSortDirection] = useState('');
     const [showOrder, setShowOrder] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
 
 
     const fillDevices = async () => {
@@ -40,13 +34,8 @@ export const DeviceStack = () => {
         setLoading(false);
     }
 
-    const fillCategories = async () => {
-        const response = await getCategories();
-    }
-
     useEffect(() => {
         fillDevices();
-        getRequests();
     }, []);
 
     const sortDevices = () => {
@@ -83,60 +72,8 @@ export const DeviceStack = () => {
         setAux(sortedDevices)
     }
 
-    const searchDevices = () => {
-        if (searchTerm.trim() === '') {
-            fillDevices();
-        } else {
-            const filteredDevices = devices.filter((device) =>
-                device.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setdevices(filteredDevices);
-        }
-    }
-
-
-    const openModalRemove = (id) => {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: '¡Deceas deshabilitar este despositivo!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, cambiar',
-            cancelButtonText: 'Cancelar',
-            preConfirm: async () => {
-                const result = await removedevice(id);
-                if (result !== 'ERROR') {
-                    Swal.fire(
-                        '¡Felicidades!',
-                        'La transacción se ha realizado con éxito.',
-                        'success'
-                    ).then(() => window.location.reload());
-                } else {
-                    Swal.fire(
-                        '¡Error!',
-                        'Ocurrió un error al realizar la transacción.',
-                        'error'
-                    );
-                }
-            }
-        });
-    }
-
-    const openModalEdit = (datos = {}) => {
-        setData(datos);
+    const openModalEdit = () => {
         setOpenModal(true);
-    }
-
-    const getRequests = async () => {
-        const response = await getRequestGral();
-        if (response === 'ERROR') {
-            setApiError(true)
-        } else {
-            setApiError(false)
-            setRequests(response.filter(element => element.status !== 'Finished'))
-        }
     }
 
 
