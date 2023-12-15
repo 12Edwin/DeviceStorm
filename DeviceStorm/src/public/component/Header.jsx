@@ -1,11 +1,20 @@
 import {Input, Card, CardBody, Button} from "reactstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faChevronUp, faComputer, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import '../style/Header.css'
 
 export const Header = ({title, onCreate = ()=>{}, data = [], setAux = ()=>{}, showFilter = false, showInsert = false, showSort = false, chevron= false, setChevron = ()=>{}}) => {
 
+    const [permission, setPermission] = useState(false)
+
+    useEffect(() => {
+        const data= localStorage.getItem('user')
+        if(data){
+            const user = JSON.parse(data)
+            setPermission(user.role === 'ADMIN_ROLE')
+        }
+    }, []);
     const onFilter = (value) => {
 
         if (value !== '' && data.length > 0){
@@ -79,7 +88,7 @@ export const Header = ({title, onCreate = ()=>{}, data = [], setAux = ()=>{}, sh
                         <FontAwesomeIcon className={(chevron ? 'chevron-header-up ' : '') + 'chevron-header'} icon={faChevronUp}/>
                     </Button>
                 }
-                { showInsert &&
+                { (showInsert && permission) &&
                 <Button color="primary" onClick={onCreate} className="d-flex align-items-center"> Agregar <FontAwesomeIcon className="ms-3" size="2x" icon={faPlusSquare}/></Button>
                 }
             </CardBody>
