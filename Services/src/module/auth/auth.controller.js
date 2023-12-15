@@ -5,11 +5,11 @@ const User = require ('../user/User')
 const {generateJWT, decryptToken} = require("../../config/jwt");
 const {sendMail} = require("../email/mailer");
 const {generatePasswordToken} = require("../../config/jwt")
+
 const login = async (req, res = Response) =>{
     try {
         const {email, password} = req.body;
         const user = await User.findOne({email})
-
         if(!user){
             return res.status(401).json({msg:'Bad credentials'});
         }
@@ -303,7 +303,6 @@ const getPayload = async (req, res = Response) => {
         const {token} = req.body;
         const {valid, payload} = decryptToken(token);
         if(valid){
-            console.log(payload);
             return res.status(200).json({result: payload})
         }else{
             return res.status(403).json({message: 'Token inválido'})
@@ -336,11 +335,10 @@ authRouter.post('/payload', [
 authRouter.post('/new-password/', [
     check('token', 'El token es obligatorio').not().isEmpty(),
     check('password', 'La contraseña es obligatoria').not().isEmpty(),
-    check('email', 'El email es obligatorio').not().isEmpty(),
 ], changePassword)
 
 authRouter.post('/login',[
-    check('email', 'El email es obligatorio').not().isEmpty(),
+    check('email', 'El email es obligatorio').not().isEmpty().isEmail(),
     check('password', 'La contraseña es obligatoria').not().isEmpty(),
     validateMiddlewares
 ],login);

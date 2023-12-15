@@ -159,6 +159,12 @@ const existDevice = async (name, id= '000000000000000000000000') => {
     }
 }
 
+const emailValid = (email) =>{
+    const emailValid = /\S+@\S+\.\S+/;
+    if (!emailValid.test(email)) {
+        throw new Error('Email is not valid');
+    }
+}
 const roles = async (role) => {
     const existRole = await Role.findOne({ name: role });
     if (!existRole) {
@@ -241,4 +247,5 @@ module.exports = {
     minDevicesForPlace,
     validateStock,
     validateUpdateStatus,
+    emailValid
 }

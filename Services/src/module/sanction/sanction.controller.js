@@ -40,9 +40,6 @@ const insert = async (req, res = Response) => {
 
         const amount = daysDifference * 60;
 
-        console.log(`La diferencia en días es: ${daysDifference}`);
-        console.log(`El monto calculado es: ${amount}`);
-
         if (daysDifference > 0) {
             const sanction = await new Sancation({
                 emailUser,

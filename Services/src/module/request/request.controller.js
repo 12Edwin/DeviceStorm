@@ -66,7 +66,6 @@ const getById = async (req, res = Response) => {
 const getByEmail = async (req, res = Response) => {
     try {
         const { email } = req.params;
-        console.log("email: " + email);
         const response = await Request.aggregate([
             {
                 $match: {
@@ -166,7 +165,6 @@ const update = async (req, res = Response) => {
         ]
         const requestI = await Request.findById(id);
         if (!returnStocks.includes(requestI.status) && returnStocks.includes(status)) {
-            console.log(requestI.devices);
             for (const deviceId of requestI.devices) {
                 const device = await Device.findById(deviceId);
                 device.stock += 1;
