@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Table, Button, Input } from 'reactstrap';  // Importa Input desde 'reactstrap'
+import { Table, Button, Input, Alert } from 'reactstrap';  // Importa Input desde 'reactstrap'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSanctions } from '../helpers/getSanctions.js';
@@ -12,6 +12,7 @@ export const SanctionPage = () => {
     const [sanctions, setSanctions] = useState([]);
     const [filter, setFilter] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
+    const [showNoSancionesAlert, setShowNoSancionesAlert] = useState(false);
 
     useEffect(() => {
         const fetchSanctions = async () => {
@@ -23,9 +24,9 @@ export const SanctionPage = () => {
                 console.error('Error al obtener las sanciones:', error);
             }
         };
-
         fetchSanctions();
     }, []);
+
 
     const filteredSanctions = sanctions.filter((sanction) => {
         const isStatusMatch = filter === 'all' || (sanction.status === (filter === 'paid'));
@@ -35,6 +36,10 @@ export const SanctionPage = () => {
 
         return isStatusMatch && isUserMatch;
     });
+
+    useEffect(() => {
+        setShowNoSancionesAlert(filteredSanctions.length === 0);
+    }, [filteredSanctions]);
 
     async function handlePagar(itemId) {
         console.log('ID antes de onConfirm:', itemId);
@@ -103,6 +108,12 @@ export const SanctionPage = () => {
 
     return (
         <div style={{ marginLeft: '22vw', marginTop: '3vh', marginRight: '5vw' }}>
+            {showNoSancionesAlert && (
+                <Alert color="danger" className="text-center p-4 rounded">
+                    <FontAwesomeIcon icon={faExclamationCircle} className="mr-2" />
+                    <span> No hay sanciones que mostrar.</span> 
+                </Alert>
+            )}
             <div className="rounded-5 header-table bg-info">
                 <span> Sanciones </span>
             </div>
@@ -116,7 +127,7 @@ export const SanctionPage = () => {
                         style={{ width: '500px' }}
                     />
                 </div>
-                <div className="rounded-5 header bg-info">
+                <div className="botonesFiltro">
                     <Button color="primary" onClick={() => setFilter('all')}>Todos</Button>
                     <Button color="success" onClick={() => setFilter('paid')}>Pagados</Button>
                     <Button color="danger" onClick={() => setFilter('unpaid')}>Sin pagar</Button>
