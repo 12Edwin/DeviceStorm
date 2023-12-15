@@ -18,16 +18,16 @@ export const DeviceStack = () => {
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortDirection, setSortDirection] = useState('');
     const [showOrder, setShowOrder] = useState(false);
-    const [ses, setSes] = useState(false)
 
-    const getSession = () =>{
+    const getSession = async() =>{
         const session = localStorage.getItem('user')
         if(session){
             const user = JSON.parse(session)
             if(user.role === 'ADMIN_ROLE'){
-                setSes(true)
+                return true
             }
         }
+        return false
     }
     const fillDevices = async () => {
         setLoading(true);
@@ -37,7 +37,7 @@ export const DeviceStack = () => {
             setApiError(true);
 
         } else {
-            getSession()
+            const ses = await getSession()
             setDevices(response.devices);
             setAux(response.devices)
             if (response.devices.find(dev=> dev.stock <= 3)){
