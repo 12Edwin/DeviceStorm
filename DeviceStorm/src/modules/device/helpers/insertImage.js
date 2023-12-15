@@ -6,6 +6,6 @@ export const insertImage = async(id,img) =>{
         formData.append('image', img);
         return await api.doPut(`device/image/${id}`, formData);
     }catch(err){
-        return 'ERROR';
+        return 'Ocurrió un error al cargar la imagen';
     }
 }

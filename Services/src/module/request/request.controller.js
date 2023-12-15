@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const { validateError, validateMiddlewares } = require("../../util/functions");
 const Request = require('./Request');
-const { validateJWT, validateIdRequest, validateIdDevice, status } = require("../../helpers/db-validations");
+const { validateJWT, validateIdRequest, validateIdDevice, status, validateStock, validateUpdateStatus } = require("../../helpers/db-validations");
 const { check } = require("express-validator");
+const Device = require("../device/Device");
 //const { mailer, creatT, sendMail } = require("../email/mailer")
 const getAll = async (req, res = Response) => {
     try {
@@ -10,16 +11,36 @@ const getAll = async (req, res = Response) => {
         const [requests, total] = await Promise.all([
             Request.aggregate([
                 {
+                    $unwind: '$devices',
+                },
+                {
                     $lookup: {
-                        from: 'devices',
-                        localField: 'device',
+                        from: 'devices', // Reemplaza con el nombre real de tu colección de devices
+                        localField: 'devices',
                         foreignField: '_id',
-                        as: 'device'
-                    }
-                }
-            ]),
-            Request.countDocuments()
-        ]);
+                        as: 'devices.deviceInfo',
+                    },
+                },
+                {
+                    $group: {
+                        _id: '$_id',
+                        requestInfo: {
+                            $first: '$$ROOT', // Preserva la información original del Request
+                        },
+                        devices: {
+                            $push: '$devices',
+                        },
+                    },
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: {
+                            $mergeObjects: ['$requestInfo', { devices: '$devices' }],
+                        },
+                    },
+                },
+            ]
+            ).sort({ created_at: -1 }), Request.countDocuments]);
 
         res.status(200).json({ total, requests });
     } catch (error) {
@@ -45,7 +66,6 @@ const getById = async (req, res = Response) => {
 const getByEmail = async (req, res = Response) => {
     try {
         const { email } = req.params;
-        console.log("email: " + email);
         const response = await Request.aggregate([
             {
                 $match: {
@@ -53,15 +73,36 @@ const getByEmail = async (req, res = Response) => {
                 }
             },
             {
+                $unwind: '$devices',
+            },
+            {
                 $lookup: {
-                    from: 'devices',
-                    localField: 'device',
+                    from: 'devices', // Reemplaza con el nombre real de tu colección de devices
+                    localField: 'devices',
                     foreignField: '_id',
-                    as: 'device'
-                }
-            }
+                    as: 'devices.deviceInfo',
+                },
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    requestInfo: {
+                        $first: '$$ROOT', // Preserva la información original del Request
+                    },
+                    devices: {
+                        $push: '$devices',
+                    },
+                },
+            },
+            {
+                $replaceRoot: {
+                    newRoot: {
+                        $mergeObjects: ['$requestInfo', { devices: '$devices' }],
+                    },
+                },
+            },
         ]
-        );
+        ).sort({created_at: -1});
 
         res.status(200).json(response);
     } catch (error) {
@@ -73,17 +114,17 @@ const getByEmail = async (req, res = Response) => {
 
 const insert = async (req, res = Response) => {
     try {
-        const { device, email, returns } = req.body;
+        const { devices, email, returns } = req.body;
         const created_at = new Date().toISOString().split('T')[0];
         const request = await new Request({
-            device: device,
+            devices: [...devices],
             user: email,
-            quantity: 1,
             returns,
-            status: 'Pending',
+            status: 'Pendiente',
             created_at,
             starts: created_at,
         })
+        updateStock(devices);
         await request.save();
         //sendMail(email,"Nueva solicitud", "Mensaje del cuerpo del correo");
         res.status(200).json({ msg: 'Successful request', request });
@@ -94,13 +135,52 @@ const insert = async (req, res = Response) => {
     }
 
 }
+
+const updateStock = async (devices) => {
+    for (const element of devices) {
+        try {
+            const device = await Device.findById(element);
+            if (device) {
+                device.stock -= 1,
+                    await device.save();
+            }
+        } catch (err) {
+
+        }
+    }
+}
+
 const update = async (req, res = Response) => {
     try {
         const { status } = req.body;
         const { id } = req.params;
+        const returnStocks = [
+            'Cancelada',
+            'Finalizada'
+        ]
+        const notReturnStocks = [
+            'Pendiente',
+            'Activa',
+            'Sancion'
+        ]
+        const requestI = await Request.findById(id);
+        if (!returnStocks.includes(requestI.status) && returnStocks.includes(status)) {
+            for (const deviceId of requestI.devices) {
+                const device = await Device.findById(deviceId);
+                device.stock += 1;
+                await device.save();
+            }
+        }
+        if (!notReturnStocks.includes(requestI.status) && notReturnStocks.includes(status)) {
+            for (const deviceId of requestI.devices) {
+                const device = await Device.findById(deviceId);
+                device.stock -= 1;
+                await device.save();
+            }
+        }
+
         const [updated, request] = await Promise.all([
             Request.findByIdAndUpdate(id, { status: status }),
-            Request.findById(id)
         ]);
         res.status(200).json({ msg: 'Successful request', request, status });
     } catch (error) {
@@ -129,7 +209,7 @@ const sancionar = async (req, res = Response) => {
 const requestRouter = Router();
 
 requestRouter.get('/', [
-    validateJWT
+    //validateJWT
 ], getAll);
 
 requestRouter.get('/id/:id', [
@@ -147,8 +227,9 @@ requestRouter.get('/email/:email', [
 
 requestRouter.post('/', [
     validateJWT,
-    check('device', 'Título del libro necesario').not().isEmpty(),
-    check('device').custom(validateIdDevice),
+    check('devices', 'Título del libro necesario').not().isEmpty(),
+    check('devices').custom(validateIdDevice),
+    check('devices').custom(validateStock),
     check('email', 'El correo es necesario').not().isEmpty(),
     check('email', 'Correo inválido').isEmail(),
     check('returns', 'Fecha de retorno necesaria').not().isEmpty(),
@@ -159,6 +240,7 @@ requestRouter.put('/status/:id', [
     validateJWT,
     check('id', 'El id no es de mongo').isMongoId(),
     check('id').custom(validateIdRequest),
+    check('status').custom(validateUpdateStatus),
     validateMiddlewares
 ], update);
 

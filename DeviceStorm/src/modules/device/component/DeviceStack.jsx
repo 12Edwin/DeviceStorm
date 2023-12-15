@@ -1,187 +1,175 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-
-// import device1 from './device1.jpg';
-// import device2 from './device2.jpg';
-// import device3 from './device3.jpg';
+import React, {useState, useEffect} from 'react';
 import '../style/DeviceStack.css';
-import { SomeProblems } from '../../../auth/pages/SomeProblems.jsx';
-import { LoadingComponent } from '../../../auth/components/loading/LoadingComponent.jsx';
-import { getCategories, getdevices } from '../helpers/index.js';
-import { AuthContext } from '../../../auth/context/AuthContext.jsx'
-import { Button } from '@material-ui/core';
-import Card from 'react-bootstrap/Card';
-//import { deviceTwoTone, EditRounded, Cancel, Restore } from '@material-ui/icons';
-import { Col, Row } from 'react-bootstrap';
-import image from '../../../assets/img/device.jpg';
-import { getRequestGral } from '../helpers/index.js';
-import Swal from 'sweetalert2';
-import { removedevice } from '../helpers/index.js';
-import { DeviceEditModal } from './DeviceEditModal.jsx';
-import { EditRounded } from '@material-ui/icons';
-import { Restore } from '@material-ui/icons';
+import {SomeProblems} from '../../../auth/pages/SomeProblems.jsx';
+import {LoadingComponent} from '../../../auth/components/loading/LoadingComponent.jsx';
+import {getdevices} from '../helpers/boundary.js';
 import {CardDevice} from "./CardDevice.jsx";
+import {Header} from "../../../public/component/Header.jsx";
+import {Button} from "reactstrap";
+import {DeviceEditModal} from "./DeviceEditModal.jsx";
+import Swal from "sweetalert2";
+
 export const DeviceStack = () => {
-  const [devices, setdevices] = useState([]);
-  const [loading, setLoading] = useState(false)
-  const [apiError, setApiError] = useState(false);
-  const [data, setData] = useState({});
-  const [requests, setRequests] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
-  const [sortCriteria, setSortCriteria] = useState('name');
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
+    const [devices, setDevices] = useState([]);
+    const [aux, setAux] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [apiError, setApiError] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [sortCriteria, setSortCriteria] = useState('');
+    const [sortDirection, setSortDirection] = useState('');
+    const [showOrder, setShowOrder] = useState(false);
 
-
-  const fillDevices = async () => {
-    setLoading(true);
-
-    const response = await getdevices();
-    if (response === 'ERROR') {
-      setApiError(true);
-
-    } else {
-      setdevices(response.devices);
-      setApiError(false);
+    const getSession = async() =>{
+        const session = localStorage.getItem('user')
+        if(session){
+            const user = JSON.parse(session)
+            if(user.role === 'ADMIN_ROLE'){
+                return true
+            }
+        }
+        return false
     }
-    setLoading(false);
-  }
+    const fillDevices = async () => {
+        setLoading(true);
 
-  const fillCategories = async () => {
-    const response = await getCategories();
-  }
+        const response = await getdevices();
+        if (response === 'ERROR') {
+            setApiError(true);
 
-  useEffect(() => {
-    fillDevices();
-    getRequests();
-  }, []);
-
-  const sortDevices = () => {
-    const sortedDevices = [...devices].sort((a, b) => {
-      const valueA = sortCriteria === 'name' ? a.name : a.code;
-      const valueB = sortCriteria === 'name' ? b.name : b.code;
-
-      console.log('ValueA:', valueA);
-      console.log('ValueB:', valueB);
-
-      const compareResult = valueA.localeCompare(valueB);
-      return sortDirection === 'asc' ? compareResult : -compareResult;
-    })
-  }
-
+        } else {
+            const ses = await getSession()
+            setDevices(response.devices);
+            setAux(response.devices)
+            if (response.devices.find(dev=> dev.stock <= 3)){
+                if(ses){
+                    soldOut(response.devices)
+                }
+            }
+            setApiError(false);
+        }
+        setLoading(false);
+    }
 
     useEffect(() => {
-      sortDevices();
-    }, [sortCriteria, sortDirection]);
-
-    const searchDevices = () => {
-      if (searchTerm.trim() === '') {
         fillDevices();
-      } else {
-        const filteredDevices = devices.filter((device) =>
-            device.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setdevices(filteredDevices);
-      }
-    }
+        
+    }, []);
 
-
-    const openModalRemove = (id) => {
-      Swal.fire({
-        title: '¿Estás seguro?',
-        text: '¡Deceas deshabilitar este despositivo!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí, cambiar',
-        cancelButtonText: 'Cancelar',
-        preConfirm: async () => {
-          const result = await removedevice(id);
-          if (result !== 'ERROR') {
-            Swal.fire(
-                '¡Felicidades!',
-                'La transacción se ha realizado con éxito.',
-                'success'
-            ).then(() => window.location.reload());
-          } else {
-            Swal.fire(
-                '¡Error!',
-                'Ocurrió un error al realizar la transacción.',
-                'error'
-            );
-          }
+    const soldOut = (devs) =>{
+        let html = '<div class="overflow-auto">'
+        for (let dev of devs){
+            if (dev.stock <= 3) {
+                html += `<div class="soldOut-devices">${dev.name}</div>`
+            }
         }
-      });
+        html += `</div>`
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        }).fire({
+            html,
+            title: 'Los dispositivos por agotarse son:',
+            icon: 'warning',
+            showCancelButton: false
+        })
     }
 
-    const openModalEdit = (datos) => {
-      setData(datos);
-      setOpenModal(true);
+
+    
+
+    const sortDevices = () => {
+        const sortedDevices = [...devices].sort((a, b) => {
+            let valueA = '';
+            let valueB = ''
+            switch (sortCriteria) {
+                case 'name':
+                    valueA = a.name
+                    valueB = b.name
+                    break;
+                case 'code':
+                    valueA = a.code
+                    valueB = b.code
+                    break;
+                case 'created_at':
+                    valueA = a.created_at
+                    valueB = b.created_at
+                    break;
+                case 'stock':
+                    valueA = a.stock
+                    valueB = b.stock
+                    break;
+            }
+            let compareResult = 0
+            if (typeof (valueA) === "string") {
+                compareResult = valueA.localeCompare(valueB);
+            }else{
+                compareResult = valueA - valueB
+            }
+            return sortDirection === 'asc' ? compareResult : -compareResult;
+        })
+        setAux(sortedDevices)
     }
 
-    const getRequests = async () => {
-      const response = await getRequestGral();
-      if (response === 'ERROR') {
-        setApiError(true)
-      } else {
-        setApiError(false)
-        setRequests(response.filter(element => element.status !== 'Finished'))
-      }
+    const openModalEdit = () => {
+        setOpenModal(true);
+    }
+    const onCloseModal = (value) =>{
+        if(value === 'reload'){
+            fillDevices()
+        }
+        setOpenModal(false)
     }
 
 
     return (
-        <div className="deviceshelf-section" style={{paddingLeft: "300px"}}>
+        <div className="mt-4" style={{paddingLeft: "300px"}}>
 
-          {apiError ? <SomeProblems/> : loading ? <LoadingComponent/> :
-              (<>
-                <div className="deviceshelf-header">
-                  <h3>Best Sellers</h3>
-                  <div className="deviceshelf-controls">
-                    <label htmlFor="sortCriteria">Ordenar por:</label>
-                    <select
-                        id="sortCriteria"
-                        value={sortCriteria}
-                        onChange={(e) => setSortCriteria(e.target.value)}
-                    >
-                      <option value="name">Nombre</option>
-                      <option value="code">Codigo</option>
-                    </select>
+            {apiError ? <SomeProblems/> : loading ? <LoadingComponent/> :
+                (<>
+                    <div className="pe-5">
+                        <Header data={devices} setAux={setAux} showInsert={true} title={'Inventario'} showFilter={true}
+                                showSort={true} onCreate={openModalEdit}
+                                chevron={showOrder} setChevron={() => setShowOrder(prev => !prev)}/>
+                        <div className={(showOrder ? 'display-bar-order ' : '') + "deviceshelf-controls"}>
+                            <select
+                                className="form-control me-4"
+                                id="sortCriteria"
+                                value={sortCriteria}
+                                onChange={(e) => setSortCriteria(e.target.value)}>
+                                <option value="">Ordenar por...</option>
+                                <option value="name">Nombre</option>
+                                <option value="code">Codigo</option>
+                                <option value="created_at">Fecha de creación</option>
+                                <option value="stock">Stock</option>
+                            </select>
 
-                    <label htmlFor="sortDirection">Dirección:</label>
-                    <select
-                        id="sortDirection"
-                        value={sortDirection}
-                        onChange={(e) => setSortDirection(e.target.value)}
-                    >
-                      <option value="asc">Ascendente</option>
-                      <option value="desc">Descendente</option>
-                    </select>
+                            <select
+                                className="form-control me-4"
+                                id="sortDirection"
+                                value={sortDirection}
+                                onChange={(e) => setSortDirection(e.target.value)}
+                            >
+                                <option value="">Dirección...</option>
+                                <option value="asc">Ascendente</option>
+                                <option value="desc">Descendente</option>
+                            </select>
 
-                    <label htmlFor="searchTerm">Buscar por nombre:</label>
-                    <input
-                        type="text"
-                        id="searchTerm"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-
-                    <button className="action-button" onClick={sortDevices}>
-                      Ordenar
-                    </button>
-                    <button className="action-button" onClick={searchDevices}>
-                      Buscar
-                    </button>
-                  </div>
-
-                </div>
-                <div className="deviceshelf-devices">
-                  <CardDevice devices={devices}/>
-                </div>
-              </>)
-          }
+                            <Button className="action-button"
+                                    disabled={!(sortCriteria.length > 0 && sortDirection.length > 0)}
+                                    onClick={sortDevices}>
+                                Ordenar
+                            </Button>
+                        </div>
+                        <div className="deviceshelf-devices">
+                            <CardDevice devices={aux} reload={onCloseModal}/>
+                        </div>
+                    </div>
+                    <DeviceEditModal show={openModal} setShow={onCloseModal} data={null}/>
+                </>)
+            }
         </div>
     )
-  }
+}

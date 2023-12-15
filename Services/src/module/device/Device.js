@@ -7,6 +7,10 @@ const deviceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description:{
+        type: String,
+        required: true
+    },
     code:{
         type: String,
         required: true
@@ -36,6 +40,10 @@ const deviceSchema = new mongoose.Schema({
         required: true
     },
     stock:{
+        type: Number,
+        required: true
+    },
+    total:{
         type: Number,
         required: true
     },

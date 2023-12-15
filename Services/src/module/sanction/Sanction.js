@@ -1,7 +1,11 @@
 const {Schema, model} = require('mongoose');
 
 const sanctionSchema = Schema({
-    idUser: {
+    emailUser: {
+        type: String,
+        required: true
+    },
+    idRequest: {
         type: String,
         required: true
     },

@@ -3,6 +3,7 @@ import { LoadingComponent } from '../../../auth/components/loading/LoadingCompon
 import { SomeProblems } from '../../../auth/pages/SomeProblems';
 import {Request} from '../component/Request'
 import { getRequestGral } from '../helpers/getRequestGral';
+import { getRequstByEmail } from '../helpers/getRequestByEmail';
 
 
 export const RequestPage = ()=>{
@@ -18,6 +19,7 @@ export const RequestPage = ()=>{
     const fillRequests = async () =>{
         setLoading(true);
         const response = await getRequestGral();
+        console.log(response);
         if(response === 'ERROR'){
             setApiError(true);
             console.log(response);

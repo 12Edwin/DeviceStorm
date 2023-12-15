@@ -11,20 +11,39 @@
     
 }
 
+
 .paid .status-box {
     background-color: #4CAF50;
     color: white;
     border-radius: 5px;
+    margin-right: 10px;
 }
 
 .unpaid .status-box {
-    background-color: #dc3545;
+    background-color: #f44336;
     color: white;
     border-radius: 5px;
+    margin-right: 10px;
 }
 
 
-.table-category {
-    margin-top: -2vh;
-    z-index: 2;
+td .pagar-button {
+    background-color: #003f69;
+    color: #fff;
+    height: 30px;
+    width: 80px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
+
+.botonesFiltro{
+    display: flex;
+}
+
+.botonesFiltro button{
+    margin-right: 10px;
+}
+

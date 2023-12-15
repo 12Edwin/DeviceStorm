@@ -36,7 +36,7 @@ export const UserNavBar = () => {
         <li className="sidenav-item">
           <a href="/user/requests">
             <FontAwesomeIcon icon={faFileArchive} className="sidenav-icon" />
-            Requests
+            Solicitudes
           </a>
         </li>
         <li className="sidenav-item">

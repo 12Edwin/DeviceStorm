@@ -53,12 +53,6 @@ export const NavBar = () => {
           </a>
         </li>
         <li className="sidenav-item">
-          <a href="/admin/device">
-            <FontAwesomeIcon icon={faLaptop} className="sidenav-icon" />
-            Dispositivos
-          </a>
-        </li>
-        <li className="sidenav-item">
           <a href="/admin/place">
             <FontAwesomeIcon icon={faBuilding} className="sidenav-icon" />
             Almacenes
@@ -98,12 +92,6 @@ export const NavBar = () => {
           <a href="" onClick={onLogout}>
             <FontAwesomeIcon icon={faSignOutAlt} className="sidenav-icon" />
             Cerrar sesión
-          </a>
-        </li>
-        <li className="sidenav-item">
-          <a href="">
-            <FontAwesomeIcon icon={faMoon} className="sidenav-icon" />
-            Modo claro
           </a>
         </li>
       </ul>
