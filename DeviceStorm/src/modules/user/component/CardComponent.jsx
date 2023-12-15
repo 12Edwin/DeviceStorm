@@ -42,13 +42,17 @@ export const CardComponent = () => {
     }, []);
 
     const onUpdateUser = async (data) => {
-        console.log(data);
+        const payload = {
+            name: data.name,
+            surname: data.surname,
+            lastname: data.lastname,
+        }
         const response = await updateUser(data)
         if (response === 'ERROR') {
             Swal.fire(
                 'Error',
                 'Ocurrió un error al realizar la transacción',
-                'danger'
+                'error'
             );
         } else {
             Swal.fire(
@@ -87,12 +91,13 @@ export const CardComponent = () => {
                         <div className="card author-bf-card custom-size">
                             <FontAwesomeIcon
                                 icon={faUser}
-                                className="rounded-circle mb-3"
+                                className="rounded-circle mb-1"
                                 style={{fontSize: '30px'}}
                                 alt="author-img"
                             />
-                            <h5 className="mb-3">{data.name} {data.lastname} {data.surname}</h5>
-                            <div className="social-icons social-icons-sm mb-3">
+                            <h5 className="mb-1">{data.name} {data.lastname} {data.surname}</h5>
+                            <small className="mb-2">{data.email}</small>
+                            <div className="social-icons social-icons-sm mb-1">
                                 <a
                                     className="social-icon"
                                     href="#twitter"
@@ -115,17 +120,19 @@ export const CardComponent = () => {
                         <div className="card-custom" >
                             <Row>
                                 <Col>
-                                    <Card className="shadow mb-4">
+                                    <Card className="shadow mb-1">
                                         <Card.Body>
                                             <Row>
                                                 <Formik
-                                                    initialValues={{ name: data.name, surname: data.surname, career: data.email }}
+                                                    initialValues={{ name: data.name, surname: data.surname, lastname: data.lastname }}
                                                     validationSchema={
                                                         Yup.object().shape({
                                                             name: Yup.string().required("Nombre requerido"),
-                                                            email: Yup.string().required("correo requerido")
+                                                            surname: Yup.string().required("Apellido materno requerido"),
+                                                            lastname: Yup.string().required("Apellido paterno requerido"),
                                                         })}
                                                     onSubmit={(values, { setSubmitting }) => {
+                                                        console.log("ola",values);
                                                         setTimeout(() => {
                                                             showConfirmationSwal(values);
                                                         }, 400);
@@ -134,28 +141,40 @@ export const CardComponent = () => {
                                                 >
                                                     {({ isSubmitting, setFieldTouched, setSubmitting, setFieldError, touched, errors }) =>
                                                     (<Form>
-
                                                         <Card.Text>
                                                             <strong>Modificar datos</strong>
                                                         </Card.Text >
-
-                                                        <Card.Text style={{ textAlign: 'left' }}>
-                                                            <strong>Estatus:</strong> {data.status ? "Activo" : "Inactivo"}  {data.status ? (<FontAwesomeIcon icon={faCheckCircle} color="#28a745" />) :
-                                                                (<FontAwesomeIcon icon={faTimesCircle} color="#dc3545" />)}
-                                                        </Card.Text>
-                                                        <Card.Text style={{ textAlign: 'left' }}>
-                                                            <Field className='form-control' placeholder={data.name} name='nombre' />
-                                                            {touched.name && errors.name && <div className="alert alert-danger error">{errors.name}</div>}
-                                                        </Card.Text>
-                                                        <Card.Text style={{ textAlign: 'left' }}>
-                                                            <Field className='form-control' placeholder={data.surname} name='Apellido' />
-                                                            {touched.surname && errors.surname && <div className="alert alert-danger error">{errors.surname}</div>}
-                                                        </Card.Text>
-                                                        <Card.Text style={{ textAlign: 'left' }}>
-                                                            <Field className='form-control' placeholder={data.email} name='correo' />
-                                                            {touched.email && errors.email && <div className="alert alert-danger error">{errors.career}</div>}
-                                                        </Card.Text>
-
+                                                        <Row>
+                                                            <Col>
+                                                                <Card.Text style={{ textAlign: 'left' }} className="mb-2">
+                                                                    <strong>Estatus:</strong> {data.status ? "Activo" : "Inactivo"}  {data.status ? (<FontAwesomeIcon icon={faCheckCircle} color="#28a745" />) :
+                                                                        (<FontAwesomeIcon icon={faTimesCircle} color="#dc3545" />)}
+                                                                </Card.Text>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col>
+                                                                <Card.Text style={{ textAlign: 'left' }}>
+                                                                    <Field className='form-control mb-3' placeholder={data.name} name='name' id="name" />
+                                                                    {touched.name && errors.name && <div className="alert alert-danger error">{errors.name}</div>}
+                                                                </Card.Text>
+                                                            </Col>
+                                                        </Row>
+                                                        
+                                                        <Row>
+                                                            <Col>
+                                                                <Card.Text style={{ textAlign: 'left' }}>
+                                                                    <Field className='form-control' placeholder={data.lastname} name='lastname' id="lastname" />
+                                                                    {touched.lastname && errors.lastname && <div className="alert alert-danger error">{errors.lastname}</div>}
+                                                                </Card.Text>
+                                                            </Col>
+                                                            <Col>
+                                                                <Card.Text style={{ textAlign: 'left' }}>
+                                                                    <Field className='form-control' placeholder={data.surname} name='surname' id="surname" />
+                                                                    {touched.surname && errors.surname && <div className="alert alert-danger error">{errors.lastname}</div>}
+                                                                </Card.Text>
+                                                            </Col>
+                                                        </Row>
                                                         <hr />
                                                         <MDBBtn variant="primary" type="submit" >Editar perfil</MDBBtn>
 

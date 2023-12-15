@@ -53,11 +53,11 @@ const insert = async (req, res = Response) =>{
 const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
-        const {email, password, ... rest} = req.body;
+        const {email, password, ...rest} = req.body;
         if (password){
             rest.password = await hashPassword(password);
         }
-        const user = await User.findByIdAndUpdate(id , rest);
+        const user = await User.findByIdAndUpdate(id, rest);
         res.status(200).json({Message:'Successful request', user});
     }catch (error){
         const message = validateError(error);
@@ -576,7 +576,6 @@ userRouter.get('/:id',[
 ],getById);
 userRouter.put('/:id',[
     validateJWT,
-    validateAdmin,
     check('id','Id inválido para mongo').isMongoId(),
     check('id').custom(validateId),
     check('email').optional().isEmail().withMessage('Correo inválido').custom(validateEmail),

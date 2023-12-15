@@ -58,6 +58,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
 
 
   const handleJustifyClick = (value) => {
+    onChange()
     if (value === justifyActive) {
       return;
     }
@@ -66,7 +67,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
   };
 
   const onChange = (event) => {
-    
+      form.resetForm()
   }
 
   return (
@@ -204,7 +205,7 @@ export const LoginComponent = ({ onData, onRegister }) => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                  <Button className="mt-4 w-100" type='submit' variant='primary' disabled={show}> {show ? <FontAwesomeIcon icon={faSpinner} spin /> : "Registrarte"}</Button>
+                  <Button className="mt-1 w-100" type='submit' variant='primary' disabled={show}> {show ? <FontAwesomeIcon icon={faSpinner} spin /> : "Registrarte"}</Button>
                 </Modal.Footer>
             </Form>
         </MDBTabsPane>
