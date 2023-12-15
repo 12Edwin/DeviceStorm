@@ -6,6 +6,7 @@ const Category = require('../module/category/Category');
 const Place = require('../module/place/Place')
 const Supplier = require('../module/supplier/Supplier')
 const jwt = require('jsonwebtoken');
+const mongoose = require("mongoose");
 
 const validateEmail = async (email = '') => {
     const emailExist = await User.findOne({ email });
@@ -25,6 +26,14 @@ const validateIdDevice = async (id = '') => {
     const idExist = await Device.findById(id);
     if (!idExist) {
         throw new Error('Not found');
+    }
+}
+const thisDeviceIsBusy = async (id = '') => {
+    const device = await Device.findById(id)
+    const value = mongoose.Types.ObjectId(id);
+    const isBusy = await Request.exists({ devices: value, status:{ $in:['Activa', 'Pendiente', 'Sancion']} });
+    if (isBusy && device.status) {
+        throw new Error('Busy device');
     }
 }
 
@@ -127,31 +136,6 @@ const validateJWT = async (req, res = Response, next) => {
         console.log(err);
     }
 }
-
-const validateDevice = async (device = '') => {
-    const [deviceExist, isUnavailable, isEmpty] = await Promise.all([
-        Device.findOne({ name: device }),
-        Request.findOne({ name: device }),
-        Device.findOne({ name: device, status: false })
-    ]);
-    if (!deviceExist) {
-        throw new Error('Libro no encontrado en la base de datos');
-    }
-    if (isUnavailable) {
-        throw new Error('Libro ocupado');
-    }
-    if (isEmpty) {
-        throw new Error('Libro no disponible')
-    }
-}
-const validateDeviceById = async (device = '') => {
-    const [deviceExist] = await Promise.all([
-        Device.findById({ id: device })
-    ]);
-    if (!deviceExist) {
-        throw new Error('Artículo no encotrado en la bas de datos')
-    }
-}
 const existDevice = async (name, id= '000000000000000000000000') => {
     const exist = await Device.exists({ name: name, _id: { $ne: id } })
     if (exist) {
@@ -216,8 +200,21 @@ const minDevicesForPlace = async (id, capacity) => {
     let totalDevices = 0
     const devices = await Device.find({ place: id })
     for (let device of devices) {
-        totalDevices += device.stock
+        totalDevices += device.total
     }
+    if (capacity < totalDevices) {
+        throw new Error('Capacity is so little')
+    }
+}
+const maxDevicesForPlace = async (idPlace, total, idDevice= '000000000000000000000000') => {
+    const place = await Place.findById(idPlace)
+    const capacity = place.capacity
+    let totalDevices = 0
+    const devices = await Device.find({ place: idPlace, _id: { $ne: idDevice } })
+    for (let device of devices) {
+        totalDevices += device.total
+    }
+    totalDevices += total
     if (capacity < totalDevices) {
         throw new Error('Capacity is so little')
     }
@@ -235,8 +232,8 @@ module.exports = {
     validateIdCategory,
     validateIdPlace,
     validateIdSupplier,
-    validateDevice,
     existDevice,
+    thisDeviceIsBusy,
     roles,
     status,
     thereCategoriesInDevices,
@@ -245,6 +242,7 @@ module.exports = {
     thereSameSupplier,
     thereSamePlace,
     minDevicesForPlace,
+    maxDevicesForPlace,
     validateStock,
     validateUpdateStatus,
     emailValid

@@ -68,12 +68,17 @@ export const DeviceStack = () => {
             }
             return sortDirection === 'asc' ? compareResult : -compareResult;
         })
-        console.log('entra')
         setAux(sortedDevices)
     }
 
     const openModalEdit = () => {
         setOpenModal(true);
+    }
+    const onCloseModal = (value) =>{
+        if(value === 'reload'){
+            fillDevices()
+        }
+        setOpenModal(false)
     }
 
 
@@ -117,10 +122,10 @@ export const DeviceStack = () => {
                             </Button>
                         </div>
                         <div className="deviceshelf-devices">
-                            <CardDevice devices={aux}/>
+                            <CardDevice devices={aux} reload={onCloseModal}/>
                         </div>
                     </div>
-                    <DeviceEditModal show={openModal} setShow={setOpenModal} data={null}/>
+                    <DeviceEditModal show={openModal} setShow={onCloseModal} data={null}/>
                 </>)
             }
         </div>

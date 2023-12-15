@@ -31,7 +31,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
     const resetForm = (value = '')=>{
         formik.values.name = ''
-        formik.values.stock = 0
+        formik.values.total = 0
         formik.values.supplier = ''
         formik.values.category = ''
         formik.values.place = ''
@@ -51,14 +51,14 @@ export const DeviceEditModal = ({show, setShow, data}) => {
 
         if (data && show) {
             formik.values.name = data.name
-            formik.values.stock = data.stock
+            formik.values.total = data.total
             formik.values.supplier = data.supplier
             formik.values.category = data.category
             formik.values.place = data.place
             formik.values.img = data.img
         } else {
             formik.values.name = ''
-            formik.values.stock = 0
+            formik.values.total = 0
             formik.values.supplier = ''
             formik.values.category = ''
             formik.values.place = ''
@@ -131,7 +131,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
             icon: 'success',
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'OK',
-        }).then(() => window.location.reload());
+        }).then(() => resetForm('reload'));
     }
     const resultFail = (text) => {
         Swal.fire({
@@ -166,7 +166,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
     const formik = useFormik({
         initialValues: {
             name: '',
-            stock: 0,
+            total: 0,
             supplier: '',
             category: '',
             place: '',
@@ -174,7 +174,7 @@ export const DeviceEditModal = ({show, setShow, data}) => {
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required("El nombre es requerido"),
-            stock: Yup.number().required('La cantidad de unidades es requerida'),
+            total: Yup.number().required('La cantidad de unidades es requerida'),
             supplier: Yup.string().required("El proveedor es requerido"),
             category: Yup.string().required("La categoría es requerida"),
             place: Yup.string().required("El almacen es requerido"),
@@ -220,15 +220,15 @@ export const DeviceEditModal = ({show, setShow, data}) => {
                                             <div style={{color: 'red', fontSize: '12px'}}>{formik.errors.name}</div>}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
-                                        <MDBInput label='Número de unidades' id='stock' type='number'
+                                        <MDBInput label='Número de unidades' id='total' type='number'
                                                   className="form-control"
                                                   placeholder="Ingrese el número de unidades"
                                                   onChange={formik.handleChange}
                                                   onBlur={formik.handleBlur}
-                                                  value={formik.values.stock}
+                                                  value={formik.values.total}
                                         />
-                                        {formik.errors.stock && formik.touched.stock && <div
-                                            style={{color: 'red', fontSize: '12px'}}>{formik.errors.stock}</div>}
+                                        {formik.errors.total && formik.touched.total && <div
+                                            style={{color: 'red', fontSize: '12px'}}>{formik.errors.total}</div>}
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <select className="form-control" id='supplier'
