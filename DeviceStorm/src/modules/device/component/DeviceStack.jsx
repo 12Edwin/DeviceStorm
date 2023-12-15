@@ -18,8 +18,17 @@ export const DeviceStack = () => {
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortDirection, setSortDirection] = useState('');
     const [showOrder, setShowOrder] = useState(false);
+    const [ses, setSes] = useState(false)
 
-
+    const getSession = () =>{
+        const session = localStorage.getItem('user')
+        if(session){
+            const user = JSON.parse(session)
+            if(user.role === 'ADMIN_ROLE'){
+                setSes(true)
+            }
+        }
+    }
     const fillDevices = async () => {
         setLoading(true);
 
@@ -28,10 +37,13 @@ export const DeviceStack = () => {
             setApiError(true);
 
         } else {
+            getSession()
             setDevices(response.devices);
             setAux(response.devices)
-            if (response.devices.find(dev=> dev.stock <= 0)){
-                soldOut(response.devices)
+            if (response.devices.find(dev=> dev.stock <= 3)){
+                if(ses){
+                    soldOut(response.devices)
+                }
             }
             setApiError(false);
         }
@@ -40,23 +52,33 @@ export const DeviceStack = () => {
 
     useEffect(() => {
         fillDevices();
+        
     }, []);
 
     const soldOut = (devs) =>{
         let html = '<div class="overflow-auto">'
         for (let dev of devs){
-            if (dev.stock <= 0) {
+            if (dev.stock <= 3) {
                 html += `<div class="soldOut-devices">${dev.name}</div>`
             }
         }
         html += `</div>`
-        Swal.fire({
+        Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        }).fire({
             html,
-            title: 'Dispositivos agotados',
+            title: 'Los dispositivos por agotarse son:',
             icon: 'warning',
             showCancelButton: false
         })
     }
+
+
+    
 
     const sortDevices = () => {
         const sortedDevices = [...devices].sort((a, b) => {

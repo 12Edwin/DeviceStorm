@@ -42,14 +42,14 @@ export const Request = ({ requests = [] }) => {
 
   const onRequest = (id, currentStatus) => {
     MySwal.fire({
-      title: '¿Qué decea realizar?, \nAutorizar solicitud o denegar solicitud',
+      title: 'Seleccione la operación a realizar',
+      icon: 'question',
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: `${currentStatus === 'Pendiente' ? 'Autorizar' : 'Reactivar'}`,
       denyButtonText: `${currentStatus === 'Pendiente' ? 'Denegar' : 'Finalizar'}`,
       cancelButtonText: `Cancelar`,
     }).then(async (result) => {
-      /* Manejar la respuesta del usuario */
       if (result.isConfirmed) {
         const response = await updateRequest(id, { status: 'Activa' });
         if (response === 'ERROR') {
@@ -211,9 +211,11 @@ export const Request = ({ requests = [] }) => {
                           <Button onClick={() => onRequest(req._id, req.status)} variant="primary" className='actionButton' style={{ color: '#1a73e8' }}><AssignmentTurnedInIcon></AssignmentTurnedInIcon></Button>
                         </Tooltip>
                         {moment(req.returns).isBefore(moment()) && req.status == 'Activa' && (
-                          <Button onClick={() => handlerSanction(req.user, req.returns, req._id)} variant="danger" className='actionButton' style={{ color: 'red' }}>
+                          <Tooltip title="Sansionar" placement='top'>
+                            <Button onClick={() => handlerSanction(req.user, req.returns, req._id)} variant="danger" className='actionButton' style={{ color: 'red' }}>
                             <InfoOutlinedIcon></InfoOutlinedIcon>
                           </Button>
+                          </Tooltip>
                         )}
                       </td>
                     </tr>))

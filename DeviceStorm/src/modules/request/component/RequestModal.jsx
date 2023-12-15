@@ -31,7 +31,7 @@ export const RequestModal = ({ open, onOpen, email }) => {
         return currentDate;
     }
     const validationSchema = Yup.object({
-        fecha: Yup.date().min(new Date(), "La fecha debe ser mayor a la actual").max(returnDate(),'El plazo máximo es de 4 díaz').required("La fecha es obligatoria"),
+        fecha: Yup.date().min(new Date(), "La fecha debe ser mayor a la actual").max(returnDate(),'El plazo máximo es de 4 días').required("La fecha es obligatoria"),
         devices: Yup.array().of(
             Yup.object({
                 device: Yup.string().required('Campo obligatorio')
