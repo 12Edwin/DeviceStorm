@@ -1,9 +1,9 @@
 import api from '../../../config/http.js';
 
-export const createSanction = async (idUser, emailUser, description, returns) => {
+export const createSanction = async (emailUser, description, returns,idRequest) => {
     try {
-        //console.log("Datos de la sanción que se enviarán:", { idUser, emailUser, description, returns });
-        return await api.doPost('/sanction/', { idUser, emailUser, description, returns }, {
+        console.log("Datos de la sanción que se enviarán:", {emailUser, description, returns, idRequest });
+        return await api.doPost('/sanction/', { emailUser, description, returns, idRequest }, {
             headers: {
                 'Content-Type': 'application/json',
             },
