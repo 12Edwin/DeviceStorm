@@ -7,6 +7,7 @@ import {CardDevice} from "./CardDevice.jsx";
 import {Header} from "../../../public/component/Header.jsx";
 import {Button} from "reactstrap";
 import {DeviceEditModal} from "./DeviceEditModal.jsx";
+import Swal from "sweetalert2";
 
 export const DeviceStack = () => {
     const [devices, setDevices] = useState([]);
@@ -29,6 +30,9 @@ export const DeviceStack = () => {
         } else {
             setDevices(response.devices);
             setAux(response.devices)
+            if (response.devices.find(dev=> dev.stock <= 0)){
+                soldOut(response.devices)
+            }
             setApiError(false);
         }
         setLoading(false);
@@ -37,6 +41,22 @@ export const DeviceStack = () => {
     useEffect(() => {
         fillDevices();
     }, []);
+
+    const soldOut = (devs) =>{
+        let html = '<div class="overflow-auto">'
+        for (let dev of devs){
+            if (dev.stock <= 0) {
+                html += `<div class="soldOut-devices">${dev.name}</div>`
+            }
+        }
+        html += `</div>`
+        Swal.fire({
+            html,
+            title: 'Dispositivos agotados',
+            icon: 'warning',
+            showCancelButton: false
+        })
+    }
 
     const sortDevices = () => {
         const sortedDevices = [...devices].sort((a, b) => {
