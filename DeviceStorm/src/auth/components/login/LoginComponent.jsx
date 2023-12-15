@@ -4,14 +4,15 @@ import {
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import './Login.css'
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import {ModalRecoveryPassword} from '../../../modules/user/component/ModalRecoveryPassword';
+import {useFormik} from "formik";
+import * as yup from "yup";
 
 export const LoginComponent = ({ onData, onRegister }) => {
   const [justifyActive, setJustifyActive] = useState('tab1');;
@@ -21,21 +22,53 @@ export const LoginComponent = ({ onData, onRegister }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState("");
   const [errRegister, setErrRegister] = useState("");
-  const [onOpen, setOnOpen] = useState(false);
+  const [show, setShow] = useState(false);
+
   const onAuth = async (event) => {
     event.preventDefault();
     setLoading(true);
     await onData({ email, password, setLoading, setErrors });
+    setShow(false);
   }
+
+  const form = useFormik({
+    initialValues: {
+        name: "",
+        surname: "",
+        lastname: "",
+        email: "",
+        password: "",
+        repeatPass: ""
+    },
+    validationSchema: yup.object().shape({
+        name: yup.string().required("Debes ingresar un nombre").matches(/^[aA-zZ\s]+$/, "Ingresa un nombre válido"),
+        surname: yup.string(), 
+        lastname: yup.string().required("Debes ingresar un apellido").matches(/^[aA-zZ\s]+$/, "Ingresa un apellido válido"),
+        password: yup.string().required("Ingresa una contraseña válida").min(6, "Mínimo 6 caracteres"),
+        email: yup.string().email('Formato Incorrecto').required("Ingresa un correo válido"),
+        repeatPass: Yup.string().oneOf([Yup.ref('password')], "Contraseñas desiguales").required("Contraseñas desiguales")
+    }),
+    onSubmit: async (values, {setSubmitting}) =>{
+        setSubmitting(true);
+        setShow(true);
+        onRegister({ ...values, setErrRegister, setSubmitting })
+        setSubmitting(false);
+    }
+})
 
 
   const handleJustifyClick = (value) => {
+    onChange()
     if (value === justifyActive) {
       return;
     }
 
     setJustifyActive(value);
   };
+
+  const onChange = (event) => {
+      form.resetForm()
+  }
 
   return (
 
@@ -92,83 +125,89 @@ export const LoginComponent = ({ onData, onRegister }) => {
         </MDBTabsPane>
 
         <MDBTabsPane show={justifyActive === 'tab2'}>
+            <Form onSubmit={(event)=> form.handleSubmit(event)}>
+                {errRegister && <div className="alert alert-danger" style={{ textAlign: "center" }}>{errRegister}</div>}
+                <Modal.Body>
+                    <Row>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <MDBInput wrapperClass='mb-2' label='Nombre' id='name' type='text'
+                                            onChange={form.handleChange}
+                                            onBlur={form.handleBlur}
+                                            value={form.values.name}/>
+                                {form.touched.name && form.errors.name && (
+                                    <span className="text-error">{form.errors.name}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <MDBInput wrapperClass='mb-2'  label='Apellido paterno' id='lastname' type='text'
+                                            onChange={form.handleChange}
+                                            onBlur={form.handleBlur}
+                                            value={form.values.lastname}/>
+                                {form.touched.lastname && form.errors.lastname && (
+                                    <span className="text-error">{form.errors.lastname}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <MDBInput wrapperClass='mb-2' label='Apellido materno' id='surname' type='text'
+                                            onChange={form.handleChange}
+                                            onBlur={form.handleBlur}
+                                            value={form.values.surname}/>
+                                {form.touched.surname && form.errors.surname && (
+                                    <span className="text-error">{form.errors.surname}</span>
+                                )} 
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <MDBInput wrapperClass='mb-2' label='Correo electrónico' id='email' type='email'
+                                            onChange={form.handleChange}
+                                            onBlur={form.handleBlur}
+                                            value={form.values.email}/>
+                                {form.touched.email && form.errors.email && (
+                                    <span className="text-error">{form.errors.email}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <MDBInput wrapperClass='mb-2' label='Contraseña' id='password' type='password'
+                                            onChange={form.handleChange}
+                                            onBlur={form.handleBlur}
+                                            value={form.values.password}/>
+                                {form.touched.password && form.errors.password && (
+                                    <span className="text-error">{form.errors.password}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group className="mb-3">
+                                <MDBInput wrapperClass='mb-2' label='Repetir contraseña' id='repeatPass' type='password'
+                                            onChange={form.handleChange}
+                                            onBlur={form.handleBlur}
+                                            value={form.values.repeatPass}/>
+                                {form.touched.repeatPass && form.errors.repeatPass && (
+                                    <span className="text-error">{form.errors.repeatPass}</span>
+                                )}
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                </Modal.Body>
 
-          <Formik
-            initialValues={{ name: '', lastname: '',surname: '', email: '', password: '', repeatPass: '' }}
-            validationSchema={
-              Yup.object().shape({
-                name: Yup.string().required("Nombre requerido"),
-                lastname: Yup.string().required("Apellido paterno es requerido"),
-                surname: Yup.string(),
-                email: Yup.string().email("Correo inválido").required("Correo requerido"),
-                password: Yup.string().min(6, "El mínimo es de 6 caracteres").required("Contraseña requerdia"),
-                repeatPass: Yup.string().oneOf([Yup.ref('password')], "Contraseñas desiguales").required("Contraseñas desiguales")
-              })}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                onRegister({ ...values, setErrRegister, setSubmitting })
-              }, 400);
-            }}
-          >
-
-            {({ isSubmitting, setFieldTouched, setFieldError, touched, errors }) =>
-            (<Form style={{boxShadow:'none' }}>
-              {errRegister && (<div className='alert alert-danger' style={{ textAlign: "center" }}>{errRegister}</div>)}
-
-              <Row>
-                <Col lg={6} md={6} sm={12}>
-                  <div className="field-container">
-                    <Field className='mt-4 form-control field' id='name' name='name' type='text' />
-                    <label htmlFor='name' className="animated-label reqired-label">Nombre:</label>
-                    {touched.name && errors.name && <div className="alert alert-danger error mt-2">{errors.name}</div>}
-                  </div>
-                </Col>
-                <Col lg={6} md={6} sm={12}>
-                  <div className="field-container">
-                    <Field className='mt-4 form-control field' id='lastname' name='lastname' type='text' />
-                    <label htmlFor='lastname' className="animated-label reqired-label">Apellido paterno:</label>
-                    {touched.lastname && errors.lastname && <div className="alert alert-danger error mt-2">{errors.lastname}</div>}
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-              <Col lg={6} md={6} sm={12}>
-                  <div className="field-container">
-                    <Field className='mt-4 form-control field' id='surname' name='surname' type='text' />
-                    <label htmlFor='surname' className="animated-label">Apellido Materno:</label>
-                    {touched.surname && errors.surname && <div className="alert alert-danger error mt-1">{errors.surname}</div>}
-                  </div>
-                </Col>
-                <Col lg={6} md={6} sm={12}>
-                  <div className="field-container">
-                    <Field className='mt-4 form-control field' id='email' name='email' type='email' />
-                    <label htmlFor='email' className="animated-label reqired-label">Correo electronico: </label>
-                    {touched.email && errors.email && <div className="alert alert-danger error mt-1">{errors.email}</div>}
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg={6} md={6} sm={12}>
-                  <div className="field-container">
-                    <Field className='mt-4 form-control field' id='password' name='password' type='password' />
-                    <label htmlFor='password' className="animated-label reqired-label">Contraseña: </label>
-                    {touched.password && errors.password && <div className="alert alert-danger error">{errors.password}</div>}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="field-container">
-                    <Field className='mt-4 form-control field' id='repeatPass' name='repeatPass' type='password' />
-                    <label htmlFor='repeatPass' className="animated-label reqired-label">Repetir contraseña:</label>
-                    {touched.repeatPass && errors.repeatPass && <div className="alert alert-danger error">{errors.repeatPass}</div>}
-                  </div>
-                </Col>
-              </Row>
-              <MDBBtn className="mt-4 w-100" type='submit' disabled={isSubmitting}>{isSubmitting ? <FontAwesomeIcon icon={faSpinner} spin /> : "Registrarte"}</MDBBtn>
-
-            </Form>)}
-
-          </Formik>
-
+                <Modal.Footer>
+                  <Button className="mt-1 w-100" type='submit' variant='primary' disabled={show}> {show ? <FontAwesomeIcon icon={faSpinner} spin /> : "Registrarte"}</Button>
+                </Modal.Footer>
+            </Form>
         </MDBTabsPane>
 
       </MDBTabsContent>

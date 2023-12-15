@@ -1,9 +1,9 @@
 const {Response, Router} = require('express');
-const {validateError, hashPassword, validateMiddlewares} = require("../../util/functions");
+const {validateError, hashPassword, validateMiddlewares, textRegex} = require("../../util/functions");
 const User = require('./User');
 const {check} = require("express-validator");
 const {validateEmail, validateId, validateJWT, validateAdmin, roles} = require("../../helpers/db-validations");
-
+const {sendMail} = require("../email/mailer");
 const getAll = async  (req, res = Response) =>{
     try {
         const [total, users] = await Promise.all([
@@ -33,11 +33,15 @@ const getById = async (req, res = Response) =>{
 const insert = async (req, res = Response) =>{
     try {
         const {name,surname, lastname, email,role,password} = req.body;
-        const user = new User ({name,surname, lastname, email,role, password, status:true, token: ''});
-        user.password = await hashPassword(password);
-        await user.save();
-        sendMail(email,"Correo de bienvenida",emailHtml(name, surname, lastname));
-        res.status(200).json({message:'Successful request',user});
+        if(textRegex.test(name) && textRegex.test(lastname)){
+            const user = new User ({name,surname, lastname, email,role, password, status:true, token: ''});
+            user.password = await hashPassword(password);
+            await user.save();
+            sendMail(email,"Correo de bienvenida",emailHtml(name, surname, lastname));
+            res.status(200).json({message:'Successful request',user});
+        }else {
+            res.status(400).json({message:'Invalid name'});
+        }
     }catch (error){
         const message = validateError(error);
         res.status(400).json({Error:message});
@@ -49,11 +53,11 @@ const insert = async (req, res = Response) =>{
 const update = async (req, res = Response) =>{
     try {
         const {id} = req.params;
-        const {email, password, ... rest} = req.body;
+        const {email, password, ...rest} = req.body;
         if (password){
             rest.password = await hashPassword(password);
         }
-        const user = await User.findByIdAndUpdate(id , rest);
+        const user = await User.findByIdAndUpdate(id, rest);
         res.status(200).json({Message:'Successful request', user});
     }catch (error){
         const message = validateError(error);
@@ -560,8 +564,9 @@ const userRouter = Router()
 
 
 userRouter.get('/',[
-    //validateJWT,
-    //validateAdmin
+    validateJWT,
+    validateAdmin,
+    validateMiddlewares
 ],getAll);
 
 userRouter.get('/:id',[
@@ -578,7 +583,7 @@ userRouter.put('/:id',[
     validateMiddlewares
 ],update);
 userRouter.post('/',[
-    //validateJWT,
+    /* validateJWT, */
     check('email','Correo inválido').isEmail(),
     check('email').custom(validateEmail),
     check('name', 'El nombre es obligatorio').not().isEmpty(),
@@ -589,6 +594,7 @@ userRouter.post('/',[
 ],insert);
 userRouter.delete('/:id',[
     validateJWT,
+    validateAdmin,
     check('id','Id inválido para mongo').isMongoId(),
     check('id').custom(validateId),
     validateMiddlewares

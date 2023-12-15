@@ -17,27 +17,32 @@ export const ResetPasswordPage = () => {
     const [checked, setChecked] = useState(false);
 
     const handleResetPassword = async (credentials) => {
-        try {
-           const response = await resetPassword(credentials);
-           if(response.status === 200){
-               Swal.fire({
-                    title: 'Contraseña cambiada',
-                    text: 'Se ha cambiado la contraseña exitosamente',
-                    icon: 'success',
-                    timer: 3000,
-                    showCancelButton: false,
-                    showConfirmButton: false
-               }).then(() =>{
-                navigate("/login");
-               }) 
-           }else{
-                setErrRegister(response.message);
-           }
-            
-        } catch (error) {
-            setErrRegister(error.message);
-        }
-    }
+      try {
+         const response = await resetPassword(credentials);
+         if(response.status === 200){
+             Swal.fire({
+                  title: 'Tarea completada!',
+                  text: 'Se ha cambiado la contraseña exitosamente',
+                  icon: 'success',
+                  timer: 3000,
+                  showCancelButton: false,
+                  showConfirmButton: false
+             }).then(() =>{
+              navigate("/login");
+             }) 
+         }else{
+              const {message} = response
+              switch(message){
+                  case 'Request failed with status code 403':
+                      setErrRegister("Parece que tu token ha expirado, por favor solicita un nuevo correo de recuperación de contraseña");
+                      break;
+             }
+         }
+          
+      } catch (error) {
+          setErrRegister(error.message);
+      }
+  }
 
     const showPassword = (checked) =>{
         return checked ? "text" : "password";

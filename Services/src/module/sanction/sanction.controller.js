@@ -20,53 +20,35 @@ const getAll = async (req, res = Response) => {
     }
 }
 
-
-const getSanctionsByUserId = async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const sanctions = await Sancation.find({ idUser: userId });
-        res.status(200).json({ msg: 'Sanciones encontradas', sanctions });
-    } catch (error) {
-        const message = validateError(error);
-        res.status(400).json(message);
-        console.log(error);
-    }
-};
-
 const insert = async (req, res = Response) => {
     try {
-        const { idUser,emailUser, description, returns } = req.body;
-        const user = await User.findById(idUser);
+        const { emailUser, description, returns, idRequest } = req.body;
 
-        if (!user) {
-            return res.status(404).json({ msg: 'El usuario no existe' });
+        const existingSanction = await Sancation.findOne({ idRequest });
+
+        if (existingSanction) {
+            return res.status(400).json({ msg: 'Ya existe una sanción para este idRequest' });
         }
-        // btiene la fecha actual sin horas ni minutos
+        
         const currentDate = new Date();
         currentDate.setUTCHours(0, 0, 0, 0);
 
         const returnsObj = new Date(returns);
         returnsObj.setUTCHours(0, 0, 0, 0);
 
-        // Calcular la diferencia en días convitriendo solo dias
         const daysDifference = Math.max(Math.ceil((currentDate.getTime() - returnsObj.getTime()) / (1000 * 3600 * 24)), 0);
 
-        // Calcula el monto de la multa
         const amount = daysDifference * 60;
 
-        console.log(`La diferencia en días es: ${daysDifference}`);
-        console.log(`El monto calculado es: ${amount}`);
-
-        // Verificar si el usuario está retrasado antes de crear la multa
         if (daysDifference > 0) {
             const sanction = await new Sancation({
-                idUser,
                 emailUser,
                 description,
                 returns: returnsObj,
                 days: daysDifference,
                 amount,
                 status: false,
+                idRequest,
             });
 
             await sanction.save();
@@ -115,32 +97,26 @@ const changeStatus = async (req, res= Response) =>{
 const sanctionRouter = Router();
 
 sanctionRouter.get('/', [
-    //validateJWT,
+    validateJWT,
 ], getAll);
 
 sanctionRouter.post('/', [
-    //validateJWT,
-    check('idUser', 'The idUser is required').notEmpty(),
+    validateJWT,
+    check('emailUser', 'The emailUser is required').notEmpty(),
     check('description', 'The description is required').notEmpty(),
     check('returns', 'The returns is required').notEmpty(),
     validateMiddlewares
 ], insert);
 
 
-sanctionRouter.get('/:userId', [
-    //validateJWT,
-    check('userId', 'The userId is required').notEmpty(),
-    validateMiddlewares
-], getSanctionsByUserId);
-
 sanctionRouter.delete('/:id', [
-    //validateJWT,
+    validateJWT,
     check('id', 'The id is required').notEmpty(),
     validateMiddlewares
 ], deleteSanction);
 
 sanctionRouter.put('/:id', [
-    //validateJWT,
+    validateJWT,
     check('id', 'The id is required').notEmpty(),
     validateMiddlewares
 ], changeStatus);

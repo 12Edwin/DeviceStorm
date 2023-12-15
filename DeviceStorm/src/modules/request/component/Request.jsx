@@ -9,13 +9,14 @@ import { updateRequest, sanction } from '../helpers/updateRequest'
 import { SanctionModal } from './SanctionModal';
 import moment from 'moment';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import InfoIcon from '@material-ui/icons/Info';
 import Moment from 'moment';
-import 'moment/locale/es';
 Moment.locale('es');
 import { setAppElement } from 'react-modal';
 setAppElement(document.body);
 import { createSanction } from '../../sanctions/helpers/createSanction';
+
 export const Request = ({ requests = [] }) => {
 
   const [filteredUsers, setFilteredUsers] = useState(requests);
@@ -34,6 +35,7 @@ export const Request = ({ requests = [] }) => {
         ) ||
         (req.user[0]?.email.toLowerCase().includes(searchTerm.toLowerCase()) && req.user.length > 0)
     );
+
     setFilteredUsers(filtered);
   }, [searchTerm]);
 
@@ -101,6 +103,69 @@ export const Request = ({ requests = [] }) => {
       name += device.name + 'x' + device.cantidad + ' '
     })
     return name
+
+
+  }
+
+  //Boton de sancion
+  async function handlerSanction(emailUser, returns, idRequest) {
+    console.log("Llegaron los datos: ", emailUser, returns, idRequest);
+    const newSanction = { emailUser, returns, idRequest };
+    if (await onConfirm(emailUser, returns, idRequest)) {
+      setSanctions(newSanction);
+      console.log("Datos setiados: ", emailUser, returns, idRequest);
+    }
+  }
+  async function onConfirm(emailUser, returns, idRequest) {
+    if (emailUser !== undefined && emailUser !== null) {
+      return await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Se creará una sanción al usuario',
+        icon: 'question',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'Aceptar',
+        showLoaderOnConfirm: true,
+        async preConfirm(inputValue) {
+          return await onSanction(emailUser, returns, idRequest);
+        }
+      }).then(result => result.isConfirmed)
+    } else {
+      console.error('Correo no valido');
+      return false;
+    }
+  }
+
+  const onSanction = async (emailUser, returns, idRequest) => {
+    const description = "Sanción por no devolver el dispositivo a tiempo";
+    //console.log("Datos que se enviarán a createSanction:", {idUser,emailUser,description,returns});
+    const result = await createSanction(emailUser, description, returns, idRequest);
+    if (typeof (result) === 'string') {
+      resultFail(result)
+      return false
+    } else {
+      resultOk()
+      return true
+    }
+  }
+
+  const resultFail = (text = 'Ups, ha ocurrido un error al obtener las áreas') => {
+    Swal.fire({
+      title: 'Error!',
+      text,
+      icon: 'danger',
+      confirmButtonText: 'OK',
+    });
+  }
+
+  const resultOk = () => {
+    Swal.fire({
+      title: 'Tarea completada!',
+      text: 'Se registró la sanción correctamente',
+      icon: 'success',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'OK',
+    }).then(res => fillPlaces())
   }
   return (
     <div className="content">
@@ -130,7 +195,6 @@ export const Request = ({ requests = [] }) => {
                     <th>Fecha de petición</th>
                     <th>Fecha de retorno</th>
                     <th>Estatus</th>
-                    <th>Sanción</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -142,13 +206,15 @@ export const Request = ({ requests = [] }) => {
                       <td>{moment(req.created_at).format('YYYY-MM-DD')}</td>
                       <td>{moment(req.returns).format('YYYY-MM-DD')}</td>
                       <td>{req.status}</td>
-                      <td>{req.sanction ? req.sanction : <span style={{ fontStyle: 'italic' }}>No aplica</span>}</td>
                       <td>
                         <Tooltip title="Cambiar Status" placement="top">
                           <Button onClick={() => onRequest(req._id, req.status)} variant="primary" className='actionButton' style={{ color: '#1a73e8' }}><AssignmentTurnedInIcon></AssignmentTurnedInIcon></Button>
                         </Tooltip>
-                        {/* <Tooltip title="Sancionar" placement='top'><Button onClick={() => onSanction(req._id)} variant="danger" className='actionButton' style={{ color: '#1a73e8' }}><InfoIcon></InfoIcon></Button></Tooltip> */}
-
+                        {moment(req.returns).isBefore(moment()) && req.status == 'Activa' && (
+                          <Button onClick={() => handlerSanction(req.user, req.returns, req._id)} variant="danger" className='actionButton' style={{ color: 'red' }}>
+                            <InfoOutlinedIcon></InfoOutlinedIcon>
+                          </Button>
+                        )}
                       </td>
                     </tr>))
                   }

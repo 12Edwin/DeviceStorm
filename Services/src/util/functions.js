@@ -36,9 +36,14 @@ const validatePassword = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword);
 };
 
+const textRegex = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
+
+//generate a regex for text with accents and spaces
+
 module.exports = {
     validateError,
     hashPassword,
     validatePassword,
-    validateMiddlewares
+    validateMiddlewares,
+    textRegex
 };

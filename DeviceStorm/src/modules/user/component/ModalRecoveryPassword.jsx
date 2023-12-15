@@ -4,22 +4,52 @@ import { Formik, Field, Form, useFormik} from "formik";
 import {sendRecoveryPasswordEmail} from "../helpers/sendRecoveryPasswordEmail"
 import { Button, Col, Modal, Row} from "react-bootstrap";
 import * as yup from "yup";
+import Swal from 'sweetalert2';
 export const ModalRecoveryPassword = ({open, onOpen}) =>{
     const handleCloseModal = () => {
         onOpen(false);
     }
 
-     const onEmailEntered = async (email) =>{
+    const onEmailEntered = async (email) =>{
         try {
             const response = await sendRecoveryPasswordEmail(email);
-            console.log("response",response)
+            const {status, data:{message}} = response
+            if(status === 200){
+                switch(message){
+                    case "Correo enviado":
+                        resultOk()
+                        break
+                    case "Usuario no encontrado":
+                        resultFail("El usuario no existe")
+                        break   
+                }
+            }else{
+                resultFail("Error al enviar el correo")
+            }
         } catch (error) {
             console.log("error",error)
         }
     }
 
-    const emailSent = () =>{
-        alert("Se ha enviado un correo a tu cuenta de correo electrónico")
+    const resultFail = (text) => {
+        Swal.fire({
+            title: 'Error!',
+            text,
+            icon: 'error',
+            confirmButtonText: 'OK',
+            timer: 3000
+        });
+      }
+    
+    const resultOk = () => {
+        Swal.fire({
+            title: 'Tarea completada!',
+            text: 'Hemos enviado un correo con las instrucciones para recuperar tu contraseña',
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+            timer: 3000
+        })
     }
     return (
         <div>
@@ -46,7 +76,7 @@ export const ModalRecoveryPassword = ({open, onOpen}) =>{
                             })}
                             onSubmit={async (values, { setSubmitting }) => {
                                 setSubmitting(true);
-                                onEmailEntered(values.email).then(()=>{emailSent()});
+                                onEmailEntered(values.email);
                                 setSubmitting(false);
                                 handleCloseModal();
                             }}

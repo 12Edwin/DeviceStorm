@@ -94,12 +94,6 @@ export const NavBar = () => {
             Cerrar sesión
           </a>
         </li>
-        <li className="sidenav-item">
-          <a href="">
-            <FontAwesomeIcon icon={faMoon} className="sidenav-icon" />
-            Modo claro
-          </a>
-        </li>
       </ul>
     </div>
     </>
