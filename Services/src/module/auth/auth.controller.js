@@ -284,16 +284,15 @@ const sendEmailRecovery = async (req, res = Response) =>{
 const changePassword = async (req, res = Response) => {
     try {
         const {token, password} = req.body;
-        const {valid, message} = decryptToken(token);
+        const {valid, payload} = decryptToken(token);
         if(valid){
             const encryptedPassword = await hashPassword(password);
-            const {email} = message;
+            const {email} = payload;
             await User.updateOne({ 'email': email }, { $set: { password: encryptedPassword, token: "" }});
             return res.status(200).json({ message: 'Contraseña actualizada' });
         }else{
             return res.status(403).json({ message: 'Token expirado' });
         }
-        
     } catch (error) {
         return res.status(500).json({ Error: error });
     }

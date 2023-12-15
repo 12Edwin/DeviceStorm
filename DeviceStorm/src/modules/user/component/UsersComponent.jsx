@@ -3,11 +3,13 @@ import { Table, Button } from 'reactstrap';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import {CreateUser} from "../component/CreateUserComponent"
+import {CreateUser} from "../component/CreateUserComponent.jsx"
 import Switch from "react-switch"
-import "../../category/style/Category.css"
+import "../../category/style/Category.css"  
 import {getAllUsers, userDisabled} from "../helpers/"
 import { Header } from '../../../public/component/Header';
+import { Row, Col, Alert } from 'react-bootstrap';
+
 export const UsersComponent = () => {
   const [users, setUsers] = useState([]);
   const [aux, setAux] = useState([]);
@@ -110,36 +112,42 @@ export const UsersComponent = () => {
         <div className="rounded-5 header-table bg-primary">
           <span> Usuarios </span>
         </div>
-        <Table align="center" hover variant="dark" className=" table-category shadow-lg rounded-5 overflow-hidden">
-                <thead>
-                <tr>
-                    <th className="text-center"> # </th>
-                    <th className="text-center">Nombre</th>
-                    <th className="text-center">Apellido paterno</th>
-                    <th className="text-center">Apellido materno</th>
-                    <th className="text-center">Correo electrónico</th>
-                    <th className="text-center">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                {aux.map((item,ind) => (
-                    <tr key={ind}>
-                        <td>{ind + 1}</td>
-                        <td>{item.name}</td>
-                        <td>{item.lastname}</td>
-                        <td>{item.surname || 'S/A'}</td>
-                        <td>{item.email}</td>
-                        <td className="d-flex justify-content-around">
-                            <Switch checked={item.status} onChange={()=> handleSwitchChange(item.uid)}/>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </Table>
-            <CreateUser
-              isOpen={isOpenNew}
-              onClose={() => setIsOpenNew(false)}
-            />
+        <Row>
+            <Col lg={12} md={12} sm={12}>
+              {users.length > 0 ? 
+                <Table align="center" hover variant="dark" className=" table-category shadow-lg rounded-5 overflow-hidden">
+                  <thead>
+                  <tr>
+                      <th className="text-center"> # </th>
+                      <th className="text-center">Nombre</th>
+                      <th className="text-center">Apellido paterno</th>
+                      <th className="text-center">Apellido materno</th>
+                      <th className="text-center">Correo electrónico</th>
+                      <th className="text-center">Acciones</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {aux.map((item,ind) => (
+                      <tr key={ind}>
+                          <td>{ind + 1}</td>
+                          <td>{item.name}</td>
+                          <td>{item.lastname}</td>
+                          <td>{item.surname || 'S/A'}</td>
+                          <td>{item.email}</td>
+                          <td className="d-flex justify-content-around">
+                              <Switch checked={item.status} onChange={()=> handleSwitchChange(item.uid)}/>
+                          </td>
+                      </tr>
+                  ))}
+              <CreateUser
+                isOpen={isOpenNew}
+                onClose={() => setIsOpenNew(false)}
+              />
+                  </tbody>
+              </Table> : 
+              <Alert variant="primary text-center m-3">Por el momento no hay registros que mostrar</Alert>}
+            </Col>
+        </Row>
     </div>
   )
 
